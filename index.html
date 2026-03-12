@@ -497,9 +497,9 @@
           ${app.changelog}
         </div>
         <div class="card-footer">
-          <button class="download-btn" onclick="window.open(this.dataset.url,'_blank')" data-url="${app.download_url}">
+          <a class="download-btn" href="${app.download_url}" target="_blank" rel="noopener noreferrer" style="pointer-events:all;z-index:999;position:relative;">
             ⬇ APK İndir
-          </button>
+          </a>
           ${app.force_update
             ? `<div class="force-badge">⚠️ Min: v${app.min_version}</div>`
             : `<div style="font-size:0.78rem;color:var(--muted)">Min: v${app.min_version}</div>`
