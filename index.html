@@ -497,7 +497,7 @@
           ${app.changelog}
         </div>
         <div class="card-footer">
-          <button class="download-btn" onclick="window.open('${app.download_url}', '_blank')">
+          <button class="download-btn" onclick="window.open(this.dataset.url,'_blank')" data-url="${app.download_url}">
             ⬇ APK İndir
           </button>
           ${app.force_update
