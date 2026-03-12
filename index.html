@@ -22,14 +22,14 @@
     body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(124,92,252,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(124,92,252,0.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
     .glow1 { position: fixed; width: 600px; height: 600px; background: radial-gradient(circle, rgba(124,92,252,0.07) 0%, transparent 70%); top: -200px; left: -200px; pointer-events: none; z-index: 0; }
     .glow2 { position: fixed; width: 500px; height: 500px; background: radial-gradient(circle, rgba(252,92,125,0.05) 0%, transparent 70%); bottom: -150px; right: -150px; pointer-events: none; z-index: 0; }
- 
+
     /* NAV */
     nav { position: sticky; top: 0; z-index: 100; background: rgba(10,10,15,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
     .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
     .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.4rem; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; cursor: pointer; }
     .nav-badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 6px 16px; font-size: 0.8rem; color: var(--muted); }
     .nav-badge span { color: var(--green); font-weight: 600; }
- 
+
     /* ══ ANA SAYFA ══ */
     #home-page { position: relative; z-index: 1; }
     .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
@@ -38,20 +38,20 @@
     .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.2rem, 6vw, 3.8rem); font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 16px; animation: fadeDown 0.6s ease both; }
     .hero h1 em { font-style: normal; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .hero p { color: var(--muted); font-size: 1rem; max-width: 460px; margin: 0 auto 36px; line-height: 1.7; animation: fadeDown 0.7s ease both; }
- 
+
     .filters { display: flex; gap: 8px; justify-content: center; margin-bottom: 44px; flex-wrap: wrap; animation: fadeDown 0.8s ease both; }
     .filter-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 8px 20px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
     .filter-btn:hover { border-color: var(--accent); color: var(--text); }
     .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
- 
+
     .stats-bar { display: flex; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 44px; }
     .stat { flex: 1; background: var(--surface); padding: 18px; text-align: center; }
     .stat-num { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; display: block; }
     .stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 3px; }
- 
+
     .section-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 18px; }
     .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; margin-bottom: 60px; }
- 
+
     .app-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 24px; transition: all 0.25s; position: relative; overflow: hidden; animation: fadeUp 0.5s ease both; cursor: pointer; }
     .app-card:hover { transform: translateY(-4px); border-color: rgba(124,92,252,0.4); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
     .card-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 18px; }
@@ -69,20 +69,20 @@
     .detail-btn { display: flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--accent), #9b7eff); color: #fff; border: none; border-radius: 11px; padding: 10px 18px; font-family: 'DM Sans', sans-serif; font-size: 0.83rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
     .detail-btn:hover { box-shadow: 0 8px 24px rgba(124,92,252,0.4); transform: scale(1.03); }
     .force-info { font-size: 0.75rem; color: var(--accent2); font-weight: 600; }
- 
+
     /* ══ DETAY SAYFASI ══ */
     #detail-page { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 200; overflow-y: auto; }
     #detail-page.active { display: block; animation: slideUp 0.3s ease both; }
     @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
- 
+
     .detail-nav { position: sticky; top: 0; background: rgba(10,10,15,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); z-index: 10; }
     .detail-nav-inner { max-width: 960px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; gap: 14px; height: 64px; }
     .back-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 16px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
     .back-btn:hover { border-color: var(--accent); color: var(--accent); }
     .detail-nav-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; }
- 
+
     .detail-wrap { max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; position: relative; z-index: 1; }
- 
+
     /* Üst alan */
     .detail-top { display: flex; gap: 28px; align-items: flex-start; margin-bottom: 36px; }
     .detail-big-icon { width: 96px; height: 96px; background: linear-gradient(135deg, var(--surface2), var(--bg)); border: 1px solid var(--border); border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 3.2rem; flex-shrink: 0; }
@@ -92,19 +92,19 @@
     .detail-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
     .download-main-btn { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, var(--accent), #9b7eff); color: #fff; border: none; border-radius: 13px; padding: 13px 30px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.2s; }
     .download-main-btn:hover { transform: scale(1.04); box-shadow: 0 12px 32px rgba(124,92,252,0.45); }
- 
+
     /* Mini istatistikler */
     .detail-stats { display: flex; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 36px; }
     .detail-stat { flex: 1; background: var(--surface); padding: 14px 16px; text-align: center; }
     .detail-stat-val { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; display: block; }
     .detail-stat-label { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
- 
+
     /* Ekran görüntüleri */
     .ss-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px; }
     .screenshots-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 36px; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
     .ss-item { flex-shrink: 0; width: 190px; height: 337px; border-radius: 14px; border: 1px solid var(--border); overflow: hidden; background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 0.78rem; flex-direction: column; gap: 8px; }
     .ss-item img { width: 100%; height: 100%; object-fit: cover; }
- 
+
     /* Açıklama & changelog */
     .detail-section { margin-bottom: 32px; }
     .detail-section h3 { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 12px; }
@@ -112,7 +112,7 @@
     .cl-item { background: var(--surface); border: 1px solid var(--border); border-radius: 13px; padding: 16px 18px; margin-bottom: 10px; }
     .cl-ver { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--green); font-size: 0.87rem; margin-bottom: 5px; }
     .cl-text { color: var(--muted); font-size: 0.86rem; line-height: 1.6; }
- 
+
     /* API bölümü */
     .api-box { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 28px; margin-bottom: 48px; }
     .api-box h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
@@ -121,12 +121,12 @@
     .api-url-row code { flex: 1; font-size: 0.82rem; color: var(--accent); word-break: break-all; }
     .copy-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; color: var(--text); font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
     .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
- 
+
     footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; color: var(--muted); font-size: 0.8rem; }
- 
+
     @keyframes fadeDown { from { opacity:0; transform:translateY(-14px); } to { opacity:1; transform:translateY(0); } }
     @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
- 
+
     @media (max-width: 580px) {
       .stats-bar, .detail-stats { flex-direction: column; }
       .detail-top { flex-direction: column; align-items: center; text-align: center; }
@@ -137,14 +137,14 @@
 <body>
 <div class="glow1"></div>
 <div class="glow2"></div>
- 
+
 <nav>
   <div class="nav-inner">
     <div class="logo" onclick="showHome()">⬡ DevStore</div>
     <div class="nav-badge">API: <span>Aktif</span></div>
   </div>
 </nav>
- 
+
 <!-- ══════════ ANA SAYFA ══════════ -->
 <div id="home-page">
   <div class="wrap">
@@ -153,24 +153,24 @@
       <h1>Tüm oyunların &<br/><em>uygulamalar</em> burada</h1>
       <p>Her uygulama otomatik güncelleme sistemiyle korunur. Yeni sürüm yayınlandığında kullanıcılar anında haberdar olur.</p>
     </div>
- 
+
     <div class="filters">
       <button class="filter-btn active" onclick="filterApps('all',this)">Tümü</button>
       <button class="filter-btn" onclick="filterApps('game',this)">🎮 Oyunlar</button>
       <button class="filter-btn" onclick="filterApps('app',this)">📱 Uygulamalar</button>
       <button class="filter-btn" onclick="filterApps('force',this)">⚠️ Zorunlu Güncelleme</button>
     </div>
- 
+
     <div class="stats-bar">
       <div class="stat"><span class="stat-num" id="s-total">—</span><div class="stat-label">Toplam Uygulama</div></div>
       <div class="stat"><span class="stat-num" id="s-game">—</span><div class="stat-label">Oyun</div></div>
       <div class="stat"><span class="stat-num" id="s-app">—</span><div class="stat-label">Uygulama</div></div>
       <div class="stat"><span class="stat-num" id="s-force">—</span><div class="stat-label">Zorunlu Güncelleme</div></div>
     </div>
- 
+
     <div class="section-title">Uygulamalar & Oyunlar</div>
     <div class="app-grid" id="app-grid"></div>
- 
+
     <div class="api-box">
       <h3>🔌 Versiyon Kontrol API</h3>
       <p>Godot oyunlarında bu URL'yi kullan — güncel sürüm bilgisini JSON olarak döner.</p>
@@ -182,7 +182,7 @@
   </div>
   <footer>DevStore — Kişisel uygulama mağazası. Veriler <code>versions.json</code> dosyasından okunur.</footer>
 </div>
- 
+
 <!-- ══════════ DETAY SAYFASI ══════════ -->
 <div id="detail-page">
   <div class="detail-nav">
@@ -201,35 +201,35 @@
         <a class="download-main-btn" id="d-dl-btn" href="#" target="_blank" rel="noopener noreferrer">⬇ APK İndir</a>
       </div>
     </div>
- 
+
     <div class="detail-stats">
       <div class="detail-stat"><span class="detail-stat-val" id="d-ver">—</span><div class="detail-stat-label">Versiyon</div></div>
       <div class="detail-stat"><span class="detail-stat-val" id="d-minver">—</span><div class="detail-stat-label">Min. Versiyon</div></div>
       <div class="detail-stat"><span class="detail-stat-val" id="d-update-type">—</span><div class="detail-stat-label">Güncelleme Türü</div></div>
       <div class="detail-stat"><span class="detail-stat-val" id="d-category">—</span><div class="detail-stat-label">Kategori</div></div>
     </div>
- 
+
     <div class="detail-section">
       <p class="ss-title">📸 Ekran Görüntüleri</p>
       <div class="screenshots-row" id="d-screenshots"></div>
     </div>
- 
+
     <div class="detail-section">
       <h3>📝 Uygulama Hakkında</h3>
       <div class="desc-text" id="d-desc"></div>
     </div>
- 
+
     <div class="detail-section">
       <h3>📋 Güncelleme Geçmişi</h3>
       <div id="d-changelog"></div>
     </div>
   </div>
 </div>
- 
+
 <script>
 let allApps = {};
 let currentFilter = 'all';
- 
+
 // Varsayılan uygulama verisi (versions.json'a eklenebilir alanlar)
 const appExtras = {
   sportify: {
@@ -247,27 +247,33 @@ const appExtras = {
     ]
   }
 };
- 
+
 async function loadApps() {
+  // Önce versions.json'dan çek, olmazsa sabit veriyi kullan
+  const fallback = {
+    sportify: {
+      name: "Sportify", version: "12", min_version: "12",
+      force_update: true,
+      download_url: "https://github.com/judy658/judy658-devstore/releases/download/v1.0/spotify_v12.apk",
+      icon: "🎵", category: "app",
+      changelog: "Yeni şarkılar eklendi, 6 dakika üzeri şarkılar kaldırıldı."
+    }
+  };
   try {
-    const res = await fetch('https://judy658.github.io/judy658-devstore/versions.json');
-    const data = await res.json();
-    allApps = data.apps;
+    const res = await fetch('versions.json');
+    if (res.ok) {
+      const data = await res.json();
+      allApps = data.apps || fallback;
+    } else {
+      allApps = fallback;
+    }
   } catch(e) {
-    allApps = {
-      sportify: {
-        name: "Sportify", version: "12", min_version: "12",
-        force_update: true,
-        download_url: "https://github.com/judy658/judy658-devstore/releases/download/v1.0/spotify_v12.apk",
-        icon: "🎵", category: "app",
-        changelog: "Yeni şarkılar eklendi, 6 dakika üzeri şarkılar kaldırıldı."
-      }
-    };
+    allApps = fallback;
   }
   updateStats();
   renderGrid(currentFilter);
 }
- 
+
 function updateStats() {
   const list = Object.values(allApps);
   document.getElementById('s-total').textContent = list.length;
@@ -275,7 +281,7 @@ function updateStats() {
   document.getElementById('s-app').textContent = list.filter(a => a.category === 'app').length;
   document.getElementById('s-force').textContent = list.filter(a => a.force_update).length;
 }
- 
+
 function renderGrid(filter) {
   const grid = document.getElementById('app-grid');
   const entries = Object.entries(allApps).filter(([id, app]) => {
@@ -283,12 +289,12 @@ function renderGrid(filter) {
     if (filter === 'force') return app.force_update;
     return app.category === filter;
   });
- 
+
   if (!entries.length) {
     grid.innerHTML = `<div style="color:var(--muted);grid-column:1/-1;text-align:center;padding:48px 0">Bu filtrede uygulama yok.</div>`;
     return;
   }
- 
+
   grid.innerHTML = entries.map(([id, app], i) => `
     <div class="app-card" style="animation-delay:${i*0.07}s" onclick="showDetail('${id}')">
       <div class="card-header">
@@ -315,12 +321,12 @@ function renderGrid(filter) {
     </div>
   `).join('');
 }
- 
+
 function showDetail(id) {
   const app = allApps[id];
   const extra = appExtras[id] || {};
   if (!app) return;
- 
+
   document.getElementById('d-nav-title').textContent = app.name;
   document.getElementById('d-icon').textContent = app.icon || '📦';
   document.getElementById('d-name').textContent = app.name;
@@ -329,14 +335,14 @@ function showDetail(id) {
   document.getElementById('d-minver').textContent = 'v' + app.min_version;
   document.getElementById('d-update-type').textContent = app.force_update ? '⚠️ Zorunlu' : '✅ İsteğe Bağlı';
   document.getElementById('d-category').textContent = app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama';
- 
+
   document.getElementById('d-badges').innerHTML = `
     <span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama'}</span>
     ${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu Güncelleme</span>' : ''}
   `;
- 
+
   document.getElementById('d-dl-btn').href = app.download_url;
- 
+
   // Ekran görüntüleri
   const screenshots = extra.screenshots || [];
   const ssEl = document.getElementById('d-screenshots');
@@ -345,11 +351,11 @@ function showDetail(id) {
   } else {
     ssEl.innerHTML = ['📱','📱','📱'].map(e => `<div class="ss-item">${e}<span style="color:var(--muted);font-size:0.75rem">Yakında</span></div>`).join('');
   }
- 
+
   // Açıklama
   const desc = extra.description || app.changelog;
   document.getElementById('d-desc').innerHTML = desc.split('\n').map(p => p ? `<p style="margin-bottom:10px">${p}</p>` : '').join('');
- 
+
   // Changelog
   const history = extra.changelog_history || [{ version: 'v' + app.version, text: app.changelog }];
   document.getElementById('d-changelog').innerHTML = history.map(h => `
@@ -358,25 +364,25 @@ function showDetail(id) {
       <div class="cl-text">${h.text}</div>
     </div>
   `).join('');
- 
+
   const dp = document.getElementById('detail-page');
   dp.classList.add('active');
   dp.scrollTop = 0;
   document.getElementById('home-page').style.display = 'none';
 }
- 
+
 function showHome() {
   document.getElementById('detail-page').classList.remove('active');
   document.getElementById('home-page').style.display = 'block';
 }
- 
+
 function filterApps(filter, btn) {
   currentFilter = filter;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderGrid(filter);
 }
- 
+
 function copyUrl() {
   const url = document.getElementById('api-url-text').textContent;
   navigator.clipboard.writeText(url).then(() => {
@@ -385,7 +391,7 @@ function copyUrl() {
     setTimeout(() => btn.textContent = 'Kopyala', 2000);
   });
 }
- 
+
 loadApps();
 </script>
 </body>
