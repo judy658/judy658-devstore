@@ -563,6 +563,16 @@ async function signOut() {
   showUserLoggedOut();
 }
 
+// E-posta doğrulama linkinden gelen token'ı yakala
+supa.auth.onAuthStateChange((event, session) => {
+  if (event === 'SIGNED_IN' && session) {
+    showUserLoggedIn(session.user.email);
+    closeAuth();
+  } else if (event === 'SIGNED_OUT') {
+    showUserLoggedOut();
+  }
+});
+
 checkSession();
 </script>
 </body>
