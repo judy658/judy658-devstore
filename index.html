@@ -161,6 +161,32 @@
     .user-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
 
     @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    /* YORUMLAR */
+    .comments-section { margin-top: 36px; }
+    .comments-section h3 { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 16px; }
+    .comment-form { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 20px; }
+    .comment-form textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; resize: none; outline: none; min-height: 80px; transition: border-color 0.2s; }
+    .comment-form textarea:focus { border-color: var(--accent); }
+    .comment-form textarea::placeholder { color: var(--muted); }
+    .stars-row { display: flex; gap: 6px; margin: 12px 0; }
+    .star { font-size: 1.4rem; cursor: pointer; opacity: 0.3; transition: all 0.15s; }
+    .star.active { opacity: 1; }
+    .comment-submit { background: linear-gradient(135deg, var(--accent), #9b7eff); color: #fff; border: none; border-radius: 10px; padding: 10px 22px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 4px; }
+    .comment-submit:hover { transform: scale(1.03); box-shadow: 0 6px 18px rgba(124,92,252,0.4); }
+    .comment-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .comment-login-note { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; text-align: center; color: var(--muted); font-size: 0.88rem; margin-bottom: 20px; }
+    .comment-login-note button { background: none; border: none; color: var(--accent); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600; }
+    .comment-list { display: flex; flex-direction: column; gap: 12px; }
+    .comment-item { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; }
+    .comment-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .comment-author { font-size: 0.82rem; font-weight: 600; color: var(--accent); }
+    .comment-date { font-size: 0.75rem; color: var(--muted); }
+    .comment-stars { font-size: 0.9rem; margin-bottom: 6px; }
+    .comment-text { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+    .comment-delete { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.75rem; transition: color 0.2s; }
+    .comment-delete:hover { color: var(--accent2); }
+    .no-comments { text-align: center; color: var(--muted); font-size: 0.88rem; padding: 24px; }
+
     @keyframes fadeDown { from { opacity:0; transform:translateY(-14px); } to { opacity:1; transform:translateY(0); } }
     @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
 
@@ -263,6 +289,34 @@
     <div class="detail-section">
       <h3>📋 Güncelleme Geçmişi</h3>
       <div id="d-changelog"></div>
+    </div>
+
+    <div class="comments-section">
+      <h3>💬 Yorumlar <span id="comment-count" style="color:var(--muted);font-size:0.85rem;font-weight:400"></span></h3>
+      
+      <!-- Giriş yapılmamışsa -->
+      <div id="comment-login-note" class="comment-login-note" style="display:none">
+        Yorum yapmak için <button onclick="openAuth()">giriş yap</button> veya hesap oluştur.
+      </div>
+
+      <!-- Yorum formu -->
+      <div id="comment-form" class="comment-form" style="display:none">
+        <div class="stars-row" id="stars-row">
+          <span class="star" data-v="1" onclick="setRating(1)">★</span>
+          <span class="star" data-v="2" onclick="setRating(2)">★</span>
+          <span class="star" data-v="3" onclick="setRating(3)">★</span>
+          <span class="star" data-v="4" onclick="setRating(4)">★</span>
+          <span class="star" data-v="5" onclick="setRating(5)">★</span>
+        </div>
+        <textarea id="comment-input" placeholder="Bu uygulama hakkında ne düşünüyorsun?" maxlength="500"></textarea>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+          <span style="font-size:0.75rem;color:var(--muted)" id="comment-char">0/500</span>
+          <button class="comment-submit" onclick="submitComment()">Yorum Gönder</button>
+        </div>
+      </div>
+
+      <!-- Yorum listesi -->
+      <div class="comment-list" id="comment-list"></div>
     </div>
   </div>
 </div>
@@ -405,6 +459,9 @@ function showDetail(id) {
       <div class="cl-text">${h.text}</div>
     </div>
   `).join('');
+
+  // Yorumları yükle
+  loadComments(id);
 
   const dp = document.getElementById('detail-page');
   dp.classList.add('active');
@@ -615,6 +672,122 @@ supa.auth.onAuthStateChange((event, session) => {
 });
 
 checkSession();
+</script>
+<script>
+// ── YORUMLAR ──
+let currentAppId = null;
+let selectedRating = 0;
+let currentUserId = null;
+
+async function loadComments(appId) {
+  currentAppId = appId;
+  const { data: { session } } = await supa.auth.getSession();
+  currentUserId = session ? session.user.id : null;
+
+  // Giriş durumuna göre form göster
+  if (session) {
+    document.getElementById('comment-form').style.display = 'block';
+    document.getElementById('comment-login-note').style.display = 'none';
+  } else {
+    document.getElementById('comment-form').style.display = 'none';
+    document.getElementById('comment-login-note').style.display = 'block';
+  }
+
+  // Yorumları çek
+  const { data, error } = await supa
+    .from('comments')
+    .select('*')
+    .eq('app_id', appId)
+    .order('created_at', { ascending: false });
+
+  const list = document.getElementById('comment-list');
+  const countEl = document.getElementById('comment-count');
+
+  if (error || !data || data.length === 0) {
+    countEl.textContent = '';
+    list.innerHTML = '<div class="no-comments">Henüz yorum yok. İlk yorumu sen yap! 🎉</div>';
+    return;
+  }
+
+  countEl.textContent = '(' + data.length + ')';
+  list.innerHTML = data.map(c => {
+    const stars = '★'.repeat(c.rating || 0) + '☆'.repeat(5 - (c.rating || 0));
+    const date = new Date(c.created_at).toLocaleDateString('tr-TR');
+    const emailShort = c.email.split('@')[0];
+    const isOwn = currentUserId && c.user_id === currentUserId;
+    return `
+      <div class="comment-item" id="comment-${c.id}">
+        <div class="comment-header">
+          <span class="comment-author">👤 ${emailShort}</span>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="comment-date">${date}</span>
+            ${isOwn ? `<button class="comment-delete" onclick="deleteComment('${c.id}')">🗑 Sil</button>` : ''}
+          </div>
+        </div>
+        <div class="comment-stars">${stars}</div>
+        <div class="comment-text">${c.content}</div>
+      </div>`;
+  }).join('');
+}
+
+function setRating(val) {
+  selectedRating = val;
+  document.querySelectorAll('.star').forEach(s => {
+    s.classList.toggle('active', parseInt(s.dataset.v) <= val);
+  });
+}
+
+document.addEventListener('input', e => {
+  if (e.target.id === 'comment-input') {
+    document.getElementById('comment-char').textContent = e.target.value.length + '/500';
+  }
+});
+
+async function submitComment() {
+  const content = document.getElementById('comment-input').value.trim();
+  if (!content) return;
+  if (selectedRating === 0) return alert('Lütfen bir puan ver!');
+  const { data: { session } } = await supa.auth.getSession();
+  if (!session) return openAuth();
+
+  // Bu kullanıcı daha önce yorum yapmış mı?
+  const { data: existing } = await supa
+    .from('comments')
+    .select('id')
+    .eq('app_id', currentAppId)
+    .eq('user_id', session.user.id);
+  
+  if (existing && existing.length > 0) {
+    alert('Bu uygulama için zaten bir yorum bıraktın!');
+    return;
+  }
+
+  const btn = document.querySelector('.comment-submit');
+  btn.disabled = true; btn.textContent = 'Gönderiliyor...';
+
+  const { error } = await supa.from('comments').insert({
+    app_id: currentAppId,
+    user_id: session.user.id,
+    email: session.user.email,
+    content,
+    rating: selectedRating
+  });
+
+  btn.disabled = false; btn.textContent = 'Yorum Gönder';
+  if (error) { alert('Hata: ' + error.message); return; }
+  
+  document.getElementById('comment-input').value = '';
+  document.getElementById('comment-char').textContent = '0/500';
+  selectedRating = 0;
+  document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+  loadComments(currentAppId);
+}
+
+async function deleteComment(id) {
+  if (!confirm('Yorumu silmek istediğine emin misin?')) return;
+  await supa.from('comments').delete().eq('id', id);
+  document.getElementById('comment-' + id)?.remove();
+}
 </script>
 </body>
 </html>
