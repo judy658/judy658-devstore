@@ -429,7 +429,7 @@ function showDetail(id) {
   document.getElementById('d-dev').textContent = '👤 ' + (extra.developer || 'judy658');
   document.getElementById('d-ver').textContent = 'v' + app.version;
   document.getElementById('d-minver').textContent = 'v' + app.min_version;
-  document.getElementById('d-update-type').textContent = app.force_update ? '⚠️ Zorunlu' : '✅ İsteğe Bağlı';
+  document.getElementById('d-avg-rating').textContent = '—';
   document.getElementById('d-category').textContent = app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama';
 
   document.getElementById('d-badges').innerHTML = `
