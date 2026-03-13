@@ -203,6 +203,23 @@
     @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
     .download-count { font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; gap: 4px; margin-top: 6px; }
 
+    /* İLETİŞİM */
+    .contact-box { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 32px; margin-bottom: 48px; }
+    .contact-box h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+    .contact-box p { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .contact-field { display: flex; flex-direction: column; gap: 6px; }
+    .contact-field.full { grid-column: 1 / -1; }
+    .contact-field label { font-size: 0.78rem; color: var(--muted); font-weight: 500; }
+    .contact-field input, .contact-field textarea, .contact-field select { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 11px 14px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.88rem; outline: none; transition: border-color 0.2s; width: 100%; }
+    .contact-field input:focus, .contact-field textarea:focus, .contact-field select:focus { border-color: var(--accent); }
+    .contact-field textarea { resize: none; min-height: 100px; }
+    .contact-field select option { background: var(--surface); }
+    .contact-send-btn { background: linear-gradient(135deg, var(--accent), #9b7eff); color: #fff; border: none; border-radius: 11px; padding: 12px 28px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 6px; }
+    .contact-send-btn:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(124,92,252,0.4); }
+    .contact-send-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .contact-success { background: rgba(61,220,151,0.1); border: 1px solid rgba(61,220,151,0.3); border-radius: 10px; padding: 14px 18px; color: var(--green); font-size: 0.88rem; margin-top: 14px; display: none; }
+
     @keyframes fadeDown { from { opacity:0; transform:translateY(-14px); } to { opacity:1; transform:translateY(0); } }
     @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
 
@@ -263,6 +280,36 @@
       </div>
     </div>
   </div>
+    <div class="contact-box">
+      <h3>📬 İletişim</h3>
+      <p>Öneri, geri bildirim veya hata bildirimi için aşağıdaki formu doldur!</p>
+      <div class="contact-grid">
+        <div class="contact-field">
+          <label>Adın</label>
+          <input type="text" id="c-name" placeholder="Adın Soyadın"/>
+        </div>
+        <div class="contact-field">
+          <label>E-posta</label>
+          <input type="email" id="c-email" placeholder="ornek@email.com"/>
+        </div>
+        <div class="contact-field full">
+          <label>Konu</label>
+          <select id="c-subject">
+            <option value="Öneri">💡 Öneri</option>
+            <option value="Hata Bildirimi">🐛 Hata Bildirimi</option>
+            <option value="Yeni Şarkı İsteği">🎵 Yeni Şarkı İsteği</option>
+            <option value="Genel">💬 Genel</option>
+          </select>
+        </div>
+        <div class="contact-field full">
+          <label>Mesaj</label>
+          <textarea id="c-message" placeholder="Mesajını yaz..."></textarea>
+        </div>
+      </div>
+      <button class="contact-send-btn" onclick="sendContact()" id="contact-btn">📨 Gönder</button>
+      <div class="contact-success" id="contact-success">✅ Mesajın iletildi! En kısa sürede dönüş yapacağım.</div>
+    </div>
+
   <footer>DevStore — Kişisel uygulama mağazası. Veriler <code>versions.json</code> dosyasından okunur.</footer>
 </div>
 
@@ -538,6 +585,46 @@ function copyUrl() {
 }
 
 loadApps();
+
+async function sendContact() {
+  const name = document.getElementById('c-name').value.trim();
+  const email = document.getElementById('c-email').value.trim();
+  const subject = document.getElementById('c-subject').value;
+  const message = document.getElementById('c-message').value.trim();
+
+  if (!name || !email || !message) {
+    alert('Lütfen tüm alanları doldur!');
+    return;
+  }
+
+  const btn = document.getElementById('contact-btn');
+  btn.disabled = true;
+  btn.textContent = 'Gönderiliyor...';
+
+  try {
+    const res = await fetch('https://formspree.io/f/xnjgjwqd', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ name, email, subject, message })
+    });
+
+    if (res.ok) {
+      document.getElementById('contact-success').style.display = 'block';
+      document.getElementById('c-name').value = '';
+      document.getElementById('c-email').value = '';
+      document.getElementById('c-message').value = '';
+      btn.textContent = '✅ Gönderildi';
+    } else {
+      alert('Bir hata oluştu, tekrar dene!');
+      btn.disabled = false;
+      btn.textContent = '📨 Gönder';
+    }
+  } catch(e) {
+    alert('Bağlantı hatası!');
+    btn.disabled = false;
+    btn.textContent = '📨 Gönder';
+  }
+}
 </script>
 <!-- AUTH MODAL -->
 <div class="auth-overlay" id="auth-overlay" onclick="handleOverlayClick(event)">
