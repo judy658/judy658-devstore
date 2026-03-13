@@ -17,6 +17,7 @@
       --text: #e8e8f0;
       --muted: #6b6b85;
       --green: #3ddc97;
+      --yellow: #ffd166;
     }
     body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
     body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(124,92,252,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(124,92,252,0.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
@@ -272,7 +273,7 @@
     <div class="detail-stats">
       <div class="detail-stat"><span class="detail-stat-val" id="d-ver">—</span><div class="detail-stat-label">Versiyon</div></div>
       <div class="detail-stat"><span class="detail-stat-val" id="d-minver">—</span><div class="detail-stat-label">Min. Versiyon</div></div>
-      <div class="detail-stat"><span class="detail-stat-val" id="d-update-type">—</span><div class="detail-stat-label">Güncelleme Türü</div></div>
+      <div class="detail-stat"><span class="detail-stat-val" id="d-avg-rating" style="color:var(--yellow,#ffd166)">—</span><div class="detail-stat-label">Ortalama Puan</div></div>
       <div class="detail-stat"><span class="detail-stat-val" id="d-category">—</span><div class="detail-stat-label">Kategori</div></div>
     </div>
 
@@ -675,6 +676,19 @@ checkSession();
 </script>
 <script>
 // ── YORUMLAR ──
+function maskEmail(email) {
+  const user = email.split('@')[0];
+  if (user.length <= 2) return user[0] + '*****';
+  return user.substring(0, 2) + '*'.repeat(Math.min(5, user.length - 2));
+}
+
+function calcAvgRating(data) {
+  if (!data || data.length === 0) return null;
+  const rated = data.filter(c => c.rating > 0);
+  if (rated.length === 0) return null;
+  const avg = rated.reduce((s, c) => s + c.rating, 0) / rated.length;
+  return avg.toFixed(1);
+}
 let currentAppId = null;
 let selectedRating = 0;
 let currentUserId = null;
@@ -709,11 +723,17 @@ async function loadComments(appId) {
     return;
   }
 
-  countEl.textContent = '(' + data.length + ')';
+  const avg = calcAvgRating(data);
+  countEl.textContent = '(' + data.length + ' yorum' + (avg ? ' · ★ ' + avg : '') + ')';
+
+  // Detay sayfasındaki ortalama puanı güncelle
+  const avgEl = document.getElementById('d-avg-rating');
+  if (avgEl) avgEl.textContent = avg ? '★ ' + avg : '';
+
   list.innerHTML = data.map(c => {
     const stars = '★'.repeat(c.rating || 0) + '☆'.repeat(5 - (c.rating || 0));
     const date = new Date(c.created_at).toLocaleDateString('tr-TR');
-    const emailShort = c.email.split('@')[0];
+    const emailShort = maskEmail(c.email);
     const isOwn = currentUserId && c.user_id === currentUserId;
     return `
       <div class="comment-item" id="comment-${c.id}">
