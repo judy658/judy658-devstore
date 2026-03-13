@@ -475,7 +475,15 @@ function showDetail(id) {
     ${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu Güncelleme</span>' : ''}
   `;
 
-  document.getElementById('d-dl-btn').href = app.download_url;
+  const dlBtn = document.getElementById('d-dl-btn');
+  dlBtn.href = app.download_url;
+  dlBtn.onclick = () => { incrementDownload(id); return true; };
+
+  // İndirme sayısını stat kutusunda göster
+  document.getElementById('d-dl-count').textContent = '...';
+  getDownloads(id).then(count => {
+    document.getElementById('d-dl-count').textContent = count;
+  });
 
   // Ekran görüntüleri
   const screenshots = extra.screenshots || [];
