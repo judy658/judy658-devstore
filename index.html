@@ -188,6 +188,17 @@
     .comment-delete:hover { color: var(--accent2); }
     .no-comments { text-align: center; color: var(--muted); font-size: 0.88rem; padding: 24px; }
 
+    /* GELİŞTİRİCİ YANITI */
+    .comment-reply { background: rgba(124,92,252,0.06); border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; padding: 12px 14px; margin-top: 10px; }
+    .comment-reply-header { font-size: 0.78rem; color: var(--accent); font-weight: 700; margin-bottom: 5px; }
+    .comment-reply-text { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+    .reply-form { margin-top: 10px; display: none; }
+    .reply-form textarea { width: 100%; background: var(--bg); border: 1px solid var(--accent); border-radius: 8px; padding: 10px 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; resize: none; outline: none; min-height: 60px; }
+    .reply-btn { background: none; border: 1px solid var(--accent); border-radius: 8px; padding: 5px 14px; color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 0.78rem; cursor: pointer; margin-top: 6px; transition: all 0.2s; }
+    .reply-btn:hover { background: var(--accent); color: #fff; }
+    .admin-reply-trigger { background: none; border: none; color: var(--accent); font-size: 0.75rem; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 8px; display: block; opacity: 0.7; }
+    .admin-reply-trigger:hover { opacity: 1; }
+
     @keyframes fadeDown { from { opacity:0; transform:translateY(-14px); } to { opacity:1; transform:translateY(0); } }
     @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
 
@@ -676,6 +687,7 @@ checkSession();
 </script>
 <script>
 // ── YORUMLAR ──
+const ADMIN_EMAIL = 'geceninhakimistudio@gmail.com';
 function maskEmail(email) {
   const user = email.split('@')[0];
   if (user.length <= 2) return user[0] + '*****';
@@ -691,12 +703,14 @@ function calcAvgRating(data) {
 }
 let currentAppId = null;
 let selectedRating = 0;
+let currentUserEmail = null;
 let currentUserId = null;
 
 async function loadComments(appId) {
   currentAppId = appId;
   const { data: { session } } = await supa.auth.getSession();
   currentUserId = session ? session.user.id : null;
+  currentUserEmail = session ? session.user.email : null;
 
   // Giriş durumuna göre form göster
   if (session) {
@@ -735,6 +749,20 @@ async function loadComments(appId) {
     const date = new Date(c.created_at).toLocaleDateString('tr-TR');
     const emailShort = maskEmail(c.email);
     const isOwn = currentUserId && c.user_id === currentUserId;
+    const { data: { session: adminSession } } = await supa.auth.getSession();
+    const isAdmin = adminSession && adminSession.user.email === ADMIN_EMAIL;
+    const replyHtml = c.reply ? `
+      <div class="comment-reply">
+        <div class="comment-reply-header">👨‍💻 Geliştirici Yanıtı</div>
+        <div class="comment-reply-text">${c.reply}</div>
+      </div>` : '';
+    const adminReplyBtn = isAdmin && !c.reply ? `
+      <button class="admin-reply-trigger" onclick="toggleReplyForm('${c.id}')">↩ Yanıtla</button>
+      <div class="reply-form" id="reply-form-${c.id}">
+        <textarea placeholder="Yanıtını yaz..." id="reply-input-${c.id}"></textarea>
+        <button class="reply-btn" onclick="submitReply('${c.id}')">Gönder</button>
+        <button class="reply-btn" style="margin-left:6px;border-color:var(--muted);color:var(--muted)" onclick="toggleReplyForm('${c.id}')">İptal</button>
+      </div>` : '';
     return `
       <div class="comment-item" id="comment-${c.id}">
         <div class="comment-header">
@@ -746,6 +774,8 @@ async function loadComments(appId) {
         </div>
         <div class="comment-stars">${stars}</div>
         <div class="comment-text">${c.content}</div>
+        ${replyHtml}
+        ${adminReplyBtn}
       </div>`;
   }).join('');
 }
@@ -800,6 +830,22 @@ async function submitComment() {
   document.getElementById('comment-char').textContent = '0/500';
   selectedRating = 0;
   document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+  loadComments(currentAppId);
+}
+
+function toggleReplyForm(id) {
+  const form = document.getElementById('reply-form-' + id);
+  form.style.display = form.style.display === 'block' ? 'none' : 'block';
+}
+
+async function submitReply(id) {
+  const text = document.getElementById('reply-input-' + id).value.trim();
+  if (!text) return;
+  const { error } = await supa.from('comments').update({
+    reply: text,
+    reply_at: new Date().toISOString()
+  }).eq('id', id);
+  if (error) { alert('Hata: ' + error.message); return; }
   loadComments(currentAppId);
 }
 
