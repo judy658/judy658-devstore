@@ -199,6 +199,10 @@
     .admin-reply-trigger { background: none; border: none; color: var(--accent); font-size: 0.75rem; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 8px; display: block; opacity: 0.7; }
     .admin-reply-trigger:hover { opacity: 1; }
 
+    .badge-new { background: rgba(61,220,151,0.2); color: var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
+    .download-count { font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; gap: 4px; margin-top: 6px; }
+
     @keyframes fadeDown { from { opacity:0; transform:translateY(-14px); } to { opacity:1; transform:translateY(0); } }
     @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
 
@@ -340,6 +344,7 @@ let currentFilter = 'all';
 // Varsayılan uygulama verisi (versions.json'a eklenebilir alanlar)
 const appExtras = {
   sportify: {
+    created_at: "2026-03-13",
     developer: "judy658",
     description: "Sportify, GitHub üzerinden MP3 dosyalarını doğrudan stream eden kişisel bir müzik uygulamasıdır. 129 şarkılık geniş kütüphanesiyle Türkçe pop, yabancı müzik, arabesk ve daha fazlasını tek bir yerde dinleyebilirsiniz.\n\nÇalma listeleri oluşturabilir, favori şarkılarınızı kaydedebilir ve en çok dinlediklerinizi takip edebilirsiniz.",
     screenshots: [
@@ -354,6 +359,27 @@ const appExtras = {
     ]
   }
 };
+
+function isNew(dateStr) {
+  if (!dateStr) return false;
+  const diff = (Date.now() - new Date(dateStr).getTime()) / (1000 * 60 * 60 * 24);
+  return diff <= 7;
+}
+
+async function getDownloads(appId) {
+  const { data } = await supa.from('app_stats').select('downloads').eq('app_id', appId).single();
+  return data ? data.downloads : 0;
+}
+
+async function incrementDownload(appId) {
+  // Önce var mı kontrol et
+  const { data } = await supa.from('app_stats').select('downloads').eq('app_id', appId).single();
+  if (data) {
+    await supa.from('app_stats').update({ downloads: data.downloads + 1, updated_at: new Date().toISOString() }).eq('app_id', appId);
+  } else {
+    await supa.from('app_stats').insert({ app_id: appId, downloads: 1 });
+  }
+}
 
 async function loadApps() {
   // Önce versions.json'dan çek, olmazsa sabit veriyi kullan
