@@ -465,7 +465,7 @@ loadApps();
           <div style="font-size:0.9rem;color:var(--text);font-weight:600">E-postanı kontrol et!</div>
           <div style="font-size:0.82rem;color:var(--muted);margin-top:6px">6 haneli doğrulama kodu gönderildi</div>
         </div>
-        <div class="auth-field"><label>Doğrulama Kodu</label><input type="text" id="reg-otp" placeholder="123456" maxlength="6" style="text-align:center;font-size:1.4rem;letter-spacing:0.3em;font-weight:700"/></div>
+        <div class="auth-field"><label>Doğrulama Kodu</label><input type="text" id="reg-otp" placeholder="123456" maxlength="8" style="text-align:center;font-size:1.4rem;letter-spacing:0.3em;font-weight:700"/></div>
         <button class="auth-submit" onclick="verifyOTP()">Hesabı Onayla ✓</button>
         <div style="text-align:center;margin-top:12px"><button onclick="backToReg()" style="background:none;border:none;color:var(--muted);font-size:0.82rem;cursor:pointer;font-family:DM Sans,sans-serif">← Geri dön</button></div>
       </div>
@@ -582,7 +582,7 @@ async function doRegister() {
 async function verifyOTP() {
   const email = document.getElementById('reg-email').value.trim();
   const token = document.getElementById('reg-otp').value.trim();
-  if (token.length < 6) return showMsg('6 haneli kodu gir!', 'error');
+  if (token.length < 8) return showMsg('6 haneli kodu gir!', 'error');
   const btn = document.querySelector('#reg-step2 .auth-submit');
   btn.disabled = true; btn.textContent = 'Doğrulanıyor...';
   const { error } = await supa.auth.verifyOtp({ email, token, type: 'signup' });
