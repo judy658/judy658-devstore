@@ -134,6 +134,33 @@
     .ss-item img:hover { transform: scale(1.03); }
     @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 
+    /* AUTH MODAL */
+    .auth-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 500; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
+    .auth-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
+    .auth-box { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 40px; width: 100%; max-width: 420px; margin: 20px; }
+    .auth-logo { text-align: center; font-size: 2.5rem; margin-bottom: 8px; }
+    .auth-title { font-family: "Syne", sans-serif; font-size: 1.5rem; font-weight: 800; text-align: center; margin-bottom: 6px; }
+    .auth-sub { color: var(--muted); font-size: 0.85rem; text-align: center; margin-bottom: 28px; }
+    .auth-tabs { display: flex; background: var(--bg); border-radius: 12px; padding: 4px; margin-bottom: 24px; }
+    .auth-tab { flex: 1; padding: 8px; border: none; background: transparent; color: var(--muted); font-family: "DM Sans", sans-serif; font-size: 0.88rem; font-weight: 500; cursor: pointer; border-radius: 10px; transition: all 0.2s; }
+    .auth-tab.active { background: var(--surface2); color: var(--text); }
+    .auth-field { margin-bottom: 16px; }
+    .auth-field label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+    .auth-field input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: "DM Sans", sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+    .auth-field input:focus { border-color: var(--accent); }
+    .auth-submit { width: 100%; background: linear-gradient(135deg, var(--accent), #9b7eff); color: #fff; border: none; border-radius: 12px; padding: 13px; font-family: "DM Sans", sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 4px; }
+    .auth-submit:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(124,92,252,0.4); }
+    .auth-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .auth-msg { text-align: center; font-size: 0.82rem; margin-top: 14px; padding: 10px; border-radius: 8px; display: none; }
+    .auth-msg.success { background: rgba(61,220,151,0.1); color: var(--green); display: block; }
+    .auth-msg.error { background: rgba(252,92,125,0.1); color: var(--accent2); display: block; }
+
+    /* KULLANICI BUTONU */
+    .user-btn { display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; font-family: "DM Sans", sans-serif; font-size: 0.82rem; cursor: pointer; color: var(--text); transition: all 0.2s; }
+    .user-btn:hover { border-color: var(--accent); }
+    .user-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
     @keyframes fadeDown { from { opacity:0; transform:translateY(-14px); } to { opacity:1; transform:translateY(0); } }
     @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
 
@@ -143,6 +170,7 @@
       .detail-badges { justify-content: center; }
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <div class="glow1"></div>
@@ -151,7 +179,10 @@
 <nav>
   <div class="nav-inner">
     <div class="logo" onclick="showHome()">⬡ DevStore</div>
-    <div class="nav-badge">API: <span>Aktif</span></div>
+    <div id="nav-user-area">
+      <button class="user-btn" onclick="openAuth()" id="login-btn">🔑 Giriş Yap</button>
+      <button class="user-btn" onclick="signOut()" id="user-info" style="display:none"><span class="user-dot"></span><span id="user-email-short"></span></button>
+    </div>
   </div>
 </nav>
 
@@ -404,6 +435,31 @@ function copyUrl() {
 
 loadApps();
 </script>
+<!-- AUTH MODAL -->
+<div class="auth-overlay" id="auth-overlay" onclick="handleOverlayClick(event)">
+  <div class="auth-box">
+    <div class="auth-logo">⬡</div>
+    <div class="auth-title">DevStore</div>
+    <div class="auth-sub">Hesabına giriş yap veya yeni hesap oluştur</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchTab('login')">Giriş Yap</button>
+      <button class="auth-tab" onclick="switchTab('register')">Kayıt Ol</button>
+    </div>
+    <div id="auth-login">
+      <div class="auth-field"><label>E-posta</label><input type="email" id="login-email" placeholder="ornek@email.com"/></div>
+      <div class="auth-field"><label>Şifre</label><input type="password" id="login-pass" placeholder="••••••••"/></div>
+      <button class="auth-submit" onclick="doLogin()">Giriş Yap</button>
+    </div>
+    <div id="auth-register" style="display:none">
+      <div class="auth-field"><label>E-posta</label><input type="email" id="reg-email" placeholder="ornek@email.com"/></div>
+      <div class="auth-field"><label>Şifre</label><input type="password" id="reg-pass" placeholder="En az 6 karakter"/></div>
+      <div class="auth-field"><label>Şifre Tekrar</label><input type="password" id="reg-pass2" placeholder="••••••••"/></div>
+      <button class="auth-submit" onclick="doRegister()">Kayıt Ol</button>
+    </div>
+    <div class="auth-msg" id="auth-msg"></div>
+  </div>
+</div>
+
 <!-- Lightbox -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <span class="lightbox-close" onclick="closeLightbox()">✕</span>
@@ -421,6 +477,93 @@ function closeLightbox() {
   document.body.style.overflow = '';
 }
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+</script>
+<script>
+// ── SUPABASE ──
+const SUPA_URL = "https://jnuckqaiutmkiquptvzu.supabase.co";
+const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpudWNrcWFpdXRta2lxdXB0dnp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDgzMTAsImV4cCI6MjA4ODk4NDMxMH0.sP_FoTrYOFWiIS7PdaFYtR1JbP5vGf_KLgc_jh7zhZY";
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+// Oturum kontrolü
+async function checkSession() {
+  const { data: { session } } = await supa.auth.getSession();
+  if (session) showUserLoggedIn(session.user.email);
+  else showUserLoggedOut();
+}
+
+function showUserLoggedIn(email) {
+  document.getElementById('login-btn').style.display = 'none';
+  const info = document.getElementById('user-info');
+  info.style.display = 'flex';
+  const short = email.length > 18 ? email.substring(0, 15) + '...' : email;
+  document.getElementById('user-email-short').textContent = short;
+}
+
+function showUserLoggedOut() {
+  document.getElementById('login-btn').style.display = 'flex';
+  document.getElementById('user-info').style.display = 'none';
+}
+
+// Auth modal
+function openAuth() {
+  document.getElementById('auth-overlay').classList.add('open');
+}
+function closeAuth() {
+  document.getElementById('auth-overlay').classList.remove('open');
+  document.getElementById('auth-msg').className = 'auth-msg';
+  document.getElementById('auth-msg').textContent = '';
+}
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('auth-overlay')) closeAuth();
+}
+function switchTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', (tab==='login'&&i===0)||(tab==='register'&&i===1)));
+  document.getElementById('auth-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('auth-register').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('auth-msg').className = 'auth-msg';
+}
+
+function showMsg(msg, type) {
+  const el = document.getElementById('auth-msg');
+  el.textContent = msg;
+  el.className = 'auth-msg ' + type;
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  if (!email || !pass) return showMsg('E-posta ve şifre gir!', 'error');
+  const btn = document.querySelector('#auth-login .auth-submit');
+  btn.disabled = true; btn.textContent = 'Giriş yapılıyor...';
+  const { error } = await supa.auth.signInWithPassword({ email, password: pass });
+  btn.disabled = false; btn.textContent = 'Giriş Yap';
+  if (error) return showMsg('Hata: ' + error.message, 'error');
+  showMsg('Giriş başarılı! ✓', 'success');
+  showUserLoggedIn(email);
+  setTimeout(closeAuth, 1200);
+}
+
+async function doRegister() {
+  const email = document.getElementById('reg-email').value.trim();
+  const pass = document.getElementById('reg-pass').value;
+  const pass2 = document.getElementById('reg-pass2').value;
+  if (!email || !pass) return showMsg('Tüm alanları doldur!', 'error');
+  if (pass !== pass2) return showMsg('Şifreler eşleşmiyor!', 'error');
+  if (pass.length < 6) return showMsg('Şifre en az 6 karakter olmalı!', 'error');
+  const btn = document.querySelector('#auth-register .auth-submit');
+  btn.disabled = true; btn.textContent = 'Kayıt olunuyor...';
+  const { error } = await supa.auth.signUp({ email, password: pass });
+  btn.disabled = false; btn.textContent = 'Kayıt Ol';
+  if (error) return showMsg('Hata: ' + error.message, 'error');
+  showMsg('Kayıt başarılı! E-postanı doğrula ✓', 'success');
+}
+
+async function signOut() {
+  await supa.auth.signOut();
+  showUserLoggedOut();
+}
+
+checkSession();
 </script>
 </body>
 </html>
