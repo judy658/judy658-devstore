@@ -744,13 +744,12 @@ async function loadComments(appId) {
   const avgEl = document.getElementById('d-avg-rating');
   if (avgEl) avgEl.textContent = avg ? '★ ' + avg : '';
 
+  const isAdmin = currentUserEmail === ADMIN_EMAIL;
   list.innerHTML = data.map(c => {
     const stars = '★'.repeat(c.rating || 0) + '☆'.repeat(5 - (c.rating || 0));
     const date = new Date(c.created_at).toLocaleDateString('tr-TR');
     const emailShort = maskEmail(c.email);
     const isOwn = currentUserId && c.user_id === currentUserId;
-    const { data: { session: adminSession } } = await supa.auth.getSession();
-    const isAdmin = adminSession && adminSession.user.email === ADMIN_EMAIL;
     const replyHtml = c.reply ? `
       <div class="comment-reply">
         <div class="comment-reply-header">👨‍💻 Geliştirici Yanıtı</div>
