@@ -124,6 +124,16 @@
 
     footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; color: var(--muted); font-size: 0.8rem; }
 
+    /* Lightbox */
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9999; align-items: center; justify-content: center; cursor: zoom-out; }
+    .lightbox.open { display: flex; animation: fadeIn 0.2s ease; }
+    .lightbox img { max-width: 92vw; max-height: 92vh; border-radius: 12px; box-shadow: 0 30px 80px rgba(0,0,0,0.8); }
+    .lightbox-close { position: absolute; top: 20px; right: 28px; color: #fff; font-size: 2rem; cursor: pointer; line-height: 1; opacity: 0.7; }
+    .lightbox-close:hover { opacity: 1; }
+    .ss-item img { cursor: zoom-in; transition: transform 0.2s; }
+    .ss-item img:hover { transform: scale(1.03); }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
     @keyframes fadeDown { from { opacity:0; transform:translateY(-14px); } to { opacity:1; transform:translateY(0); } }
     @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
 
@@ -347,7 +357,7 @@ function showDetail(id) {
   const screenshots = extra.screenshots || [];
   const ssEl = document.getElementById('d-screenshots');
   if (screenshots.length) {
-    ssEl.innerHTML = screenshots.map(url => `<div class="ss-item"><img src="${url}" alt=""/></div>`).join('');
+    ssEl.innerHTML = screenshots.map(url => `<div class="ss-item"><img src="${url}" alt="" onclick="openLightbox('${url}')"/></div>`).join('');
   } else {
     ssEl.innerHTML = ['📱','📱','📱'].map(e => `<div class="ss-item">${e}<span style="color:var(--muted);font-size:0.75rem">Yakında</span></div>`).join('');
   }
@@ -393,6 +403,24 @@ function copyUrl() {
 }
 
 loadApps();
+</script>
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <span class="lightbox-close" onclick="closeLightbox()">✕</span>
+  <img id="lightbox-img" src="" alt=""/>
+</div>
+
+<script>
+function openLightbox(url) {
+  document.getElementById('lightbox-img').src = url;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
 </script>
 </body>
 </html>
