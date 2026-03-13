@@ -752,7 +752,7 @@ async function loadComments(appId) {
     const isOwn = currentUserId && c.user_id === currentUserId;
     const replyHtml = c.reply ? `
       <div class="comment-reply">
-        <div class="comment-reply-header">👨‍💻 Geliştirici Yanıtı</div>
+        <div class="comment-reply-header">👨‍💻 Geliştirici Yanıtı ${isAdmin ? `<button onclick="deleteReply('${c.id}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.72rem;margin-left:8px;">🗑 Yanıtı Sil</button>` : ''}</div>
         <div class="comment-reply-text">${c.reply}</div>
       </div>` : '';
     const adminReplyBtn = isAdmin && !c.reply ? `
@@ -829,6 +829,12 @@ async function submitComment() {
   document.getElementById('comment-char').textContent = '0/500';
   selectedRating = 0;
   document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+  loadComments(currentAppId);
+}
+
+async function deleteReply(id) {
+  if (!confirm('Yanıtı silmek istediğine emin misin?')) return;
+  await supa.from('comments').update({ reply: null, reply_at: null }).eq('id', id);
   loadComments(currentAppId);
 }
 
