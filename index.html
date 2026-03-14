@@ -430,7 +430,7 @@
 </div>
   <div class="detail-nav">
     <div class="detail-nav-inner">
-      <button class="back-btn" onclick="typeof showHome==='function'&&showHome()">← Geri</button>
+      <button class="back-btn" onclick="showHome()">← Geri</button>
       <span class="detail-nav-title">Profilim</span>
     </div>
   </div>
@@ -706,9 +706,9 @@ function showDetail(id) {
 }
 
 function showHome() {
-  document.getElementById('detail-page')?.classList.remove('active');
-  document.getElementById('profile-page')?.classList.remove('active');
-  document.getElementById('admin-page')?.classList.remove('active');
+  document.getElementById('detail-page').classList.remove('active');
+  document.getElementById('profile-page').classList.remove('active');
+  document.getElementById('admin-page').classList.remove('active');
   document.getElementById('home-page').style.display = 'block';
 }
 
