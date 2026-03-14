@@ -356,7 +356,7 @@
   </div></div>
   <div class="admin-wrap">
     <div class="admin-title">Admin <span>Paneli</span></div>
-    <div style="color:var(--muted);font-size:0.85rem;margin-top:4px;margin-bottom:28px" id="admin-email-display"></div>
+    <div style="color:var(--muted);font-size:0.85rem;margin-top:4px;margin-bottom:28px">geceninhakimistudio@gmail.com</div>
     <div class="admin-stats-row">
       <div class="admin-stat"><span class="admin-stat-val" id="a-total-users">—</span><div class="admin-stat-label">Toplam Kullanıcı</div></div>
       <div class="admin-stat"><span class="admin-stat-val" id="a-online-users" style="color:var(--green)">—</span><div class="admin-stat-label">Şu An Online</div></div>
@@ -466,7 +466,7 @@
   <img id="lightbox-img" src="" alt=""/>
 </div>
 
-<script data-cfasync="false">
+<script>
 // ════════════════════════════════════════════════
 //  SUPABASE & SABİTLER — tek yerde
 // ════════════════════════════════════════════════
@@ -539,7 +539,6 @@ async function showProfile() {
 async function showAdminPanel() {
   const { data: { session } } = await supa.auth.getSession();
   if (!session || session.user.email !== ADMIN_EMAIL) return;
-  document.getElementById('admin-email-display').textContent = ADMIN_EMAIL;
   document.getElementById('home-page').style.display = 'none';
   document.getElementById('detail-page').classList.remove('active');
   document.getElementById('profile-page').classList.remove('active');
@@ -1029,4 +1028,11 @@ function copyUrl() {
   });
 }
 
-// ═══════════════════════════════════════ 
+// ════════════════════════════════════════════════
+//  BAŞLAT
+// ════════════════════════════════════════════════
+loadApps();
+checkSession();
+</script>
+</body>
+</html>
