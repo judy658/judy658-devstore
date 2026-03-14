@@ -351,16 +351,9 @@
 
     <div class="profile-card">
       <h3>🔒 Şifre Değiştir</h3>
-      <div class="profile-field">
-        <label>Yeni Şifre</label>
-        <input type="password" id="profile-new-pass" placeholder="En az 6 karakter"/>
-      </div>
-      <div class="profile-field">
-        <label>Yeni Şifre Tekrar</label>
-        <input type="password" id="profile-new-pass2" placeholder="••••••••"/>
-      </div>
-      <div style="display:flex;align-items:center;margin-top:4px">
-        <button class="profile-save-btn" onclick="changePassword()" id="pass-btn">Şifreyi Güncelle</button>
+      <p style="color:var(--muted);font-size:0.86rem;margin-bottom:16px">E-posta adresine bir şifre sıfırlama bağlantısı gönderilecek. Bağlantıya tıklayarak yeni şifreni belirleyebilirsin.</p>
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="profile-save-btn" onclick="sendPasswordReset()" id="pass-reset-btn">📧 Sıfırlama Maili Gönder</button>
         <span class="profile-msg" id="pass-msg"></span>
       </div>
     </div>
@@ -861,11 +854,11 @@ async function showProfile() {
       'Üyelik: ' + d.toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' });
   }
 
-  document.getElementById('profile-new-pass').value = '';
-  document.getElementById('profile-new-pass2').value = '';
   const msg = document.getElementById('pass-msg');
   msg.className = 'profile-msg';
   msg.textContent = '';
+  const btn = document.getElementById('pass-reset-btn');
+  if (btn) { btn.disabled = false; btn.textContent = '📧 Sıfırlama Maili Gönder'; }
 
   document.getElementById('home-page').style.display = 'none';
   document.getElementById('detail-page').classList.remove('active');
@@ -873,39 +866,32 @@ async function showProfile() {
   document.getElementById('profile-page').scrollTop = 0;
 }
 
-async function changePassword() {
-  const pass = document.getElementById('profile-new-pass').value;
-  const pass2 = document.getElementById('profile-new-pass2').value;
-  const btn = document.getElementById('pass-btn');
+async function sendPasswordReset() {
+  const { data: { session } } = await supa.auth.getSession();
+  if (!session) { openAuth(); return; }
+
+  const btn = document.getElementById('pass-reset-btn');
   const msg = document.getElementById('pass-msg');
 
   msg.className = 'profile-msg';
   msg.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'Gönderiliyor...';
 
-  if (!pass || pass.length < 6) {
-    msg.textContent = 'Şifre en az 6 karakter olmalı!';
-    msg.className = 'profile-msg error';
-    return;
-  }
-  if (pass !== pass2) {
-    msg.textContent = 'Şifreler eşleşmiyor!';
-    msg.className = 'profile-msg error';
-    return;
-  }
+  const { error } = await supa.auth.resetPasswordForEmail(session.user.email, {
+    redirectTo: window.location.href
+  });
 
-  btn.disabled = true; btn.textContent = 'Güncelleniyor...';
-  const { error } = await supa.auth.updateUser({ password: pass });
-  btn.disabled = false; btn.textContent = 'Şifreyi Güncelle';
+  btn.disabled = false;
+  btn.textContent = '📧 Sıfırlama Maili Gönder';
 
   if (error) {
     msg.textContent = 'Hata: ' + error.message;
     msg.className = 'profile-msg error';
   } else {
-    msg.textContent = 'Şifre güncellendi ✓';
+    msg.textContent = 'Mail gönderildi! ✓ Gelen kutunu kontrol et.';
     msg.className = 'profile-msg success';
-    document.getElementById('profile-new-pass').value = '';
-    document.getElementById('profile-new-pass2').value = '';
-    setTimeout(() => { msg.className = 'profile-msg'; msg.textContent = ''; }, 3000);
+    setTimeout(() => { msg.className = 'profile-msg'; msg.textContent = ''; }, 5000);
   }
 }
 
@@ -914,6 +900,9 @@ supa.auth.onAuthStateChange((event, session) => {
     showUserLoggedIn(session.user.email);
     closeAuth();
     checkContactAuth();
+  } else if (event === 'PASSWORD_RECOVERY') {
+    // Kullanıcı mail linkinden döndü — yeni şifre giriş paneli göster
+    _showNewPasswordPanel();
   } else if (event === 'SIGNED_OUT') {
     showUserLoggedOut();
     checkContactAuth();
@@ -921,6 +910,59 @@ supa.auth.onAuthStateChange((event, session) => {
 });
 
 checkSession();
+
+function _showNewPasswordPanel() {
+  // Zaten açık mı kontrol et
+  if (document.getElementById('new-pass-overlay')) return;
+
+  const overlay = document.createElement('div');
+  overlay.id = 'new-pass-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:600;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)';
+
+  overlay.innerHTML = `
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px;width:100%;max-width:420px;margin:20px">
+      <div style="text-align:center;font-size:2rem;margin-bottom:8px">🔒</div>
+      <div style="font-family:Syne,sans-serif;font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:6px">Yeni Şifre</div>
+      <div style="color:var(--muted);font-size:0.85rem;text-align:center;margin-bottom:24px">Hesabın için yeni bir şifre belirle</div>
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:0.8rem;color:var(--muted);margin-bottom:6px;font-weight:500">Yeni Şifre</label>
+        <input type="password" id="new-pass-input" placeholder="En az 6 karakter" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box"/>
+      </div>
+      <div style="margin-bottom:20px">
+        <label style="display:block;font-size:0.8rem;color:var(--muted);margin-bottom:6px;font-weight:500">Şifre Tekrar</label>
+        <input type="password" id="new-pass-input2" placeholder="••••••••" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box"/>
+      </div>
+      <div id="new-pass-msg" style="text-align:center;font-size:0.82rem;margin-bottom:12px;min-height:20px"></div>
+      <button id="new-pass-btn" onclick="_submitNewPassword()" style="width:100%;background:linear-gradient(135deg,var(--accent),#9b7eff);color:#fff;border:none;border-radius:12px;padding:13px;font-family:DM Sans,sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer">Şifreyi Kaydet</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+async function _submitNewPassword() {
+  const pass = document.getElementById('new-pass-input').value;
+  const pass2 = document.getElementById('new-pass-input2').value;
+  const btn = document.getElementById('new-pass-btn');
+  const msg = document.getElementById('new-pass-msg');
+
+  msg.style.color = 'var(--accent2)';
+  if (!pass || pass.length < 6) { msg.textContent = 'Şifre en az 6 karakter olmalı!'; return; }
+  if (pass !== pass2) { msg.textContent = 'Şifreler eşleşmiyor!'; return; }
+
+  btn.disabled = true; btn.textContent = 'Kaydediliyor...';
+  const { error } = await supa.auth.updateUser({ password: pass });
+  btn.disabled = false; btn.textContent = 'Şifreyi Kaydet';
+
+  if (error) {
+    msg.textContent = 'Hata: ' + error.message;
+  } else {
+    msg.style.color = 'var(--green)';
+    msg.textContent = 'Şifre güncellendi ✓';
+    setTimeout(() => {
+      document.getElementById('new-pass-overlay')?.remove();
+    }, 1500);
+  }
+}
 </script>
 
 <script>
