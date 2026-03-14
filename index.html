@@ -266,6 +266,73 @@
       <h1>Tüm oyunların &<br/><em>uygulamalar</em> burada</h1>
       <p>Her uygulama otomatik güncelleme sistemiyle korunur. Yeni sürüm yayınlandığında kullanıcılar anında haberdar olur.</p>
     </div>
+
+    <!-- ═══ HAFTANIN ŞARKISI PANOSU ═══ -->
+    <style>
+      .weekly-banner { margin: 0 auto 44px; position: relative; z-index: 1; }
+      .weekly-inner { position: relative; border-radius: 24px; overflow: hidden; border: 1px solid rgba(124,92,252,0.25); background: var(--surface); cursor: pointer; }
+      .weekly-inner::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 50% 100%, rgba(124,92,252,0.10) 0%, transparent 70%), radial-gradient(ellipse 40% 40% at 80% 20%, rgba(252,92,125,0.06) 0%, transparent 60%); pointer-events: none; z-index: 0; }
+      .weekly-video-wrap { position: relative; width: 100%; aspect-ratio: 16 / 6; background: #000; overflow: hidden; }
+      .weekly-video-wrap video { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.72; transition: opacity 0.4s ease; }
+      .weekly-inner:hover .weekly-video-wrap video { opacity: 0.88; }
+      .weekly-badge { position: absolute; top: 16px; right: 18px; background: rgba(10,10,15,0.75); backdrop-filter: blur(10px); border: 1px solid rgba(124,92,252,0.4); border-radius: 20px; padding: 5px 14px; font-family: 'DM Sans', sans-serif; font-size: 0.72rem; font-weight: 600; color: #c4a6ff; letter-spacing: 0.08em; text-transform: uppercase; z-index: 2; display: flex; align-items: center; gap: 6px; }
+      .weekly-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #7c5cfc; box-shadow: 0 0 8px rgba(124,92,252,0.9); animation: wpulse 2s infinite; }
+      @keyframes wpulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+      .weekly-info { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; padding: 16px 22px 18px; gap: 16px; }
+      .weekly-left { display: flex; align-items: center; gap: 14px; }
+      .weekly-icon { width: 46px; height: 46px; border-radius: 12px; background: linear-gradient(135deg, rgba(124,92,252,0.25), rgba(252,92,125,0.15)); border: 1px solid rgba(124,92,252,0.3); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; transition: transform 0.3s; }
+      .weekly-inner:hover .weekly-icon { transform: rotate(15deg); }
+      .weekly-label { font-family: 'DM Sans', sans-serif; font-size: 0.72rem; color: var(--muted); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 3px; }
+      .weekly-song { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--text); line-height: 1.2; }
+      .weekly-artist { font-family: 'DM Sans', sans-serif; font-size: 0.82rem; color: #9b7eff; margin-top: 2px; }
+      .weekly-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+      .weekly-play-btn { display: flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #7c5cfc, #9b7eff); color: #fff; border: none; border-radius: 10px; padding: 10px 18px; font-family: 'DM Sans', sans-serif; font-size: 0.83rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+      .weekly-play-btn:hover { transform: scale(1.04); box-shadow: 0 8px 24px rgba(124,92,252,0.45); }
+      .weekly-mute-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; }
+      .weekly-mute-btn:hover { border-color: #7c5cfc; color: var(--text); }
+      @media (max-width: 580px) { .weekly-info { flex-direction: column; align-items: flex-start; } .weekly-right { width: 100%; justify-content: flex-end; } .weekly-video-wrap { aspect-ratio: 16 / 7; } }
+    </style>
+
+    <div class="weekly-banner">
+      <div class="weekly-inner" id="weekly-banner-box">
+        <div class="weekly-video-wrap">
+          <video id="weekly-video" src="https://raw.githubusercontent.com/judy658/judy658-devstore/main/passobemsalto.mp4" autoplay muted loop playsinline preload="auto"></video>
+          <div class="weekly-badge">Haftanın Şarkısı</div>
+        </div>
+        <div class="weekly-info">
+          <div class="weekly-left">
+            <div class="weekly-icon">🎵</div>
+            <div>
+              <div class="weekly-label">Bu hafta en çok dinlenen</div>
+              <div class="weekly-song" id="weekly-song-name">Passo</div>
+              <div class="weekly-artist" id="weekly-artist-name">ATLXS</div>
+            </div>
+          </div>
+          <div class="weekly-right">
+            <button class="weekly-mute-btn" id="weekly-mute-btn" onclick="toggleWeeklyMute()">🔇 Ses</button>
+            <button class="weekly-play-btn" onclick="if(typeof showDetail==='function') showDetail('sportify')">🎵 Sportify'da Dinle</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let weeklyMuted = true;
+      function toggleWeeklyMute() {
+        const v = document.getElementById('weekly-video');
+        const btn = document.getElementById('weekly-mute-btn');
+        weeklyMuted = !weeklyMuted;
+        v.muted = weeklyMuted;
+        btn.textContent = weeklyMuted ? '🔇 Ses' : '🔊 Ses';
+      }
+      document.getElementById('weekly-banner-box').addEventListener('click', function(e) {
+        if (e.target.tagName === 'BUTTON') return;
+        const v = document.getElementById('weekly-video');
+        v.paused ? v.play() : v.pause();
+      });
+    </script>
+    <!-- ═══ HAFTANIN ŞARKISI PANOSU BİTİŞİ ═══ -->
+
     <div class="filters">
       <button class="filter-btn active" onclick="filterApps('all',this)">Tümü</button>
       <button class="filter-btn" onclick="filterApps('game',this)">🎮 Oyunlar</button>
