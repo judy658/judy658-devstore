@@ -2,13 +2,19 @@
   "apps": {
     "sportify": {
       "name": "Sportify",
-      "version": "12",
-      "min_version": "12",
+      "version": "13",
+      "min_version": "13",
       "force_update": true,
-      "download_url": "https://github.com/judy658/judy658-devstore/releases/download/v1.0/spotify_v12.apk",
+      "download_url": "https://github.com/judy658/judy658-devstore/releases/download/v13/Sportify.V.13.Stats.apk",
       "icon": "🎵",
       "category": "app",
-      "changelog": "Yeni şarkılar eklendi, 6 dakika üzeri şarkılar kaldırıldı, performans iyileştirmeleri yapıldı."
+      "changelog": "key sistemi kaldırıldı, oturum açılarak sportify'a girilebilir. En popüler şarkıları bulma sistemi geliştirildi.",
+      "history": [
+        { "version": "V13", "note": "key sistemi kaldırıldı, oturum açılarak sportify'a girilebilir. En popüler şarkıları bulma sistemi geliştirildi." },
+        { "version": "V12", "note": "Yeni şarkılar eklendi (HITLER, Bir Baskedir). 6 dakika üzeri 5 şarkı kaldırıldı. Performans iyileştirmeleri yapıldı." },
+        { "version": "V11", "note": "Şarkı listesi güncellendi, yeni özellikler eklendi." },
+        { "version": "V10", "note": "İlk stabil sürüm yayınlandı." }
+      ]
     }
   }
 }
