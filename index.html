@@ -708,6 +708,7 @@ function showDetail(id) {
 function showHome() {
   document.getElementById('detail-page').classList.remove('active');
   document.getElementById('profile-page').classList.remove('active');
+  document.getElementById('admin-page').classList.remove('active');
   document.getElementById('home-page').style.display = 'block';
 }
 
@@ -728,60 +729,6 @@ function copyUrl() {
 }
 
 loadApps();
-checkContactAuth();
-
-async function sendContact() {
-  const { data: { session } } = await supa.auth.getSession();
-  if (!session) { openAuth(); return; }
-
-  const name = document.getElementById('c-name').value.trim();
-  const subject = document.getElementById('c-subject').value;
-  const message = document.getElementById('c-message').value.trim();
-  const email = session.user.email;
-
-  if (!name || !message) { alert('Lütfen ad soyad ve mesaj alanlarını doldur!'); return; }
-
-  const btn = document.getElementById('contact-btn');
-  btn.disabled = true; btn.textContent = 'Gönderiliyor...';
-
-  try {
-    // Hem Formspree hem Supabase'e kaydet
-    const [res] = await Promise.all([
-      fetch('https://formspree.io/f/xnjgjwqd', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ name, email, subject, message })
-      }),
-      supa.from('contact_messages').insert({
-        name, email, subject: subject || 'general',
-        type: subject || 'general',
-        message,
-        created_at: new Date().toISOString()
-      })
-    ]);
-    if (res.ok) {
-      document.getElementById('contact-success').style.display = 'block';
-      document.getElementById('c-name').value = '';
-      document.getElementById('c-message').value = '';
-      btn.textContent = '✅ Gönderildi';
-    } else {
-      alert('Bir hata oluştu, tekrar dene!');
-      btn.disabled = false; btn.textContent = '📨 Gönder';
-    }
-  } catch(e) {
-    alert('Bağlantı hatası!');
-    btn.disabled = false; btn.textContent = '📨 Gönder';
-  }
-}
-
-async function checkContactAuth() {
-  const { data: { session } } = await supa.auth.getSession();
-  const note = document.getElementById('contact-login-note');
-  const form = document.getElementById('contact-form-inner');
-  if (!note || !form) return;
-  if (session) { note.style.display = 'none'; form.style.display = 'block'; }
-  else { note.style.display = 'block'; form.style.display = 'none'; }
-}
 </script>
 
 <!-- AUTH MODAL -->
@@ -1208,6 +1155,59 @@ supa.auth.onAuthStateChange((event, session) => {
 });
 
 checkSession();
+checkContactAuth();
+
+async function checkContactAuth() {
+  const { data: { session } } = await supa.auth.getSession();
+  const note = document.getElementById('contact-login-note');
+  const form = document.getElementById('contact-form-inner');
+  if (!note || !form) return;
+  if (session) { note.style.display = 'none'; form.style.display = 'block'; }
+  else { note.style.display = 'block'; form.style.display = 'none'; }
+}
+
+async function sendContact() {
+  const { data: { session } } = await supa.auth.getSession();
+  if (!session) { openAuth(); return; }
+
+  const name = document.getElementById('c-name').value.trim();
+  const subject = document.getElementById('c-subject').value;
+  const message = document.getElementById('c-message').value.trim();
+  const email = session.user.email;
+
+  if (!name || !message) { alert('Lütfen ad soyad ve mesaj alanlarını doldur!'); return; }
+
+  const btn = document.getElementById('contact-btn');
+  btn.disabled = true; btn.textContent = 'Gönderiliyor...';
+
+  try {
+    const [res] = await Promise.all([
+      fetch('https://formspree.io/f/xnjgjwqd', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ name, email, subject, message })
+      }),
+      supa.from('contact_messages').insert({
+        name, email, subject: subject || 'general',
+        type: subject || 'general',
+        message,
+        created_at: new Date().toISOString()
+      })
+    ]);
+    if (res.ok) {
+      document.getElementById('contact-success').style.display = 'block';
+      document.getElementById('c-name').value = '';
+      document.getElementById('c-message').value = '';
+      btn.textContent = '✅ Gönderildi';
+    } else {
+      alert('Bir hata oluştu, tekrar dene!');
+      btn.disabled = false; btn.textContent = '📨 Gönder';
+    }
+  } catch(e) {
+    alert('Bağlantı hatası!');
+    btn.disabled = false; btn.textContent = '📨 Gönder';
+  }
+}
 
 function _showNewPasswordPanel() {
   // Zaten açık mı kontrol et
@@ -1265,7 +1265,6 @@ async function _submitNewPassword() {
 
 <script>
 // ── YORUMLAR ──
-const ADMIN_EMAIL = 'geceninhakimistudio@gmail.com';
 function maskEmail(email) {
   const user = email.split('@')[0];
   if (user.length <= 2) return user[0] + '*****';
