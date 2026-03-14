@@ -283,31 +283,35 @@
     <div class="contact-box">
       <h3>📬 İletişim</h3>
       <p>Öneri, geri bildirim veya hata bildirimi için aşağıdaki formu doldur!</p>
-      <div class="contact-grid">
-        <div class="contact-field">
-          <label>Adın</label>
-          <input type="text" id="c-name" placeholder="Adın Soyadın"/>
-        </div>
-        <div class="contact-field">
-          <label>E-posta</label>
-          <input type="email" id="c-email" placeholder="ornek@email.com"/>
-        </div>
-        <div class="contact-field full">
-          <label>Konu</label>
-          <select id="c-subject">
-            <option value="Öneri">💡 Öneri</option>
-            <option value="Hata Bildirimi">🐛 Hata Bildirimi</option>
-            <option value="Yeni Şarkı İsteği">🎵 Yeni Şarkı İsteği</option>
-            <option value="Genel">💬 Genel</option>
-          </select>
-        </div>
-        <div class="contact-field full">
-          <label>Mesaj</label>
-          <textarea id="c-message" placeholder="Mesajını yaz..."></textarea>
-        </div>
+      <!-- Giriş yapılmamışsa -->
+      <div id="contact-login-note" style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px 20px;text-align:center;color:var(--muted);font-size:0.88rem;display:none">
+        Mesaj göndermek için <button onclick="openAuth()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.88rem;font-weight:600">giriş yap</button> veya hesap oluştur.
       </div>
-      <button class="contact-send-btn" onclick="sendContact()" id="contact-btn">📨 Gönder</button>
-      <div class="contact-success" id="contact-success">✅ Mesajın iletildi! En kısa sürede dönüş yapacağım.</div>
+
+      <!-- Form -->
+      <div id="contact-form-inner">
+        <div class="contact-grid">
+          <div class="contact-field full">
+            <label>Ad Soyad</label>
+            <input type="text" id="c-name" placeholder="Adın Soyadın"/>
+          </div>
+          <div class="contact-field full">
+            <label>Konu</label>
+            <select id="c-subject">
+              <option value="Öneri">💡 Öneri</option>
+              <option value="Hata Bildirimi">🐛 Hata Bildirimi</option>
+              <option value="Yeni Şarkı İsteği">🎵 Yeni Şarkı İsteği</option>
+              <option value="Genel">💬 Genel</option>
+            </select>
+          </div>
+          <div class="contact-field full">
+            <label>Mesaj</label>
+            <textarea id="c-message" placeholder="Mesajını yaz..."></textarea>
+          </div>
+        </div>
+        <button class="contact-send-btn" onclick="sendContact()" id="contact-btn">📨 Gönder</button>
+        <div class="contact-success" id="contact-success">✅ Mesajın iletildi! En kısa sürede dönüş yapacağım.</div>
+      </div>
     </div>
 
   <footer>DevStore — Kişisel uygulama mağazası. Veriler <code>versions.json</code> dosyasından okunur.</footer>
@@ -585,15 +589,19 @@ function copyUrl() {
 }
 
 loadApps();
+checkContactAuth();
 
 async function sendContact() {
+  const { data: { session } } = await supa.auth.getSession();
+  if (!session) { openAuth(); return; }
+
   const name = document.getElementById('c-name').value.trim();
-  const email = document.getElementById('c-email').value.trim();
   const subject = document.getElementById('c-subject').value;
   const message = document.getElementById('c-message').value.trim();
+  const email = session.user.email;
 
-  if (!name || !email || !message) {
-    alert('Lütfen tüm alanları doldur!');
+  if (!name || !message) {
+    alert('Lütfen ad soyad ve mesaj alanlarını doldur!');
     return;
   }
 
@@ -611,7 +619,6 @@ async function sendContact() {
     if (res.ok) {
       document.getElementById('contact-success').style.display = 'block';
       document.getElementById('c-name').value = '';
-      document.getElementById('c-email').value = '';
       document.getElementById('c-message').value = '';
       btn.textContent = '✅ Gönderildi';
     } else {
@@ -623,6 +630,21 @@ async function sendContact() {
     alert('Bağlantı hatası!');
     btn.disabled = false;
     btn.textContent = '📨 Gönder';
+  }
+}
+
+// İletişim formunu oturum durumuna göre göster/gizle
+async function checkContactAuth() {
+  const { data: { session } } = await supa.auth.getSession();
+  const note = document.getElementById('contact-login-note');
+  const form = document.getElementById('contact-form-inner');
+  if (!note || !form) return;
+  if (session) {
+    note.style.display = 'none';
+    form.style.display = 'block';
+  } else {
+    note.style.display = 'block';
+    form.style.display = 'none';
   }
 }
 </script>
@@ -800,8 +822,10 @@ supa.auth.onAuthStateChange((event, session) => {
   if (event === 'SIGNED_IN' && session) {
     showUserLoggedIn(session.user.email);
     closeAuth();
+    checkContactAuth();
   } else if (event === 'SIGNED_OUT') {
     showUserLoggedOut();
+    checkContactAuth();
   }
 });
 
