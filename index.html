@@ -721,10 +721,12 @@ async function startPresence() {
   document.addEventListener('visibilitychange', () => { if (document.hidden) _setOffline(uid); else _pingPresence(uid, email); });
 }
 async function _pingPresence(uid, email) {
-  await supa.from('user_presence').upsert({ user_id: uid, email, last_seen: new Date().toISOString(), is_online: true, current_app: 'devstore' }, { onConflict: 'user_id' });
+  await supa.from('user_presence').upsert({ user_id: uid, email, last_seen: new Date().toISOString(), is_online: true, current_app: 'devstore' }, { onConflict: 'email' });
 }
 async function _setOffline(uid) {
-  await supa.from('user_presence').update({ is_online: false, last_seen: new Date().toISOString() }).eq('user_id', uid);
+  const { data: { session } } = await supa.auth.getSession();
+  if (!session) return;
+  await supa.from('user_presence').update({ is_online: false, last_seen: new Date().toISOString() }).eq('email', session.user.email);
 }
 function stopPresence() { if (_presenceTimer) { clearInterval(_presenceTimer); _presenceTimer = null; } }
 
