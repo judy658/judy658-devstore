@@ -356,7 +356,7 @@
   </div></div>
   <div class="admin-wrap">
     <div class="admin-title">Admin <span>Paneli</span></div>
-    <div style="color:var(--muted);font-size:0.85rem;margin-top:4px;margin-bottom:28px">geceninhakimistudio@gmail.com</div>
+    <div style="color:var(--muted);font-size:0.85rem;margin-top:4px;margin-bottom:28px"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2740424442494e494f464c4e4a4e545352434e4867404a464e4b0944484a">[email&#160;protected]</a></div>
     <div class="admin-stats-row">
       <div class="admin-stat"><span class="admin-stat-val" id="a-total-users">—</span><div class="admin-stat-label">Toplam Kullanıcı</div></div>
       <div class="admin-stat"><span class="admin-stat-val" id="a-online-users" style="color:var(--green)">—</span><div class="admin-stat-label">Şu An Online</div></div>
@@ -466,7 +466,7 @@
   <img id="lightbox-img" src="" alt=""/>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ════════════════════════════════════════════════
 //  SUPABASE & SABİTLER — tek yerde
 // ════════════════════════════════════════════════
@@ -721,7 +721,7 @@ async function startPresence() {
   document.addEventListener('visibilitychange', () => { if (document.hidden) _setOffline(uid); else _pingPresence(uid, email); });
 }
 async function _pingPresence(uid, email) {
-  await supa.from('user_presence').upsert({ user_id: uid, email, last_seen: new Date().toISOString(), is_online: true }, { onConflict: 'user_id' });
+  await supa.from('user_presence').upsert({ user_id: uid, email, last_seen: new Date().toISOString(), is_online: true, current_app: 'devstore' }, { onConflict: 'user_id' });
 }
 async function _setOffline(uid) {
   await supa.from('user_presence').update({ is_online: false, last_seen: new Date().toISOString() }).eq('user_id', uid);
@@ -787,7 +787,7 @@ async function loadAdminUsers() {
       <div class="user-avatar">${u.email[0].toUpperCase()}</div>
       <div class="user-info">
         <div class="user-email-text">${u.email}${u.email === ADMIN_EMAIL ? ' 👑' : ''}</div>
-        <div class="user-meta">${isOnline ? '🟢 Şu an aktif' : '⚫ Son görülme: ' + _timeAgo(u.last_seen)}</div>
+        <div class="user-meta">${isOnline ? '🟢 Şu an aktif' + (u.current_app ? ' · ' + (u.current_app === 'sportify' ? '🎵 Sportify' : '🌐 DevStore') : '') : '⚫ Son görülme: ' + _timeAgo(u.last_seen)}</div>
       </div>
       <div class="online-dot ${isOnline ? 'active' : ''}"></div>
       <span class="online-badge ${isOnline ? 'on' : 'off'}">${isOnline ? 'Online' : 'Offline'}</span>
@@ -1028,11 +1028,4 @@ function copyUrl() {
   });
 }
 
-// ════════════════════════════════════════════════
-//  BAŞLAT
-// ════════════════════════════════════════════════
-loadApps();
-checkSession();
-</script>
-</body>
-</html>
+// ═════════════════════════════════════════ 
