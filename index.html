@@ -780,11 +780,11 @@ async function loadAdminUsers() {
     return;
   }
   const now = Date.now();
-  const onlineCount = presence.filter(u => (now - new Date(u.last_seen).getTime()) / 1000 < 90 && u.is_online).length;
+  const onlineCount = presence.filter(u => (now - new Date(u.last_seen).getTime()) / 1000 < 60).length;
   document.getElementById('a-total-users').textContent = presence.length;
   document.getElementById('a-online-users').textContent = onlineCount;
   document.getElementById('user-list').innerHTML = presence.map(u => {
-    const isOnline = (now - new Date(u.last_seen).getTime()) / 1000 < 90 && u.is_online;
+    const isOnline = (now - new Date(u.last_seen).getTime()) / 1000 < 60;
     return `<div class="user-row ${isOnline ? 'online' : ''}">
       <div class="user-avatar">${u.email[0].toUpperCase()}</div>
       <div class="user-info">
