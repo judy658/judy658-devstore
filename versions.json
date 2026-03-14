@@ -3,7 +3,7 @@
     "sportify": {
       "name": "Sportify",
       "version": "14",
-      "min_version": "14",
+      "min_version": "13",
       "force_update": true,
       "download_url": "https://github.com/judy658/judy658-devstore/releases/download/v1.0/Sportify.V14.Appp.apk",
       "icon": "🎵",
