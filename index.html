@@ -84,7 +84,6 @@
 
     .detail-wrap { max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; position: relative; z-index: 1; }
 
-    /* Üst alan */
     .detail-top { display: flex; gap: 28px; align-items: flex-start; margin-bottom: 36px; }
     .detail-big-icon { width: 96px; height: 96px; background: linear-gradient(135deg, var(--surface2), var(--bg)); border: 1px solid var(--border); border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 3.2rem; flex-shrink: 0; }
     .detail-info { flex: 1; }
@@ -94,19 +93,16 @@
     .download-main-btn { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, var(--accent), #9b7eff); color: #fff; border: none; border-radius: 13px; padding: 13px 30px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.2s; }
     .download-main-btn:hover { transform: scale(1.04); box-shadow: 0 12px 32px rgba(124,92,252,0.45); }
 
-    /* Mini istatistikler */
     .detail-stats { display: flex; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 36px; }
     .detail-stat { flex: 1; background: var(--surface); padding: 14px 16px; text-align: center; }
     .detail-stat-val { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; display: block; }
     .detail-stat-label { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
 
-    /* Ekran görüntüleri */
     .ss-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px; }
     .screenshots-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 36px; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
     .ss-item { flex-shrink: 0; width: 190px; height: 337px; border-radius: 14px; border: 1px solid var(--border); overflow: hidden; background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 0.78rem; flex-direction: column; gap: 8px; }
     .ss-item img { width: 100%; height: 100%; object-fit: cover; }
 
-    /* Açıklama & changelog */
     .detail-section { margin-bottom: 32px; }
     .detail-section h3 { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 12px; }
     .desc-text { color: var(--muted); line-height: 1.8; font-size: 0.93rem; }
@@ -114,7 +110,6 @@
     .cl-ver { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--green); font-size: 0.87rem; margin-bottom: 5px; }
     .cl-text { color: var(--muted); font-size: 0.86rem; line-height: 1.6; }
 
-    /* API bölümü */
     .api-box { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 28px; margin-bottom: 48px; }
     .api-box h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
     .api-box p { color: var(--muted); font-size: 0.85rem; margin-bottom: 14px; }
@@ -125,7 +120,6 @@
 
     footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; color: var(--muted); font-size: 0.8rem; }
 
-    /* Lightbox */
     .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9999; align-items: center; justify-content: center; cursor: zoom-out; }
     .lightbox.open { display: flex; animation: fadeIn 0.2s ease; }
     .lightbox img { max-width: 92vw; max-height: 92vh; border-radius: 12px; box-shadow: 0 30px 80px rgba(0,0,0,0.8); }
@@ -135,7 +129,6 @@
     .ss-item img:hover { transform: scale(1.03); }
     @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 
-    /* AUTH MODAL */
     .auth-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 500; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
     .auth-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
     .auth-box { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 40px; width: 100%; max-width: 420px; margin: 20px; }
@@ -156,13 +149,11 @@
     .auth-msg.success { background: rgba(61,220,151,0.1); color: var(--green); display: block; }
     .auth-msg.error { background: rgba(252,92,125,0.1); color: var(--accent2); display: block; }
 
-    /* KULLANICI BUTONU */
     .user-btn { display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; font-family: "DM Sans", sans-serif; font-size: 0.82rem; cursor: pointer; color: var(--text); transition: all 0.2s; }
     .user-btn:hover { border-color: var(--accent); }
     .user-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
 
     @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-    /* YORUMLAR */
     .comments-section { margin-top: 36px; }
     .comments-section h3 { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 16px; }
     .comment-form { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 20px; }
@@ -188,7 +179,6 @@
     .comment-delete:hover { color: var(--accent2); }
     .no-comments { text-align: center; color: var(--muted); font-size: 0.88rem; padding: 24px; }
 
-    /* GELİŞTİRİCİ YANITI */
     .comment-reply { background: rgba(124,92,252,0.06); border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; padding: 12px 14px; margin-top: 10px; }
     .comment-reply-header { font-size: 0.78rem; color: var(--accent); font-weight: 700; margin-bottom: 5px; }
     .comment-reply-text { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
@@ -203,7 +193,6 @@
     @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
     .download-count { font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; gap: 4px; margin-top: 6px; }
 
-    /* İLETİŞİM */
     .contact-box { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 32px; margin-bottom: 48px; }
     .contact-box h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
     .contact-box p { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
@@ -223,6 +212,30 @@
     @keyframes fadeDown { from { opacity:0; transform:translateY(-14px); } to { opacity:1; transform:translateY(0); } }
     @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
 
+    /* ══ PROFİL SAYFASI ══ */
+    #profile-page { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 200; overflow-y: auto; }
+    #profile-page.active { display: block; animation: slideUp 0.3s ease both; }
+    .profile-wrap { max-width: 680px; margin: 0 auto; padding: 40px 24px 80px; }
+    .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 16px; }
+    .profile-email { text-align: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 6px; }
+    .profile-since { text-align: center; color: var(--muted); font-size: 0.82rem; margin-bottom: 36px; }
+    .profile-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 28px; margin-bottom: 18px; }
+    .profile-card h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+    .profile-field { margin-bottom: 14px; }
+    .profile-field label { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+    .profile-field input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+    .profile-field input:focus { border-color: var(--accent); }
+    .profile-field input:disabled { opacity: 0.5; cursor: not-allowed; }
+    .profile-save-btn { background: linear-gradient(135deg, var(--accent), #9b7eff); color: #fff; border: none; border-radius: 11px; padding: 12px 28px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .profile-save-btn:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(124,92,252,0.4); }
+    .profile-save-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .profile-msg { font-size: 0.82rem; margin-left: 12px; display: none; }
+    .profile-msg.success { color: var(--green); display: inline; }
+    .profile-msg.error { color: var(--accent2); display: inline; }
+    .profile-danger { background: rgba(252,92,125,0.06); border-color: rgba(252,92,125,0.2); }
+    .signout-btn { background: rgba(252,92,125,0.12); border: 1px solid rgba(252,92,125,0.3); color: var(--accent2); border-radius: 11px; padding: 12px 28px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .signout-btn:hover { background: rgba(252,92,125,0.22); }
+
     @media (max-width: 580px) {
       .stats-bar, .detail-stats { flex-direction: column; }
       .detail-top { flex-direction: column; align-items: center; text-align: center; }
@@ -240,7 +253,7 @@
     <div class="logo" onclick="showHome()">⬡ DevStore</div>
     <div id="nav-user-area">
       <button class="user-btn" onclick="openAuth()" id="login-btn">🔑 Giriş Yap</button>
-      <button class="user-btn" onclick="signOut()" id="user-info" style="display:none"><span class="user-dot"></span><span id="user-email-short"></span></button>
+      <button class="user-btn" onclick="showProfile()" id="user-info" style="display:none"><span class="user-dot"></span><span id="user-email-short"></span></button>
     </div>
   </div>
 </nav>
@@ -283,12 +296,9 @@
     <div class="contact-box">
       <h3>📬 İletişim</h3>
       <p>Öneri, geri bildirim veya hata bildirimi için aşağıdaki formu doldur!</p>
-      <!-- Giriş yapılmamışsa -->
       <div id="contact-login-note" style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px 20px;text-align:center;color:var(--muted);font-size:0.88rem;display:none">
         Mesaj göndermek için <button onclick="openAuth()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.88rem;font-weight:600">giriş yap</button> veya hesap oluştur.
       </div>
-
-      <!-- Form -->
       <div id="contact-form-inner">
         <div class="contact-grid">
           <div class="contact-field full">
@@ -315,6 +325,52 @@
     </div>
 
   <footer>DevStore — Kişisel uygulama mağazası. Veriler <code>versions.json</code> dosyasından okunur.</footer>
+</div>
+
+<!-- ══════════ PROFİL SAYFASI ══════════ -->
+<div id="profile-page">
+  <div class="detail-nav">
+    <div class="detail-nav-inner">
+      <button class="back-btn" onclick="showHome()">← Geri</button>
+      <span class="detail-nav-title">Profilim</span>
+    </div>
+  </div>
+  <div class="profile-wrap">
+    <div class="profile-avatar">👤</div>
+    <div class="profile-email" id="profile-email-display"></div>
+    <div class="profile-since" id="profile-since"></div>
+
+    <div class="profile-card">
+      <h3>📋 Hesap Bilgileri</h3>
+      <div class="profile-field">
+        <label>E-posta Adresi</label>
+        <input type="email" id="profile-email-input" disabled/>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted)">E-posta adresi değiştirilemez.</div>
+    </div>
+
+    <div class="profile-card">
+      <h3>🔒 Şifre Değiştir</h3>
+      <div class="profile-field">
+        <label>Yeni Şifre</label>
+        <input type="password" id="profile-new-pass" placeholder="En az 6 karakter"/>
+      </div>
+      <div class="profile-field">
+        <label>Yeni Şifre Tekrar</label>
+        <input type="password" id="profile-new-pass2" placeholder="••••••••"/>
+      </div>
+      <div style="display:flex;align-items:center;margin-top:4px">
+        <button class="profile-save-btn" onclick="changePassword()" id="pass-btn">Şifreyi Güncelle</button>
+        <span class="profile-msg" id="pass-msg"></span>
+      </div>
+    </div>
+
+    <div class="profile-card profile-danger">
+      <h3>⚠️ Oturum</h3>
+      <p style="color:var(--muted);font-size:0.86rem;margin-bottom:16px">Tüm cihazlardan çıkış yapar. Sportify uygulamasındaki oturum da kapanır.</p>
+      <button class="signout-btn" onclick="doSignOut()">🚪 Çıkış Yap</button>
+    </div>
+  </div>
 </div>
 
 <!-- ══════════ DETAY SAYFASI ══════════ -->
@@ -361,13 +417,9 @@
 
     <div class="comments-section">
       <h3>💬 Yorumlar <span id="comment-count" style="color:var(--muted);font-size:0.85rem;font-weight:400"></span></h3>
-      
-      <!-- Giriş yapılmamışsa -->
       <div id="comment-login-note" class="comment-login-note" style="display:none">
         Yorum yapmak için <button onclick="openAuth()">giriş yap</button> veya hesap oluştur.
       </div>
-
-      <!-- Yorum formu -->
       <div id="comment-form" class="comment-form" style="display:none">
         <div class="stars-row" id="stars-row">
           <span class="star" data-v="1" onclick="setRating(1)">★</span>
@@ -382,8 +434,6 @@
           <button class="comment-submit" onclick="submitComment()">Yorum Gönder</button>
         </div>
       </div>
-
-      <!-- Yorum listesi -->
       <div class="comment-list" id="comment-list"></div>
     </div>
   </div>
@@ -393,7 +443,6 @@
 let allApps = {};
 let currentFilter = 'all';
 
-// Varsayılan uygulama verisi (versions.json'a eklenebilir alanlar)
 const appExtras = {
   sportify: {
     created_at: "2026-03-13T00:00:00Z",
@@ -424,7 +473,6 @@ async function getDownloads(appId) {
 }
 
 async function incrementDownload(appId) {
-  // Önce var mı kontrol et
   const { data } = await supa.from('app_stats').select('downloads').eq('app_id', appId).single();
   if (data) {
     await supa.from('app_stats').update({ downloads: data.downloads + 1, updated_at: new Date().toISOString() }).eq('app_id', appId);
@@ -434,7 +482,6 @@ async function incrementDownload(appId) {
 }
 
 async function loadApps() {
-  // Önce versions.json'dan çek, olmazsa sabit veriyi kullan
   const fallback = {
     sportify: {
       name: "Sportify", version: "12", min_version: "12",
@@ -530,13 +577,11 @@ function showDetail(id) {
   dlBtn.href = app.download_url;
   dlBtn.onclick = () => { incrementDownload(id); return true; };
 
-  // İndirme sayısını stat kutusunda göster
   document.getElementById('d-dl-count').textContent = '...';
   getDownloads(id).then(count => {
     document.getElementById('d-dl-count').textContent = count;
   });
 
-  // Ekran görüntüleri
   const screenshots = extra.screenshots || [];
   const ssEl = document.getElementById('d-screenshots');
   if (screenshots.length) {
@@ -545,11 +590,9 @@ function showDetail(id) {
     ssEl.innerHTML = ['📱','📱','📱'].map(e => `<div class="ss-item">${e}<span style="color:var(--muted);font-size:0.75rem">Yakında</span></div>`).join('');
   }
 
-  // Açıklama
   const desc = extra.description || app.changelog;
   document.getElementById('d-desc').innerHTML = desc.split('\n').map(p => p ? `<p style="margin-bottom:10px">${p}</p>` : '').join('');
 
-  // Changelog
   const history = extra.changelog_history || [{ version: 'v' + app.version, text: app.changelog }];
   document.getElementById('d-changelog').innerHTML = history.map(h => `
     <div class="cl-item">
@@ -558,7 +601,6 @@ function showDetail(id) {
     </div>
   `).join('');
 
-  // Yorumları yükle
   loadComments(id);
 
   const dp = document.getElementById('detail-page');
@@ -569,6 +611,7 @@ function showDetail(id) {
 
 function showHome() {
   document.getElementById('detail-page').classList.remove('active');
+  document.getElementById('profile-page').classList.remove('active');
   document.getElementById('home-page').style.display = 'block';
 }
 
@@ -600,14 +643,10 @@ async function sendContact() {
   const message = document.getElementById('c-message').value.trim();
   const email = session.user.email;
 
-  if (!name || !message) {
-    alert('Lütfen ad soyad ve mesaj alanlarını doldur!');
-    return;
-  }
+  if (!name || !message) { alert('Lütfen ad soyad ve mesaj alanlarını doldur!'); return; }
 
   const btn = document.getElementById('contact-btn');
-  btn.disabled = true;
-  btn.textContent = 'Gönderiliyor...';
+  btn.disabled = true; btn.textContent = 'Gönderiliyor...';
 
   try {
     const res = await fetch('https://formspree.io/f/xnjgjwqd', {
@@ -615,7 +654,6 @@ async function sendContact() {
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({ name, email, subject, message })
     });
-
     if (res.ok) {
       document.getElementById('contact-success').style.display = 'block';
       document.getElementById('c-name').value = '';
@@ -623,31 +661,24 @@ async function sendContact() {
       btn.textContent = '✅ Gönderildi';
     } else {
       alert('Bir hata oluştu, tekrar dene!');
-      btn.disabled = false;
-      btn.textContent = '📨 Gönder';
+      btn.disabled = false; btn.textContent = '📨 Gönder';
     }
   } catch(e) {
     alert('Bağlantı hatası!');
-    btn.disabled = false;
-    btn.textContent = '📨 Gönder';
+    btn.disabled = false; btn.textContent = '📨 Gönder';
   }
 }
 
-// İletişim formunu oturum durumuna göre göster/gizle
 async function checkContactAuth() {
   const { data: { session } } = await supa.auth.getSession();
   const note = document.getElementById('contact-login-note');
   const form = document.getElementById('contact-form-inner');
   if (!note || !form) return;
-  if (session) {
-    note.style.display = 'none';
-    form.style.display = 'block';
-  } else {
-    note.style.display = 'block';
-    form.style.display = 'none';
-  }
+  if (session) { note.style.display = 'none'; form.style.display = 'block'; }
+  else { note.style.display = 'block'; form.style.display = 'none'; }
 }
 </script>
+
 <!-- AUTH MODAL -->
 <div class="auth-overlay" id="auth-overlay" onclick="handleOverlayClick(event)">
   <div class="auth-box">
@@ -664,14 +695,12 @@ async function checkContactAuth() {
       <button class="auth-submit" onclick="doLogin()">Giriş Yap</button>
     </div>
     <div id="auth-register" style="display:none">
-      <!-- Adım 1: Kayıt formu -->
       <div id="reg-step1">
         <div class="auth-field"><label>E-posta</label><input type="email" id="reg-email" placeholder="ornek@email.com"/></div>
         <div class="auth-field"><label>Şifre</label><input type="password" id="reg-pass" placeholder="En az 6 karakter"/></div>
         <div class="auth-field"><label>Şifre Tekrar</label><input type="password" id="reg-pass2" placeholder="••••••••"/></div>
         <button class="auth-submit" onclick="doRegister()">Kod Gönder 📧</button>
       </div>
-      <!-- Adım 2: OTP kodu -->
       <div id="reg-step2" style="display:none">
         <div style="text-align:center;margin-bottom:20px">
           <div style="font-size:2rem;margin-bottom:8px">📧</div>
@@ -705,13 +734,13 @@ function closeLightbox() {
 }
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
 </script>
+
 <script>
 // ── SUPABASE ──
 const SUPA_URL = "https://jnuckqaiutmkiquptvzu.supabase.co";
 const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpudWNrcWFpdXRta2lxdXB0dnp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDgzMTAsImV4cCI6MjA4ODk4NDMxMH0.sP_FoTrYOFWiIS7PdaFYtR1JbP5vGf_KLgc_jh7zhZY";
 const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
 
-// Oturum kontrolü
 async function checkSession() {
   const { data: { session } } = await supa.auth.getSession();
   if (session) showUserLoggedIn(session.user.email);
@@ -731,10 +760,7 @@ function showUserLoggedOut() {
   document.getElementById('user-info').style.display = 'none';
 }
 
-// Auth modal
-function openAuth() {
-  document.getElementById('auth-overlay').classList.add('open');
-}
+function openAuth() { document.getElementById('auth-overlay').classList.add('open'); }
 function closeAuth() {
   document.getElementById('auth-overlay').classList.remove('open');
   document.getElementById('auth-msg').className = 'auth-msg';
@@ -779,13 +805,9 @@ async function doRegister() {
   if (pass.length < 6) return showMsg('Şifre en az 6 karakter olmalı!', 'error');
   const btn = document.querySelector('#reg-step1 .auth-submit');
   btn.disabled = true; btn.textContent = 'Gönderiliyor...';
-  const { error } = await supa.auth.signUp({
-    email, password: pass,
-    options: { emailRedirectTo: null }
-  });
+  const { error } = await supa.auth.signUp({ email, password: pass, options: { emailRedirectTo: null } });
   btn.disabled = false; btn.textContent = 'Kod Gönder 📧';
   if (error) return showMsg('Hata: ' + error.message, 'error');
-  // Adım 2'ye geç
   document.getElementById('reg-step1').style.display = 'none';
   document.getElementById('reg-step2').style.display = 'block';
   document.getElementById('auth-msg').className = 'auth-msg';
@@ -817,7 +839,76 @@ async function signOut() {
   showUserLoggedOut();
 }
 
-// E-posta doğrulama linkinden gelen token'ı yakala
+async function doSignOut() {
+  await supa.auth.signOut();
+  showUserLoggedOut();
+  showHome();
+}
+
+async function showProfile() {
+  const { data: { session } } = await supa.auth.getSession();
+  if (!session) { openAuth(); return; }
+
+  const email = session.user.email;
+  const createdAt = session.user.created_at;
+
+  document.getElementById('profile-email-display').textContent = email;
+  document.getElementById('profile-email-input').value = email;
+
+  if (createdAt) {
+    const d = new Date(createdAt);
+    document.getElementById('profile-since').textContent =
+      'Üyelik: ' + d.toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  document.getElementById('profile-new-pass').value = '';
+  document.getElementById('profile-new-pass2').value = '';
+  const msg = document.getElementById('pass-msg');
+  msg.className = 'profile-msg';
+  msg.textContent = '';
+
+  document.getElementById('home-page').style.display = 'none';
+  document.getElementById('detail-page').classList.remove('active');
+  document.getElementById('profile-page').classList.add('active');
+  document.getElementById('profile-page').scrollTop = 0;
+}
+
+async function changePassword() {
+  const pass = document.getElementById('profile-new-pass').value;
+  const pass2 = document.getElementById('profile-new-pass2').value;
+  const btn = document.getElementById('pass-btn');
+  const msg = document.getElementById('pass-msg');
+
+  msg.className = 'profile-msg';
+  msg.textContent = '';
+
+  if (!pass || pass.length < 6) {
+    msg.textContent = 'Şifre en az 6 karakter olmalı!';
+    msg.className = 'profile-msg error';
+    return;
+  }
+  if (pass !== pass2) {
+    msg.textContent = 'Şifreler eşleşmiyor!';
+    msg.className = 'profile-msg error';
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Güncelleniyor...';
+  const { error } = await supa.auth.updateUser({ password: pass });
+  btn.disabled = false; btn.textContent = 'Şifreyi Güncelle';
+
+  if (error) {
+    msg.textContent = 'Hata: ' + error.message;
+    msg.className = 'profile-msg error';
+  } else {
+    msg.textContent = 'Şifre güncellendi ✓';
+    msg.className = 'profile-msg success';
+    document.getElementById('profile-new-pass').value = '';
+    document.getElementById('profile-new-pass2').value = '';
+    setTimeout(() => { msg.className = 'profile-msg'; msg.textContent = ''; }, 3000);
+  }
+}
+
 supa.auth.onAuthStateChange((event, session) => {
   if (event === 'SIGNED_IN' && session) {
     showUserLoggedIn(session.user.email);
@@ -831,6 +922,7 @@ supa.auth.onAuthStateChange((event, session) => {
 
 checkSession();
 </script>
+
 <script>
 // ── YORUMLAR ──
 const ADMIN_EMAIL = 'geceninhakimistudio@gmail.com';
@@ -858,7 +950,6 @@ async function loadComments(appId) {
   currentUserId = session ? session.user.id : null;
   currentUserEmail = session ? session.user.email : null;
 
-  // Giriş durumuna göre form göster
   if (session) {
     document.getElementById('comment-form').style.display = 'block';
     document.getElementById('comment-login-note').style.display = 'none';
@@ -867,7 +958,6 @@ async function loadComments(appId) {
     document.getElementById('comment-login-note').style.display = 'block';
   }
 
-  // Yorumları çek
   const { data, error } = await supa
     .from('comments')
     .select('*')
@@ -886,7 +976,6 @@ async function loadComments(appId) {
   const avg = calcAvgRating(data);
   countEl.textContent = '(' + data.length + ' yorum' + (avg ? ' · ★ ' + avg : '') + ')';
 
-  // Detay sayfasındaki ortalama puanı güncelle
   const avgEl = document.getElementById('d-avg-rating');
   if (avgEl) avgEl.textContent = avg ? '★ ' + avg : '';
 
@@ -945,13 +1034,12 @@ async function submitComment() {
   const { data: { session } } = await supa.auth.getSession();
   if (!session) return openAuth();
 
-  // Bu kullanıcı daha önce yorum yapmış mı?
   const { data: existing } = await supa
     .from('comments')
     .select('id')
     .eq('app_id', currentAppId)
     .eq('user_id', session.user.id);
-  
+
   if (existing && existing.length > 0) {
     alert('Bu uygulama için zaten bir yorum bıraktın!');
     return;
@@ -970,7 +1058,7 @@ async function submitComment() {
 
   btn.disabled = false; btn.textContent = 'Yorum Gönder';
   if (error) { alert('Hata: ' + error.message); return; }
-  
+
   document.getElementById('comment-input').value = '';
   document.getElementById('comment-char').textContent = '0/500';
   selectedRating = 0;
