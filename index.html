@@ -586,7 +586,11 @@ function showDetail(id) {
   const desc = extra.description || app.changelog;
   document.getElementById('d-desc').innerHTML = desc.split('\n').map(p => p ? `<p style="margin-bottom:10px">${p}</p>` : '').join('');
 
-  const history = extra.changelog_history || [{ version: 'v' + app.version, text: app.changelog }];
+  // Önce versions.json'daki history'e bak, yoksa index.html'deki changelog_history'e, o da yoksa changelog'a dön
+  const jsonHistory = app.history
+    ? app.history.map(h => ({ version: h.version, text: h.note }))
+    : null;
+  const history = jsonHistory || extra.changelog_history || [{ version: 'V' + app.version, text: app.changelog }];
   document.getElementById('d-changelog').innerHTML = history.map(h => `
     <div class="cl-item">
       <div class="cl-ver">${h.version}</div>
