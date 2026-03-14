@@ -356,7 +356,7 @@
   </div></div>
   <div class="admin-wrap">
     <div class="admin-title">Admin <span>Paneli</span></div>
-    <div style="color:var(--muted);font-size:0.85rem;margin-top:4px;margin-bottom:28px">geceninhakimistudio@gmail.com</div>
+    <div style="color:var(--muted);font-size:0.85rem;margin-top:4px;margin-bottom:28px"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1f787a7c7a717671777e747672766c6b6a7b76705f78727e7673317c7072">[email&#160;protected]</a></div>
     <div class="admin-stats-row">
       <div class="admin-stat"><span class="admin-stat-val" id="a-total-users">—</span><div class="admin-stat-label">Toplam Kullanıcı</div></div>
       <div class="admin-stat"><span class="admin-stat-val" id="a-online-users" style="color:var(--green)">—</span><div class="admin-stat-label">Şu An Online</div></div>
@@ -466,7 +466,7 @@
   <img id="lightbox-img" src="" alt=""/>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ════════════════════════════════════════════════
 //  SUPABASE & SABİTLER — tek yerde
 // ════════════════════════════════════════════════
@@ -787,7 +787,7 @@ async function loadAdminUsers() {
       <div class="user-avatar">${u.email[0].toUpperCase()}</div>
       <div class="user-info">
         <div class="user-email-text">${u.email}${u.email === ADMIN_EMAIL ? ' 👑' : ''}</div>
-        <div class="user-meta">${isOnline ? '🟢 Şu an aktif' : '⚫ Son görülme: ' + _timeAgo(u.last_seen)}</div>
+        <div class="user-meta">${isOnline ? '🟢 Şu an aktif' + (u.current_app ? ' &nbsp;·&nbsp; ' + _appBadge(u.current_app) : '') : '⚫ Son görülme: ' + _timeAgo(u.last_seen)}</div>
       </div>
       <div class="online-dot ${isOnline ? 'active' : ''}"></div>
       <span class="online-badge ${isOnline ? 'on' : 'off'}">${isOnline ? 'Online' : 'Offline'}</span>
@@ -831,6 +831,14 @@ function _timeAgo(dateStr) {
   if (diff < 3600) return Math.floor(diff/60) + ' dk önce';
   if (diff < 86400) return Math.floor(diff/3600) + ' sa önce';
   return Math.floor(diff/86400) + ' gün önce';
+}
+function _appBadge(app) {
+  const apps = {
+    'sportify': { icon: '🎵', color: '#c9a96e' },
+    'default':  { icon: '📱', color: 'var(--accent)' }
+  };
+  const a = apps[app.toLowerCase()] || apps['default'];
+  return `<span style="background:rgba(124,92,252,0.12);border:1px solid rgba(124,92,252,0.25);border-radius:20px;padding:2px 10px;font-size:0.7rem;font-weight:700;color:${a.color}">${a.icon} ${app}</span>`;
 }
 
 // ════════════════════════════════════════════════
@@ -1028,11 +1036,4 @@ function copyUrl() {
   });
 }
 
-// ════════════════════════════════════════════════
-//  BAŞLAT
-// ════════════════════════════════════════════════
-loadApps();
-checkSession();
-</script>
-</body>
-</html>
+// ═══════════════════════════════════════ 
