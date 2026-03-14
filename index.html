@@ -8,30 +8,21 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0a0a0f;
-      --surface: #13131a;
-      --surface2: #1c1c27;
-      --border: #2a2a3a;
-      --accent: #7c5cfc;
-      --accent2: #fc5c7d;
-      --text: #e8e8f0;
-      --muted: #6b6b85;
-      --green: #3ddc97;
-      --yellow: #ffd166;
+      --bg: #0a0a0f; --surface: #13131a; --surface2: #1c1c27;
+      --border: #2a2a3a; --accent: #7c5cfc; --accent2: #fc5c7d;
+      --text: #e8e8f0; --muted: #6b6b85; --green: #3ddc97; --yellow: #ffd166;
     }
     body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
     body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(124,92,252,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(124,92,252,0.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
     .glow1 { position: fixed; width: 600px; height: 600px; background: radial-gradient(circle, rgba(124,92,252,0.07) 0%, transparent 70%); top: -200px; left: -200px; pointer-events: none; z-index: 0; }
     .glow2 { position: fixed; width: 500px; height: 500px; background: radial-gradient(circle, rgba(252,92,125,0.05) 0%, transparent 70%); bottom: -150px; right: -150px; pointer-events: none; z-index: 0; }
-
-    /* NAV */
     nav { position: sticky; top: 0; z-index: 100; background: rgba(10,10,15,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
     .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
     .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.4rem; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; cursor: pointer; }
-    .nav-badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 6px 16px; font-size: 0.8rem; color: var(--muted); }
-    .nav-badge span { color: var(--green); font-weight: 600; }
-
-    /* ══ ANA SAYFA ══ */
+    .user-btn { display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; font-family: "DM Sans", sans-serif; font-size: 0.82rem; cursor: pointer; color: var(--text); transition: all 0.2s; }
+    .user-btn:hover { border-color: var(--accent); }
+    .user-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+    #nav-user-area { display: flex; align-items: center; gap: 8px; }
     #home-page { position: relative; z-index: 1; }
     .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
     .hero { padding: 72px 0 52px; text-align: center; }
@@ -39,20 +30,16 @@
     .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.2rem, 6vw, 3.8rem); font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 16px; animation: fadeDown 0.6s ease both; }
     .hero h1 em { font-style: normal; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .hero p { color: var(--muted); font-size: 1rem; max-width: 460px; margin: 0 auto 36px; line-height: 1.7; animation: fadeDown 0.7s ease both; }
-
     .filters { display: flex; gap: 8px; justify-content: center; margin-bottom: 44px; flex-wrap: wrap; animation: fadeDown 0.8s ease both; }
     .filter-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 8px 20px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
     .filter-btn:hover { border-color: var(--accent); color: var(--text); }
     .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-
     .stats-bar { display: flex; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 44px; }
     .stat { flex: 1; background: var(--surface); padding: 18px; text-align: center; }
     .stat-num { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; display: block; }
     .stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 3px; }
-
     .section-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 18px; }
     .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; margin-bottom: 60px; }
-
     .app-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 24px; transition: all 0.25s; position: relative; overflow: hidden; animation: fadeUp 0.5s ease both; cursor: pointer; }
     .app-card:hover { transform: translateY(-4px); border-color: rgba(124,92,252,0.4); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
     .card-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 18px; }
@@ -70,20 +57,41 @@
     .detail-btn { display: flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--accent), #9b7eff); color: #fff; border: none; border-radius: 11px; padding: 10px 18px; font-family: 'DM Sans', sans-serif; font-size: 0.83rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
     .detail-btn:hover { box-shadow: 0 8px 24px rgba(124,92,252,0.4); transform: scale(1.03); }
     .force-info { font-size: 0.75rem; color: var(--accent2); font-weight: 600; }
-
-    /* ══ DETAY SAYFASI ══ */
+    .api-box { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 28px; margin-bottom: 48px; }
+    .api-box h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+    .api-box p { color: var(--muted); font-size: 0.85rem; margin-bottom: 14px; }
+    .api-url-row { display: flex; gap: 10px; align-items: center; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; }
+    .api-url-row code { flex: 1; font-size: 0.82rem; color: var(--accent); word-break: break-all; }
+    .copy-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; color: var(--text); font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .contact-box { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 32px; margin-bottom: 48px; }
+    .contact-box h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+    .contact-box p { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .contact-field { display: flex; flex-direction: column; gap: 6px; }
+    .contact-field.full { grid-column: 1 / -1; }
+    .contact-field label { font-size: 0.78rem; color: var(--muted); font-weight: 500; }
+    .contact-field input, .contact-field textarea, .contact-field select { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 11px 14px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.88rem; outline: none; transition: border-color 0.2s; width: 100%; }
+    .contact-field input:focus, .contact-field textarea:focus, .contact-field select:focus { border-color: var(--accent); }
+    .contact-field textarea { resize: none; min-height: 100px; }
+    .contact-field select option { background: var(--surface); }
+    .contact-send-btn { background: linear-gradient(135deg, var(--accent), #9b7eff); color: #fff; border: none; border-radius: 11px; padding: 12px 28px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 6px; }
+    .contact-send-btn:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(124,92,252,0.4); }
+    .contact-send-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .contact-success { background: rgba(61,220,151,0.1); border: 1px solid rgba(61,220,151,0.3); border-radius: 10px; padding: 14px 18px; color: var(--green); font-size: 0.88rem; margin-top: 14px; display: none; }
+    footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; color: var(--muted); font-size: 0.8rem; }
     #detail-page { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 200; overflow-y: auto; }
     #detail-page.active { display: block; animation: slideUp 0.3s ease both; }
-    @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
-
+    #profile-page { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 200; overflow-y: auto; }
+    #profile-page.active { display: block; animation: slideUp 0.3s ease both; }
+    #admin-page { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 200; overflow-y: auto; }
+    #admin-page.active { display: block; animation: slideUp 0.3s ease both; }
     .detail-nav { position: sticky; top: 0; background: rgba(10,10,15,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); z-index: 10; }
     .detail-nav-inner { max-width: 960px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; gap: 14px; height: 64px; }
     .back-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 16px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
     .back-btn:hover { border-color: var(--accent); color: var(--accent); }
     .detail-nav-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; }
-
     .detail-wrap { max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; position: relative; z-index: 1; }
-
     .detail-top { display: flex; gap: 28px; align-items: flex-start; margin-bottom: 36px; }
     .detail-big-icon { width: 96px; height: 96px; background: linear-gradient(135deg, var(--surface2), var(--bg)); border: 1px solid var(--border); border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 3.2rem; flex-shrink: 0; }
     .detail-info { flex: 1; }
@@ -92,43 +100,81 @@
     .detail-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
     .download-main-btn { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, var(--accent), #9b7eff); color: #fff; border: none; border-radius: 13px; padding: 13px 30px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.2s; }
     .download-main-btn:hover { transform: scale(1.04); box-shadow: 0 12px 32px rgba(124,92,252,0.45); }
-
     .detail-stats { display: flex; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 36px; }
     .detail-stat { flex: 1; background: var(--surface); padding: 14px 16px; text-align: center; }
     .detail-stat-val { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; display: block; }
     .detail-stat-label { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
-
     .ss-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px; }
     .screenshots-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 36px; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
     .ss-item { flex-shrink: 0; width: 190px; height: 337px; border-radius: 14px; border: 1px solid var(--border); overflow: hidden; background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 0.78rem; flex-direction: column; gap: 8px; }
-    .ss-item img { width: 100%; height: 100%; object-fit: cover; }
-
+    .ss-item img { width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; transition: transform 0.2s; }
+    .ss-item img:hover { transform: scale(1.03); }
     .detail-section { margin-bottom: 32px; }
     .detail-section h3 { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 12px; }
     .desc-text { color: var(--muted); line-height: 1.8; font-size: 0.93rem; }
     .cl-item { background: var(--surface); border: 1px solid var(--border); border-radius: 13px; padding: 16px 18px; margin-bottom: 10px; }
     .cl-ver { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--green); font-size: 0.87rem; margin-bottom: 5px; }
     .cl-text { color: var(--muted); font-size: 0.86rem; line-height: 1.6; }
-
-    .api-box { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 28px; margin-bottom: 48px; }
-    .api-box h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
-    .api-box p { color: var(--muted); font-size: 0.85rem; margin-bottom: 14px; }
-    .api-url-row { display: flex; gap: 10px; align-items: center; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; }
-    .api-url-row code { flex: 1; font-size: 0.82rem; color: var(--accent); word-break: break-all; }
-    .copy-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; color: var(--text); font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
-    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-    footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; color: var(--muted); font-size: 0.8rem; }
-
-    .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9999; align-items: center; justify-content: center; cursor: zoom-out; }
-    .lightbox.open { display: flex; animation: fadeIn 0.2s ease; }
-    .lightbox img { max-width: 92vw; max-height: 92vh; border-radius: 12px; box-shadow: 0 30px 80px rgba(0,0,0,0.8); }
-    .lightbox-close { position: absolute; top: 20px; right: 28px; color: #fff; font-size: 2rem; cursor: pointer; line-height: 1; opacity: 0.7; }
-    .lightbox-close:hover { opacity: 1; }
-    .ss-item img { cursor: zoom-in; transition: transform 0.2s; }
-    .ss-item img:hover { transform: scale(1.03); }
-    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-
+    .profile-wrap { max-width: 680px; margin: 0 auto; padding: 40px 24px 80px; }
+    .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 16px; }
+    .profile-email { text-align: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 6px; }
+    .profile-since { text-align: center; color: var(--muted); font-size: 0.82rem; margin-bottom: 36px; }
+    .profile-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 28px; margin-bottom: 18px; }
+    .profile-card h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 18px; }
+    .profile-field { margin-bottom: 14px; }
+    .profile-field label { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+    .profile-field input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+    .profile-field input:disabled { opacity: 0.5; cursor: not-allowed; }
+    .profile-save-btn { background: linear-gradient(135deg, var(--accent), #9b7eff); color: #fff; border: none; border-radius: 11px; padding: 12px 28px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .profile-save-btn:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(124,92,252,0.4); }
+    .profile-save-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .profile-msg { font-size: 0.82rem; margin-left: 12px; display: none; }
+    .profile-msg.success { color: var(--green); display: inline; }
+    .profile-msg.error { color: var(--accent2); display: inline; }
+    .profile-danger { background: rgba(252,92,125,0.06); border-color: rgba(252,92,125,0.2); }
+    .signout-btn { background: rgba(252,92,125,0.12); border: 1px solid rgba(252,92,125,0.3); color: var(--accent2); border-radius: 11px; padding: 12px 28px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .signout-btn:hover { background: rgba(252,92,125,0.22); }
+    .admin-wrap { max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; }
+    .admin-title { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; margin-bottom: 4px; }
+    .admin-title span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .admin-tabs { display: flex; gap: 8px; margin-bottom: 28px; }
+    .admin-tab { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 9px 20px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+    .admin-tab:hover { border-color: var(--accent); color: var(--text); }
+    .admin-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .admin-section { display: none; }
+    .admin-section.active { display: block; }
+    .admin-stats-row { display: flex; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 24px; }
+    .admin-stat { flex: 1; background: var(--surface); padding: 16px 20px; text-align: center; }
+    .admin-stat-val { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; display: block; }
+    .admin-stat-label { font-size: 0.72rem; color: var(--muted); margin-top: 3px; }
+    .admin-refresh { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 7px 16px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; margin-left: auto; display: block; margin-bottom: 16px; }
+    .admin-refresh:hover { border-color: var(--accent); color: var(--accent); }
+    .admin-empty { text-align: center; color: var(--muted); padding: 48px 24px; font-size: 0.9rem; }
+    .user-list { display: flex; flex-direction: column; gap: 10px; }
+    .user-row { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; gap: 16px; }
+    .user-row.online { border-color: rgba(61,220,151,0.35); }
+    .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; font-weight: 700; color: #fff; font-family: 'Syne', sans-serif; }
+    .user-info { flex: 1; }
+    .user-email-text { font-size: 0.9rem; font-weight: 600; }
+    .user-meta { font-size: 0.75rem; color: var(--muted); margin-top: 3px; }
+    .online-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+    .online-dot.active { background: var(--green); box-shadow: 0 0 8px rgba(61,220,151,0.6); animation: pulse 2s infinite; }
+    .online-badge { font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+    .online-badge.on { background: rgba(61,220,151,0.15); color: var(--green); }
+    .online-badge.off { background: var(--surface2); color: var(--muted); }
+    .msg-list { display: flex; flex-direction: column; gap: 12px; }
+    .msg-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; }
+    .msg-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+    .msg-from { font-size: 0.88rem; font-weight: 600; }
+    .msg-date { font-size: 0.75rem; color: var(--muted); flex-shrink: 0; }
+    .msg-tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 7px; font-size: 0.7rem; font-weight: 600; margin-bottom: 10px; }
+    .msg-tag-suggest { background: rgba(124,92,252,0.15); color: var(--accent); }
+    .msg-tag-bug { background: rgba(252,92,125,0.15); color: var(--accent2); }
+    .msg-tag-song { background: rgba(255,209,102,0.15); color: var(--yellow); }
+    .msg-tag-general { background: rgba(61,220,151,0.12); color: var(--green); }
+    .msg-body { font-size: 0.86rem; color: var(--muted); line-height: 1.7; }
+    .msg-delete { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.78rem; font-family: 'DM Sans', sans-serif; padding: 4px 10px; border-radius: 6px; transition: all 0.2s; }
+    .msg-delete:hover { background: rgba(252,92,125,0.12); color: var(--accent2); }
     .auth-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 500; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
     .auth-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
     .auth-box { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 40px; width: 100%; max-width: 420px; margin: 20px; }
@@ -148,12 +194,6 @@
     .auth-msg { text-align: center; font-size: 0.82rem; margin-top: 14px; padding: 10px; border-radius: 8px; display: none; }
     .auth-msg.success { background: rgba(61,220,151,0.1); color: var(--green); display: block; }
     .auth-msg.error { background: rgba(252,92,125,0.1); color: var(--accent2); display: block; }
-
-    .user-btn { display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; font-family: "DM Sans", sans-serif; font-size: 0.82rem; cursor: pointer; color: var(--text); transition: all 0.2s; }
-    .user-btn:hover { border-color: var(--accent); }
-    .user-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
-
-    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
     .comments-section { margin-top: 36px; }
     .comments-section h3 { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 16px; }
     .comment-form { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 20px; }
@@ -178,7 +218,6 @@
     .comment-delete { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.75rem; transition: color 0.2s; }
     .comment-delete:hover { color: var(--accent2); }
     .no-comments { text-align: center; color: var(--muted); font-size: 0.88rem; padding: 24px; }
-
     .comment-reply { background: rgba(124,92,252,0.06); border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; padding: 12px 14px; margin-top: 10px; }
     .comment-reply-header { font-size: 0.78rem; color: var(--accent); font-weight: 700; margin-bottom: 5px; }
     .comment-reply-text { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
@@ -188,122 +227,26 @@
     .reply-btn:hover { background: var(--accent); color: #fff; }
     .admin-reply-trigger { background: none; border: none; color: var(--accent); font-size: 0.75rem; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 8px; display: block; opacity: 0.7; }
     .admin-reply-trigger:hover { opacity: 1; }
-
-    .badge-new { background: rgba(61,220,151,0.2); color: var(--green); animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
-    .download-count { font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; gap: 4px; margin-top: 6px; }
-
-    .contact-box { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 32px; margin-bottom: 48px; }
-    .contact-box h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
-    .contact-box p { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
-    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .contact-field { display: flex; flex-direction: column; gap: 6px; }
-    .contact-field.full { grid-column: 1 / -1; }
-    .contact-field label { font-size: 0.78rem; color: var(--muted); font-weight: 500; }
-    .contact-field input, .contact-field textarea, .contact-field select { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 11px 14px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.88rem; outline: none; transition: border-color 0.2s; width: 100%; }
-    .contact-field input:focus, .contact-field textarea:focus, .contact-field select:focus { border-color: var(--accent); }
-    .contact-field textarea { resize: none; min-height: 100px; }
-    .contact-field select option { background: var(--surface); }
-    .contact-send-btn { background: linear-gradient(135deg, var(--accent), #9b7eff); color: #fff; border: none; border-radius: 11px; padding: 12px 28px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 6px; }
-    .contact-send-btn:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(124,92,252,0.4); }
-    .contact-send-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-    .contact-success { background: rgba(61,220,151,0.1); border: 1px solid rgba(61,220,151,0.3); border-radius: 10px; padding: 14px 18px; color: var(--green); font-size: 0.88rem; margin-top: 14px; display: none; }
-
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9999; align-items: center; justify-content: center; cursor: zoom-out; }
+    .lightbox.open { display: flex; animation: fadeIn 0.2s ease; }
+    .lightbox img { max-width: 92vw; max-height: 92vh; border-radius: 12px; box-shadow: 0 30px 80px rgba(0,0,0,0.8); }
+    .lightbox-close { position: absolute; top: 20px; right: 28px; color: #fff; font-size: 2rem; cursor: pointer; line-height: 1; opacity: 0.7; }
+    .lightbox-close:hover { opacity: 1; }
+    @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
     @keyframes fadeDown { from { opacity:0; transform:translateY(-14px); } to { opacity:1; transform:translateY(0); } }
     @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
-
-    /* ══ PROFİL SAYFASI ══ */
-    #profile-page { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 200; overflow-y: auto; }
-    #profile-page.active { display: block; animation: slideUp 0.3s ease both; }
-    .profile-wrap { max-width: 680px; margin: 0 auto; padding: 40px 24px 80px; }
-    .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 16px; }
-    .profile-email { text-align: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 6px; }
-    .profile-since { text-align: center; color: var(--muted); font-size: 0.82rem; margin-bottom: 36px; }
-    .profile-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 28px; margin-bottom: 18px; }
-    .profile-card h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
-    .profile-field { margin-bottom: 14px; }
-    .profile-field label { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
-    .profile-field input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
-    .profile-field input:focus { border-color: var(--accent); }
-    .profile-field input:disabled { opacity: 0.5; cursor: not-allowed; }
-    .profile-save-btn { background: linear-gradient(135deg, var(--accent), #9b7eff); color: #fff; border: none; border-radius: 11px; padding: 12px 28px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-    .profile-save-btn:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(124,92,252,0.4); }
-    .profile-save-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-    .profile-msg { font-size: 0.82rem; margin-left: 12px; display: none; }
-    .profile-msg.success { color: var(--green); display: inline; }
-    .profile-msg.error { color: var(--accent2); display: inline; }
-    .profile-danger { background: rgba(252,92,125,0.06); border-color: rgba(252,92,125,0.2); }
-    .signout-btn { background: rgba(252,92,125,0.12); border: 1px solid rgba(252,92,125,0.3); color: var(--accent2); border-radius: 11px; padding: 12px 28px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-    .signout-btn:hover { background: rgba(252,92,125,0.22); }
-
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
     @media (max-width: 580px) {
-      .stats-bar, .detail-stats { flex-direction: column; }
+      .stats-bar, .detail-stats, .admin-stats-row { flex-direction: column; }
       .detail-top { flex-direction: column; align-items: center; text-align: center; }
       .detail-badges { justify-content: center; }
     }
-
-    /* ══ ADMİN PANELİ ══ */
-    #admin-page { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 200; overflow-y: auto; }
-    #admin-page.active { display: block; animation: slideUp 0.3s ease both; }
-    .admin-wrap { max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; }
-    .admin-header { display: flex; align-items: center; gap: 16px; margin-bottom: 36px; }
-    .admin-title { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; }
-    .admin-title span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-    .admin-tabs { display: flex; gap: 8px; margin-bottom: 28px; }
-    .admin-tab { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 9px 20px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-    .admin-tab:hover { border-color: var(--accent); color: var(--text); }
-    .admin-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-
-    .admin-section { display: none; }
-    .admin-section.active { display: block; }
-
-    /* Kullanıcı listesi */
-    .user-list { display: flex; flex-direction: column; gap: 10px; }
-    .user-row { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; gap: 16px; transition: border-color 0.2s; }
-    .user-row.online { border-color: rgba(61,220,151,0.35); }
-    .user-row.online:hover { border-color: rgba(61,220,151,0.6); }
-    .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; font-weight: 700; color: #fff; font-family: 'Syne', sans-serif; }
-    .user-info { flex: 1; }
-    .user-email { font-size: 0.9rem; font-weight: 600; color: var(--text); }
-    .user-meta { font-size: 0.75rem; color: var(--muted); margin-top: 3px; }
-    .online-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
-    .online-dot.active { background: var(--green); box-shadow: 0 0 8px rgba(61,220,151,0.6); animation: pulse 2s infinite; }
-    .online-badge { font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
-    .online-badge.on { background: rgba(61,220,151,0.15); color: var(--green); }
-    .online-badge.off { background: var(--surface2); color: var(--muted); }
-
-    .admin-stats-row { display: flex; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 24px; }
-    .admin-stat { flex: 1; background: var(--surface); padding: 16px 20px; text-align: center; }
-    .admin-stat-val { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; display: block; color: var(--text); }
-    .admin-stat-label { font-size: 0.72rem; color: var(--muted); margin-top: 3px; }
-
-    /* Mesajlar */
-    .msg-list { display: flex; flex-direction: column; gap: 12px; }
-    .msg-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; }
-    .msg-card.unread { border-color: rgba(124,92,252,0.35); }
-    .msg-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
-    .msg-from { font-size: 0.88rem; font-weight: 600; color: var(--text); }
-    .msg-date { font-size: 0.75rem; color: var(--muted); flex-shrink: 0; }
-    .msg-subject { font-size: 0.78rem; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
-    .msg-body { font-size: 0.86rem; color: var(--muted); line-height: 1.7; }
-    .msg-tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 7px; font-size: 0.7rem; font-weight: 600; margin-bottom: 10px; }
-    .msg-tag-suggest { background: rgba(124,92,252,0.15); color: var(--accent); }
-    .msg-tag-bug { background: rgba(252,92,125,0.15); color: var(--accent2); }
-    .msg-tag-song { background: rgba(255,209,102,0.15); color: var(--yellow); }
-    .msg-tag-general { background: rgba(61,220,151,0.12); color: var(--green); }
-    .msg-delete { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.78rem; font-family: 'DM Sans', sans-serif; padding: 4px 10px; border-radius: 6px; transition: all 0.2s; }
-    .msg-delete:hover { background: rgba(252,92,125,0.12); color: var(--accent2); }
-
-    .admin-empty { text-align: center; color: var(--muted); padding: 48px 24px; font-size: 0.9rem; }
-    .admin-refresh { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 7px 16px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; margin-left: auto; display: block; margin-bottom: 16px; }
-    .admin-refresh:hover { border-color: var(--accent); color: var(--accent); }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<div class="glow1"></div>
-<div class="glow2"></div>
+<div class="glow1"></div><div class="glow2"></div>
 
 <nav>
   <div class="nav-inner">
@@ -315,7 +258,7 @@
   </div>
 </nav>
 
-<!-- ══════════ ANA SAYFA ══════════ -->
+<!-- ANA SAYFA -->
 <div id="home-page">
   <div class="wrap">
     <div class="hero">
@@ -323,24 +266,20 @@
       <h1>Tüm oyunların &<br/><em>uygulamalar</em> burada</h1>
       <p>Her uygulama otomatik güncelleme sistemiyle korunur. Yeni sürüm yayınlandığında kullanıcılar anında haberdar olur.</p>
     </div>
-
     <div class="filters">
       <button class="filter-btn active" onclick="filterApps('all',this)">Tümü</button>
       <button class="filter-btn" onclick="filterApps('game',this)">🎮 Oyunlar</button>
       <button class="filter-btn" onclick="filterApps('app',this)">📱 Uygulamalar</button>
       <button class="filter-btn" onclick="filterApps('force',this)">⚠️ Zorunlu Güncelleme</button>
     </div>
-
     <div class="stats-bar">
       <div class="stat"><span class="stat-num" id="s-total">—</span><div class="stat-label">Toplam Uygulama</div></div>
       <div class="stat"><span class="stat-num" id="s-game">—</span><div class="stat-label">Oyun</div></div>
       <div class="stat"><span class="stat-num" id="s-app">—</span><div class="stat-label">Uygulama</div></div>
       <div class="stat"><span class="stat-num" id="s-force">—</span><div class="stat-label">Zorunlu Güncelleme</div></div>
     </div>
-
     <div class="section-title">Uygulamalar & Oyunlar</div>
     <div class="app-grid" id="app-grid"></div>
-
     <div class="api-box">
       <h3>🔌 Versiyon Kontrol API</h3>
       <p>Godot oyunlarında bu URL'yi kullan — güncel sürüm bilgisini JSON olarak döner.</p>
@@ -350,6 +289,7 @@
       </div>
     </div>
   </div>
+  <div class="wrap">
     <div class="contact-box">
       <h3>📬 İletişim</h3>
       <p>Öneri, geri bildirim veya hata bildirimi için aşağıdaki formu doldur!</p>
@@ -358,121 +298,91 @@
       </div>
       <div id="contact-form-inner">
         <div class="contact-grid">
-          <div class="contact-field full">
-            <label>Ad Soyad</label>
-            <input type="text" id="c-name" placeholder="Adın Soyadın"/>
-          </div>
-          <div class="contact-field full">
-            <label>Konu</label>
+          <div class="contact-field full"><label>Ad Soyad</label><input type="text" id="c-name" placeholder="Adın Soyadın"/></div>
+          <div class="contact-field full"><label>Konu</label>
             <select id="c-subject">
-              <option value="Öneri">💡 Öneri</option>
-              <option value="Hata Bildirimi">🐛 Hata Bildirimi</option>
-              <option value="Yeni Şarkı İsteği">🎵 Yeni Şarkı İsteği</option>
-              <option value="Genel">💬 Genel</option>
+              <option value="suggest">💡 Öneri</option>
+              <option value="bug">🐛 Hata Bildirimi</option>
+              <option value="song">🎵 Yeni Şarkı İsteği</option>
+              <option value="general">💬 Genel</option>
             </select>
           </div>
-          <div class="contact-field full">
-            <label>Mesaj</label>
-            <textarea id="c-message" placeholder="Mesajını yaz..."></textarea>
-          </div>
+          <div class="contact-field full"><label>Mesaj</label><textarea id="c-message" placeholder="Mesajını yaz..."></textarea></div>
         </div>
         <button class="contact-send-btn" onclick="sendContact()" id="contact-btn">📨 Gönder</button>
         <div class="contact-success" id="contact-success">✅ Mesajın iletildi! En kısa sürede dönüş yapacağım.</div>
       </div>
     </div>
-
+  </div>
   <footer>DevStore — Kişisel uygulama mağazası. Veriler <code>versions.json</code> dosyasından okunur.</footer>
 </div>
 
-<!-- ══════════ PROFİL SAYFASI ══════════ -->
-<div id="admin-page">
-  <div style="position:sticky;top:0;background:rgba(10,10,15,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:10;">
-    <div style="max-width:960px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:14px;height:64px;">
-      <button class="back-btn" onclick="showHome()">← Geri</button>
-      <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;">🛡️ Admin Paneli</span>
-    </div>
-  </div>
-  <div class="admin-wrap">
-    <div class="admin-header">
-      <div>
-        <div class="admin-title">Admin <span>Paneli</span></div>
-        <div style="color:var(--muted);font-size:0.85rem;margin-top:4px;">geceninhakimistudio@gmail.com</div>
-      </div>
-    </div>
-
-    <div class="admin-stats-row">
-      <div class="admin-stat"><span class="admin-stat-val" id="a-total-users">—</span><div class="admin-stat-label">Toplam Kullanıcı</div></div>
-      <div class="admin-stat"><span class="admin-stat-val" id="a-online-users" style="color:var(--green)">—</span><div class="admin-stat-label">Şu An Online</div></div>
-      <div class="admin-stat"><span class="admin-stat-val" id="a-total-msgs">—</span><div class="admin-stat-label">Toplam Mesaj</div></div>
-    </div>
-
-    <div class="admin-tabs">
-      <button class="admin-tab active" onclick="switchAdminTab('users', this)">👥 Kullanıcılar</button>
-      <button class="admin-tab" onclick="switchAdminTab('messages', this)">📬 Mesajlar</button>
-    </div>
-
-    <!-- Kullanıcılar -->
-    <div class="admin-section active" id="admin-users">
-      <button class="admin-refresh" onclick="loadAdminUsers()">↻ Yenile</button>
-      <div class="user-list" id="user-list">
-        <div class="admin-empty">Yükleniyor...</div>
-      </div>
-    </div>
-
-    <!-- Mesajlar -->
-    <div class="admin-section" id="admin-messages">
-      <button class="admin-refresh" onclick="loadAdminMessages()">↻ Yenile</button>
-      <div class="msg-list" id="msg-list">
-        <div class="admin-empty">Yükleniyor...</div>
-      </div>
-    </div>
-  </div>
-</div>
-  <div class="detail-nav">
-    <div class="detail-nav-inner">
-      <button class="back-btn" onclick="showHome()">← Geri</button>
-      <span class="detail-nav-title">Profilim</span>
-    </div>
-  </div>
+<!-- PROFİL SAYFASI -->
+<div id="profile-page">
+  <div class="detail-nav"><div class="detail-nav-inner">
+    <button class="back-btn" onclick="showHome()">← Geri</button>
+    <span class="detail-nav-title">Profilim</span>
+  </div></div>
   <div class="profile-wrap">
     <div class="profile-avatar">👤</div>
     <div class="profile-email" id="profile-email-display"></div>
     <div class="profile-since" id="profile-since"></div>
-
     <div class="profile-card">
       <h3>📋 Hesap Bilgileri</h3>
-      <div class="profile-field">
-        <label>E-posta Adresi</label>
-        <input type="email" id="profile-email-input" disabled/>
-      </div>
+      <div class="profile-field"><label>E-posta Adresi</label><input type="email" id="profile-email-input" disabled/></div>
       <div style="font-size:0.78rem;color:var(--muted)">E-posta adresi değiştirilemez.</div>
     </div>
-
     <div class="profile-card">
       <h3>🔒 Şifre Değiştir</h3>
-      <p style="color:var(--muted);font-size:0.86rem;margin-bottom:16px">E-posta adresine bir şifre sıfırlama bağlantısı gönderilecek. Bağlantıya tıklayarak yeni şifreni belirleyebilirsin.</p>
+      <p style="color:var(--muted);font-size:0.86rem;margin-bottom:16px">E-posta adresine şifre sıfırlama bağlantısı gönderilecek.</p>
       <div style="display:flex;align-items:center;gap:12px">
         <button class="profile-save-btn" onclick="sendPasswordReset()" id="pass-reset-btn">📧 Sıfırlama Maili Gönder</button>
         <span class="profile-msg" id="pass-msg"></span>
       </div>
     </div>
-
     <div class="profile-card profile-danger">
       <h3>⚠️ Oturum</h3>
-      <p style="color:var(--muted);font-size:0.86rem;margin-bottom:16px">Tüm cihazlardan çıkış yapar. Sportify uygulamasındaki oturum da kapanır.</p>
+      <p style="color:var(--muted);font-size:0.86rem;margin-bottom:16px">Tüm cihazlardan çıkış yapar.</p>
       <button class="signout-btn" onclick="doSignOut()">🚪 Çıkış Yap</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════ DETAY SAYFASI ══════════ -->
-<div id="detail-page">
-  <div class="detail-nav">
-    <div class="detail-nav-inner">
-      <button class="back-btn" onclick="showHome()">← Geri</button>
-      <span class="detail-nav-title" id="d-nav-title"></span>
+<!-- ADMİN SAYFASI -->
+<div id="admin-page">
+  <div class="detail-nav"><div class="detail-nav-inner">
+    <button class="back-btn" onclick="showHome()">← Geri</button>
+    <span class="detail-nav-title">🛡️ Admin Paneli</span>
+  </div></div>
+  <div class="admin-wrap">
+    <div class="admin-title">Admin <span>Paneli</span></div>
+    <div style="color:var(--muted);font-size:0.85rem;margin-top:4px;margin-bottom:28px">geceninhakimistudio@gmail.com</div>
+    <div class="admin-stats-row">
+      <div class="admin-stat"><span class="admin-stat-val" id="a-total-users">—</span><div class="admin-stat-label">Toplam Kullanıcı</div></div>
+      <div class="admin-stat"><span class="admin-stat-val" id="a-online-users" style="color:var(--green)">—</span><div class="admin-stat-label">Şu An Online</div></div>
+      <div class="admin-stat"><span class="admin-stat-val" id="a-total-msgs">—</span><div class="admin-stat-label">Toplam Mesaj</div></div>
+    </div>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchAdminTab('users',this)">👥 Kullanıcılar</button>
+      <button class="admin-tab" onclick="switchAdminTab('messages',this)">📬 Mesajlar</button>
+    </div>
+    <div class="admin-section active" id="admin-users">
+      <button class="admin-refresh" onclick="loadAdminUsers()">↻ Yenile</button>
+      <div class="user-list" id="user-list"><div class="admin-empty">Yükleniyor...</div></div>
+    </div>
+    <div class="admin-section" id="admin-messages">
+      <button class="admin-refresh" onclick="loadAdminMessages()">↻ Yenile</button>
+      <div class="msg-list" id="msg-list"><div class="admin-empty">Yükleniyor...</div></div>
     </div>
   </div>
+</div>
+
+<!-- DETAY SAYFASI -->
+<div id="detail-page">
+  <div class="detail-nav"><div class="detail-nav-inner">
+    <button class="back-btn" onclick="showHome()">← Geri</button>
+    <span class="detail-nav-title" id="d-nav-title"></span>
+  </div></div>
   <div class="detail-wrap">
     <div class="detail-top">
       <div class="detail-big-icon" id="d-icon"></div>
@@ -483,41 +393,23 @@
         <a class="download-main-btn" id="d-dl-btn" href="#" target="_blank" rel="noopener noreferrer">⬇ APK İndir</a>
       </div>
     </div>
-
     <div class="detail-stats">
       <div class="detail-stat"><span class="detail-stat-val" id="d-ver">—</span><div class="detail-stat-label">Versiyon</div></div>
       <div class="detail-stat"><span class="detail-stat-val" id="d-minver">—</span><div class="detail-stat-label">Min. Versiyon</div></div>
-      <div class="detail-stat"><span class="detail-stat-val" id="d-avg-rating" style="color:var(--yellow,#ffd166)">—</span><div class="detail-stat-label">Ortalama Puan</div></div>
+      <div class="detail-stat"><span class="detail-stat-val" id="d-avg-rating" style="color:var(--yellow)">—</span><div class="detail-stat-label">Ortalama Puan</div></div>
       <div class="detail-stat"><span class="detail-stat-val" id="d-dl-count" style="color:var(--green)">—</span><div class="detail-stat-label">İndirme</div></div>
       <div class="detail-stat"><span class="detail-stat-val" id="d-category">—</span><div class="detail-stat-label">Kategori</div></div>
     </div>
-
-    <div class="detail-section">
-      <p class="ss-title">📸 Ekran Görüntüleri</p>
-      <div class="screenshots-row" id="d-screenshots"></div>
-    </div>
-
-    <div class="detail-section">
-      <h3>📝 Uygulama Hakkında</h3>
-      <div class="desc-text" id="d-desc"></div>
-    </div>
-
-    <div class="detail-section">
-      <h3>📋 Güncelleme Geçmişi</h3>
-      <div id="d-changelog"></div>
-    </div>
-
+    <div class="detail-section"><p class="ss-title">📸 Ekran Görüntüleri</p><div class="screenshots-row" id="d-screenshots"></div></div>
+    <div class="detail-section"><h3>📝 Uygulama Hakkında</h3><div class="desc-text" id="d-desc"></div></div>
+    <div class="detail-section"><h3>📋 Güncelleme Geçmişi</h3><div id="d-changelog"></div></div>
     <div class="comments-section">
       <h3>💬 Yorumlar <span id="comment-count" style="color:var(--muted);font-size:0.85rem;font-weight:400"></span></h3>
-      <div id="comment-login-note" class="comment-login-note" style="display:none">
-        Yorum yapmak için <button onclick="openAuth()">giriş yap</button> veya hesap oluştur.
-      </div>
+      <div id="comment-login-note" class="comment-login-note" style="display:none">Yorum yapmak için <button onclick="openAuth()">giriş yap</button> veya hesap oluştur.</div>
       <div id="comment-form" class="comment-form" style="display:none">
         <div class="stars-row" id="stars-row">
-          <span class="star" data-v="1" onclick="setRating(1)">★</span>
-          <span class="star" data-v="2" onclick="setRating(2)">★</span>
-          <span class="star" data-v="3" onclick="setRating(3)">★</span>
-          <span class="star" data-v="4" onclick="setRating(4)">★</span>
+          <span class="star" data-v="1" onclick="setRating(1)">★</span><span class="star" data-v="2" onclick="setRating(2)">★</span>
+          <span class="star" data-v="3" onclick="setRating(3)">★</span><span class="star" data-v="4" onclick="setRating(4)">★</span>
           <span class="star" data-v="5" onclick="setRating(5)">★</span>
         </div>
         <textarea id="comment-input" placeholder="Bu uygulama hakkında ne düşünüyorsun?" maxlength="500"></textarea>
@@ -530,206 +422,6 @@
     </div>
   </div>
 </div>
-
-<script>
-let allApps = {};
-let currentFilter = 'all';
-
-const appExtras = {
-  sportify: {
-    created_at: "2026-03-13T00:00:00Z",
-    developer: "judy658",
-    description: "Sportify, GitHub üzerinden MP3 dosyalarını doğrudan stream eden kişisel bir müzik uygulamasıdır. 129 şarkılık geniş kütüphanesiyle Türkçe pop, yabancı müzik, arabesk ve daha fazlasını tek bir yerde dinleyebilirsiniz.\n\nÇalma listeleri oluşturabilir, favori şarkılarınızı kaydedebilir ve en çok dinlediklerinizi takip edebilirsiniz.",
-    screenshots: [
-      "https://raw.githubusercontent.com/judy658/judy658-devstore/main/sportify_ss1.png",
-      "https://raw.githubusercontent.com/judy658/judy658-devstore/main/sportify_ss2.png",
-      "https://raw.githubusercontent.com/judy658/judy658-devstore/main/sportify_ss3.png"
-    ],
-    changelog_history: [
-      { version: "v12", text: "Yeni şarkılar eklendi (HITLER, Bir Baskedir). 6 dakika üzeri 5 şarkı kaldırıldı. Performans iyileştirmeleri yapıldı." },
-      { version: "v11", text: "Şarkı listesi güncellendi, yeni özellikler eklendi." },
-      { version: "v10", text: "İlk stabil sürüm yayınlandı." }
-    ]
-  }
-};
-
-function isNew(dateStr) {
-  if (!dateStr) return false;
-  const diff = (Date.now() - new Date(dateStr).getTime()) / (1000 * 60 * 60 * 24);
-  return diff <= 7;
-}
-
-async function getDownloads(appId) {
-  const { data } = await supa.from('app_stats').select('downloads').eq('app_id', appId).single();
-  return data ? data.downloads : 0;
-}
-
-async function incrementDownload(appId) {
-  const { data } = await supa.from('app_stats').select('downloads').eq('app_id', appId).single();
-  if (data) {
-    await supa.from('app_stats').update({ downloads: data.downloads + 1, updated_at: new Date().toISOString() }).eq('app_id', appId);
-  } else {
-    await supa.from('app_stats').insert({ app_id: appId, downloads: 1 });
-  }
-}
-
-async function loadApps() {
-  const fallback = {
-    sportify: {
-      name: "Sportify", version: "12", min_version: "12",
-      force_update: true,
-      download_url: "https://github.com/judy658/judy658-devstore/releases/download/v1.0/spotify_v12.apk",
-      icon: "🎵", category: "app",
-      changelog: "Yeni şarkılar eklendi, 6 dakika üzeri şarkılar kaldırıldı."
-    }
-  };
-  try {
-    const res = await fetch('versions.json');
-    if (res.ok) {
-      const data = await res.json();
-      allApps = data.apps || fallback;
-    } else {
-      allApps = fallback;
-    }
-  } catch(e) {
-    allApps = fallback;
-  }
-  updateStats();
-  renderGrid(currentFilter);
-}
-
-function updateStats() {
-  const list = Object.values(allApps);
-  document.getElementById('s-total').textContent = list.length;
-  document.getElementById('s-game').textContent = list.filter(a => a.category === 'game').length;
-  document.getElementById('s-app').textContent = list.filter(a => a.category === 'app').length;
-  document.getElementById('s-force').textContent = list.filter(a => a.force_update).length;
-}
-
-function renderGrid(filter) {
-  const grid = document.getElementById('app-grid');
-  const entries = Object.entries(allApps).filter(([id, app]) => {
-    if (filter === 'all') return true;
-    if (filter === 'force') return app.force_update;
-    return app.category === filter;
-  });
-
-  if (!entries.length) {
-    grid.innerHTML = `<div style="color:var(--muted);grid-column:1/-1;text-align:center;padding:48px 0">Bu filtrede uygulama yok.</div>`;
-    return;
-  }
-
-  grid.innerHTML = entries.map(([id, app], i) => `
-    <div class="app-card" style="animation-delay:${i*0.07}s" onclick="showDetail('${id}')">
-      <div class="card-header">
-        <div class="app-icon">${app.icon || '📦'}</div>
-        <div>
-          <div class="app-name">${app.name}</div>
-          <div class="app-version">Versiyon <span class="ver-num">v${app.version}</span></div>
-          <div style="margin-top:7px;display:flex;gap:6px;flex-wrap:wrap">
-            <span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama'}</span>
-            ${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu</span>' : ''}
-          </div>
-        </div>
-      </div>
-      <div class="card-changelog">
-        <strong>Son Güncelleme</strong>
-        ${app.changelog}
-      </div>
-      <div class="card-footer">
-        <button class="detail-btn">🔍 Detayları Gör</button>
-        ${app.force_update
-          ? `<span class="force-info">⚠️ Min: v${app.min_version}</span>`
-          : `<span style="font-size:0.75rem;color:var(--muted)">Min: v${app.min_version}</span>`}
-      </div>
-    </div>
-  `).join('');
-}
-
-function showDetail(id) {
-  const app = allApps[id];
-  const extra = appExtras[id] || {};
-  if (!app) return;
-
-  document.getElementById('d-nav-title').textContent = app.name;
-  document.getElementById('d-icon').textContent = app.icon || '📦';
-  document.getElementById('d-name').textContent = app.name;
-  document.getElementById('d-dev').textContent = '👤 ' + (extra.developer || 'judy658');
-  document.getElementById('d-ver').textContent = 'v' + app.version;
-  document.getElementById('d-minver').textContent = 'v' + app.min_version;
-  document.getElementById('d-avg-rating').textContent = '—';
-  document.getElementById('d-category').textContent = app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama';
-
-  document.getElementById('d-badges').innerHTML = `
-    <span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama'}</span>
-    ${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu Güncelleme</span>' : ''}
-  `;
-
-  const dlBtn = document.getElementById('d-dl-btn');
-  dlBtn.href = app.download_url;
-  dlBtn.onclick = () => { incrementDownload(id); return true; };
-
-  document.getElementById('d-dl-count').textContent = '...';
-  getDownloads(id).then(count => {
-    document.getElementById('d-dl-count').textContent = count;
-  });
-
-  const screenshots = extra.screenshots || [];
-  const ssEl = document.getElementById('d-screenshots');
-  if (screenshots.length) {
-    ssEl.innerHTML = screenshots.map(url => `<div class="ss-item"><img src="${url}" alt="" onclick="openLightbox('${url}')"/></div>`).join('');
-  } else {
-    ssEl.innerHTML = ['📱','📱','📱'].map(e => `<div class="ss-item">${e}<span style="color:var(--muted);font-size:0.75rem">Yakında</span></div>`).join('');
-  }
-
-  const desc = extra.description || app.changelog;
-  document.getElementById('d-desc').innerHTML = desc.split('\n').map(p => p ? `<p style="margin-bottom:10px">${p}</p>` : '').join('');
-
-  // Önce versions.json'daki history'e bak, yoksa index.html'deki changelog_history'e, o da yoksa changelog'a dön
-  const jsonHistory = app.history
-    ? app.history.map(h => ({ version: h.version, text: h.note }))
-    : null;
-  const history = jsonHistory || extra.changelog_history || [{ version: 'V' + app.version, text: app.changelog }];
-  document.getElementById('d-changelog').innerHTML = history.map(h => `
-    <div class="cl-item">
-      <div class="cl-ver">${h.version}</div>
-      <div class="cl-text">${h.text}</div>
-    </div>
-  `).join('');
-
-  loadComments(id);
-
-  const dp = document.getElementById('detail-page');
-  dp.classList.add('active');
-  dp.scrollTop = 0;
-  document.getElementById('home-page').style.display = 'none';
-}
-
-function showHome() {
-  document.getElementById('detail-page').classList.remove('active');
-  document.getElementById('profile-page').classList.remove('active');
-  document.getElementById('admin-page').classList.remove('active');
-  document.getElementById('home-page').style.display = 'block';
-}
-
-function filterApps(filter, btn) {
-  currentFilter = filter;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderGrid(filter);
-}
-
-function copyUrl() {
-  const url = document.getElementById('api-url-text').textContent;
-  navigator.clipboard.writeText(url).then(() => {
-    const btn = document.querySelector('.copy-btn');
-    btn.textContent = 'Kopyalandı ✓';
-    setTimeout(() => btn.textContent = 'Kopyala', 2000);
-  });
-}
-
-loadApps();
-</script>
 
 <!-- AUTH MODAL -->
 <div class="auth-overlay" id="auth-overlay" onclick="handleOverlayClick(event)">
@@ -768,195 +460,122 @@ loadApps();
   </div>
 </div>
 
-<!-- Lightbox -->
+<!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <span class="lightbox-close" onclick="closeLightbox()">✕</span>
   <img id="lightbox-img" src="" alt=""/>
 </div>
 
 <script>
-function openLightbox(url) {
-  document.getElementById('lightbox-img').src = url;
-  document.getElementById('lightbox').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeLightbox() {
-  document.getElementById('lightbox').classList.remove('open');
-  document.body.style.overflow = '';
-}
-document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
-</script>
-
-<script>
-// ── ADMİN ──
+// ════════════════════════════════════════════════
+//  SUPABASE & SABİTLER — tek yerde
+// ════════════════════════════════════════════════
+const SUPA_URL   = "https://jnuckqaiutmkiquptvzu.supabase.co";
+const SUPA_KEY   = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpudWNrcWFpdXRta2lxdXB0dnp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDgzMTAsImV4cCI6MjA4ODk4NDMxMH0.sP_FoTrYOFWiIS7PdaFYtR1JbP5vGf_KLgc_jh7zhZY";
+const supa       = supabase.createClient(SUPA_URL, SUPA_KEY);
 const ADMIN_EMAIL = 'geceninhakimistudio@gmail.com';
 
-// Presence: sayfa açıkken her 30sn Supabase'e "online" bilgisi gönder
+// ════════════════════════════════════════════════
+//  GLOBAL STATE
+// ════════════════════════════════════════════════
+let allApps        = {};
+let currentFilter  = 'all';
+let currentUserEmail = null;
+let currentUserId  = null;
+let currentAppId   = null;
+let selectedRating = 0;
 let _presenceTimer = null;
 
-async function startPresence() {
+// ════════════════════════════════════════════════
+//  UYGULAMA EKSTRA BİLGİLERİ
+// ════════════════════════════════════════════════
+const appExtras = {
+  sportify: {
+    developer: "judy658",
+    description: "Sportify, GitHub üzerinden MP3 dosyalarını doğrudan stream eden kişisel bir müzik uygulamasıdır. 129 şarkılık geniş kütüphanesiyle Türkçe pop, yabancı müzik, arabesk ve daha fazlasını tek bir yerde dinleyebilirsiniz.\n\nÇalma listeleri oluşturabilir, favori şarkılarınızı kaydedebilir ve en çok dinlediklerinizi takip edebilirsiniz.",
+    screenshots: [
+      "https://raw.githubusercontent.com/judy658/judy658-devstore/main/sportify_ss1.png",
+      "https://raw.githubusercontent.com/judy658/judy658-devstore/main/sportify_ss2.png",
+      "https://raw.githubusercontent.com/judy658/judy658-devstore/main/sportify_ss3.png"
+    ],
+    changelog_history: [
+      { version: "V12", text: "Yeni şarkılar eklendi (HITLER, Bir Baskedir). 6 dakika üzeri 5 şarkı kaldırıldı. Performans iyileştirmeleri yapıldı." },
+      { version: "V11", text: "Şarkı listesi güncellendi, yeni özellikler eklendi." },
+      { version: "V10", text: "İlk stabil sürüm yayınlandı." }
+    ]
+  }
+};
+
+// ════════════════════════════════════════════════
+//  SAYFA GEÇİŞLERİ
+// ════════════════════════════════════════════════
+function showHome() {
+  document.getElementById('detail-page').classList.remove('active');
+  document.getElementById('profile-page').classList.remove('active');
+  document.getElementById('admin-page').classList.remove('active');
+  document.getElementById('home-page').style.display = 'block';
+}
+
+async function showProfile() {
   const { data: { session } } = await supa.auth.getSession();
-  if (!session) return;
-  const email = session.user.email;
-  const uid = session.user.id;
-  await _pingPresence(uid, email);
-  _presenceTimer = setInterval(() => _pingPresence(uid, email), 30000);
-  // Sayfa kapanınca offline yap
-  window.addEventListener('beforeunload', () => _setOffline(uid));
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) _setOffline(uid);
-    else _pingPresence(uid, email);
-  });
-}
-
-async function _pingPresence(uid, email) {
-  await supa.from('user_presence').upsert({
-    user_id: uid,
-    email: email,
-    last_seen: new Date().toISOString(),
-    is_online: true
-  }, { onConflict: 'user_id' });
-}
-
-async function _setOffline(uid) {
-  await supa.from('user_presence').update({
-    is_online: false,
-    last_seen: new Date().toISOString()
-  }).eq('user_id', uid);
-}
-
-function stopPresence() {
-  if (_presenceTimer) { clearInterval(_presenceTimer); _presenceTimer = null; }
+  if (!session) { openAuth(); return; }
+  document.getElementById('profile-email-display').textContent = session.user.email;
+  document.getElementById('profile-email-input').value = session.user.email;
+  if (session.user.created_at) {
+    const d = new Date(session.user.created_at);
+    document.getElementById('profile-since').textContent = 'Üyelik: ' + d.toLocaleDateString('tr-TR', { year:'numeric', month:'long', day:'numeric' });
+  }
+  const msg = document.getElementById('pass-msg');
+  msg.className = 'profile-msg'; msg.textContent = '';
+  const btn = document.getElementById('pass-reset-btn');
+  if (btn) { btn.disabled = false; btn.textContent = '📧 Sıfırlama Maili Gönder'; }
+  document.getElementById('home-page').style.display = 'none';
+  document.getElementById('detail-page').classList.remove('active');
+  document.getElementById('admin-page').classList.remove('active');
+  document.getElementById('profile-page').classList.add('active');
+  document.getElementById('profile-page').scrollTop = 0;
 }
 
 async function showAdminPanel() {
   const { data: { session } } = await supa.auth.getSession();
   if (!session || session.user.email !== ADMIN_EMAIL) return;
-
   document.getElementById('home-page').style.display = 'none';
   document.getElementById('detail-page').classList.remove('active');
   document.getElementById('profile-page').classList.remove('active');
-  document.getElementById('admin-page').classList.remove('active');
   document.getElementById('admin-page').classList.add('active');
   document.getElementById('admin-page').scrollTop = 0;
-
   loadAdminUsers();
   loadAdminMessages();
 }
 
-function switchAdminTab(tab, btn) {
-  document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
-  document.getElementById('admin-' + tab).classList.add('active');
-}
-
-async function loadAdminUsers() {
-  document.getElementById('user-list').innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
-
-  // Tüm presence kayıtlarını çek
-  const { data: presence } = await supa.from('user_presence')
-    .select('*')
-    .order('is_online', { ascending: false })
-    .order('last_seen', { ascending: false });
-
-  if (!presence || presence.length === 0) {
-    document.getElementById('user-list').innerHTML = '<div class="admin-empty">Henüz kayıtlı kullanıcı yok.</div>';
-    return;
+// ════════════════════════════════════════════════
+//  KULLANICI OTURUMU
+// ════════════════════════════════════════════════
+function showUserLoggedIn(email) {
+  currentUserEmail = email;
+  document.getElementById('login-btn').style.display = 'none';
+  const info = document.getElementById('user-info');
+  info.style.display = 'flex';
+  document.getElementById('user-email-short').textContent = email.length > 18 ? email.substring(0, 15) + '...' : email;
+  if (email === ADMIN_EMAIL && !document.getElementById('admin-nav-btn')) {
+    const btn = document.createElement('button');
+    btn.id = 'admin-nav-btn'; btn.className = 'user-btn';
+    btn.style.cssText = 'background:rgba(124,92,252,0.15);border-color:rgba(124,92,252,0.4);color:var(--accent)';
+    btn.textContent = '🛡️ Admin'; btn.onclick = showAdminPanel;
+    document.getElementById('nav-user-area').prepend(btn);
   }
-
-  // Online: son 90 saniyede ping atmış
-  const now = Date.now();
-  const onlineCount = presence.filter(u => {
-    const diff = (now - new Date(u.last_seen).getTime()) / 1000;
-    return diff < 90 && u.is_online;
-  }).length;
-
-  document.getElementById('a-total-users').textContent = presence.length;
-  document.getElementById('a-online-users').textContent = onlineCount;
-
-  document.getElementById('user-list').innerHTML = presence.map(u => {
-    const diff = (now - new Date(u.last_seen).getTime()) / 1000;
-    const isOnline = diff < 90 && u.is_online;
-    const lastSeenStr = _timeAgo(u.last_seen);
-    const initials = u.email ? u.email[0].toUpperCase() : '?';
-    return `
-      <div class="user-row ${isOnline ? 'online' : ''}">
-        <div class="user-avatar">${initials}</div>
-        <div class="user-info">
-          <div class="user-email">${u.email}${u.email === ADMIN_EMAIL ? ' 👑' : ''}</div>
-          <div class="user-meta">${isOnline ? '🟢 Şu an aktif' : '⚫ Son görülme: ' + lastSeenStr}</div>
-        </div>
-        <div class="online-dot ${isOnline ? 'active' : ''}"></div>
-        <span class="online-badge ${isOnline ? 'on' : 'off'}">${isOnline ? 'Online' : 'Offline'}</span>
-      </div>`;
-  }).join('');
+  startPresence();
+  checkContactAuth();
 }
 
-async function loadAdminMessages() {
-  document.getElementById('msg-list').innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
-
-  const { data: msgs } = await supa.from('contact_messages')
-    .select('*')
-    .order('created_at', { ascending: false });
-
-  if (!msgs || msgs.length === 0) {
-    document.getElementById('msg-list').innerHTML = '<div class="admin-empty">Henüz mesaj yok.</div>';
-    document.getElementById('a-total-msgs').textContent = '0';
-    return;
-  }
-
-  document.getElementById('a-total-msgs').textContent = msgs.length;
-
-  const tagMap = {
-    'suggest': { label: '💡 Öneri', cls: 'msg-tag-suggest' },
-    'bug':     { label: '🐛 Hata',  cls: 'msg-tag-bug' },
-    'song':    { label: '🎵 Şarkı', cls: 'msg-tag-song' },
-    'general': { label: '💬 Genel', cls: 'msg-tag-general' }
-  };
-
-  document.getElementById('msg-list').innerHTML = msgs.map(m => {
-    const tag = tagMap[m.type] || tagMap['general'];
-    const dateStr = new Date(m.created_at).toLocaleDateString('tr-TR', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
-    return `
-      <div class="msg-card" id="msg-${m.id}">
-        <div class="msg-header">
-          <div>
-            <div class="msg-from">${m.name || 'İsimsiz'} &nbsp;<span style="color:var(--muted);font-weight:400;font-size:0.82rem">&lt;${m.email || '—'}&gt;</span></div>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px">
-            <div class="msg-date">${dateStr}</div>
-            <button class="msg-delete" onclick="deleteMsg('${m.id}')">🗑</button>
-          </div>
-        </div>
-        <span class="msg-tag ${tag.cls}">${tag.label}</span>
-        ${m.subject ? `<div class="msg-subject">Konu: ${m.subject}</div>` : ''}
-        <div class="msg-body">${m.message || ''}</div>
-      </div>`;
-  }).join('');
+function showUserLoggedOut() {
+  currentUserEmail = null; currentUserId = null;
+  document.getElementById('login-btn').style.display = 'flex';
+  document.getElementById('user-info').style.display = 'none';
+  document.getElementById('admin-nav-btn')?.remove();
+  stopPresence();
+  checkContactAuth();
 }
-
-async function deleteMsg(id) {
-  if (!confirm('Bu mesajı silmek istediğine emin misin?')) return;
-  await supa.from('contact_messages').delete().eq('id', id);
-  document.getElementById('msg-' + id)?.remove();
-  const remaining = document.querySelectorAll('.msg-card').length;
-  document.getElementById('a-total-msgs').textContent = remaining;
-  if (remaining === 0) document.getElementById('msg-list').innerHTML = '<div class="admin-empty">Henüz mesaj yok.</div>';
-}
-
-function _timeAgo(dateStr) {
-  const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
-  if (diff < 60) return diff + ' sn önce';
-  if (diff < 3600) return Math.floor(diff/60) + ' dk önce';
-  if (diff < 86400) return Math.floor(diff/3600) + ' sa önce';
-  return Math.floor(diff/86400) + ' gün önce';
-}
-
-
-const SUPA_URL = "https://jnuckqaiutmkiquptvzu.supabase.co";
-const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpudWNrcWFpdXRta2lxdXB0dnp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDgzMTAsImV4cCI6MjA4ODk4NDMxMH0.sP_FoTrYOFWiIS7PdaFYtR1JbP5vGf_KLgc_jh7zhZY";
-const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
 
 async function checkSession() {
   const { data: { session } } = await supa.auth.getSession();
@@ -964,64 +583,33 @@ async function checkSession() {
   else showUserLoggedOut();
 }
 
-function showUserLoggedIn(email) {
-  currentUserEmail = email;
-  document.getElementById('login-btn').style.display = 'none';
-  const info = document.getElementById('user-info');
-  info.style.display = 'flex';
-  const short = email.length > 18 ? email.substring(0, 15) + '...' : email;
-  document.getElementById('user-email-short').textContent = short;
+supa.auth.onAuthStateChange((event, session) => {
+  if (event === 'SIGNED_IN' && session) { showUserLoggedIn(session.user.email); closeAuth(); }
+  else if (event === 'PASSWORD_RECOVERY') { _showNewPasswordPanel(); }
+  else if (event === 'SIGNED_OUT') { showUserLoggedOut(); }
+});
 
-  // Admin ise nav'a admin butonu ekle
-  if (email === ADMIN_EMAIL) {
-    if (!document.getElementById('admin-nav-btn')) {
-      const btn = document.createElement('button');
-      btn.id = 'admin-nav-btn';
-      btn.className = 'user-btn';
-      btn.style.cssText = 'background:rgba(124,92,252,0.15);border-color:rgba(124,92,252,0.4);color:var(--accent)';
-      btn.textContent = '🛡️ Admin';
-      btn.onclick = showAdminPanel;
-      document.getElementById('nav-user-area').prepend(btn);
-    }
-  }
-
-  // Presence başlat
-  startPresence();
-}
-
-function showUserLoggedOut() {
-  currentUserEmail = '';
-  document.getElementById('login-btn').style.display = 'flex';
-  document.getElementById('user-info').style.display = 'none';
-  document.getElementById('admin-nav-btn')?.remove();
-  stopPresence();
-}
-
+// ════════════════════════════════════════════════
+//  AUTH FONKSİYONLARI
+// ════════════════════════════════════════════════
 function openAuth() { document.getElementById('auth-overlay').classList.add('open'); }
 function closeAuth() {
   document.getElementById('auth-overlay').classList.remove('open');
   document.getElementById('auth-msg').className = 'auth-msg';
   document.getElementById('auth-msg').textContent = '';
 }
-function handleOverlayClick(e) {
-  if (e.target === document.getElementById('auth-overlay')) closeAuth();
-}
+function handleOverlayClick(e) { if (e.target === document.getElementById('auth-overlay')) closeAuth(); }
 function switchTab(tab) {
   document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', (tab==='login'&&i===0)||(tab==='register'&&i===1)));
   document.getElementById('auth-login').style.display = tab === 'login' ? 'block' : 'none';
   document.getElementById('auth-register').style.display = tab === 'register' ? 'block' : 'none';
   document.getElementById('auth-msg').className = 'auth-msg';
 }
-
-function showMsg(msg, type) {
-  const el = document.getElementById('auth-msg');
-  el.textContent = msg;
-  el.className = 'auth-msg ' + type;
-}
+function showMsg(msg, type) { const el = document.getElementById('auth-msg'); el.textContent = msg; el.className = 'auth-msg ' + type; }
 
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
-  const pass = document.getElementById('login-pass').value;
+  const pass  = document.getElementById('login-pass').value;
   if (!email || !pass) return showMsg('E-posta ve şifre gir!', 'error');
   const btn = document.querySelector('#auth-login .auth-submit');
   btn.disabled = true; btn.textContent = 'Giriş yapılıyor...';
@@ -1035,7 +623,7 @@ async function doLogin() {
 
 async function doRegister() {
   const email = document.getElementById('reg-email').value.trim();
-  const pass = document.getElementById('reg-pass').value;
+  const pass  = document.getElementById('reg-pass').value;
   const pass2 = document.getElementById('reg-pass2').value;
   if (!email || !pass) return showMsg('Tüm alanları doldur!', 'error');
   if (pass !== pass2) return showMsg('Şifreler eşleşmiyor!', 'error');
@@ -1054,7 +642,7 @@ async function doRegister() {
 async function verifyOTP() {
   const email = document.getElementById('reg-email').value.trim();
   const token = document.getElementById('reg-otp').value.trim();
-  if (token.length < 8) return showMsg('6 haneli kodu gir!', 'error');
+  if (token.length < 6) return showMsg('6 haneli kodu gir!', 'error');
   const btn = document.querySelector('#reg-step2 .auth-submit');
   btn.disabled = true; btn.textContent = 'Doğrulanıyor...';
   const { error } = await supa.auth.verifyOtp({ email, token, type: 'signup' });
@@ -1071,92 +659,78 @@ function backToReg() {
   document.getElementById('auth-msg').className = 'auth-msg';
 }
 
-async function signOut() {
-  await supa.auth.signOut();
-  showUserLoggedOut();
-}
-
-async function doSignOut() {
-  await supa.auth.signOut();
-  showUserLoggedOut();
-  showHome();
-}
-
-async function showProfile() {
-  const { data: { session } } = await supa.auth.getSession();
-  if (!session) { openAuth(); return; }
-
-  const email = session.user.email;
-  const createdAt = session.user.created_at;
-
-  document.getElementById('profile-email-display').textContent = email;
-  document.getElementById('profile-email-input').value = email;
-
-  if (createdAt) {
-    const d = new Date(createdAt);
-    document.getElementById('profile-since').textContent =
-      'Üyelik: ' + d.toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' });
-  }
-
-  const msg = document.getElementById('pass-msg');
-  msg.className = 'profile-msg';
-  msg.textContent = '';
-  const btn = document.getElementById('pass-reset-btn');
-  if (btn) { btn.disabled = false; btn.textContent = '📧 Sıfırlama Maili Gönder'; }
-
-  document.getElementById('home-page').style.display = 'none';
-  document.getElementById('detail-page').classList.remove('active');
-  document.getElementById('profile-page').classList.add('active');
-  document.getElementById('admin-page').classList.remove('active');
-  document.getElementById('profile-page').scrollTop = 0;
-}
+async function doSignOut() { await supa.auth.signOut(); showUserLoggedOut(); showHome(); }
 
 async function sendPasswordReset() {
   const { data: { session } } = await supa.auth.getSession();
   if (!session) { openAuth(); return; }
-
   const btn = document.getElementById('pass-reset-btn');
   const msg = document.getElementById('pass-msg');
-
-  msg.className = 'profile-msg';
-  msg.textContent = '';
-  btn.disabled = true;
-  btn.textContent = 'Gönderiliyor...';
-
-  const { error } = await supa.auth.resetPasswordForEmail(session.user.email, {
-    redirectTo: window.location.href
-  });
-
-  btn.disabled = false;
-  btn.textContent = '📧 Sıfırlama Maili Gönder';
-
-  if (error) {
-    msg.textContent = 'Hata: ' + error.message;
-    msg.className = 'profile-msg error';
-  } else {
-    msg.textContent = 'Mail gönderildi! ✓ Gelen kutunu kontrol et.';
-    msg.className = 'profile-msg success';
-    setTimeout(() => { msg.className = 'profile-msg'; msg.textContent = ''; }, 5000);
-  }
+  msg.className = 'profile-msg'; msg.textContent = '';
+  btn.disabled = true; btn.textContent = 'Gönderiliyor...';
+  const { error } = await supa.auth.resetPasswordForEmail(session.user.email, { redirectTo: window.location.href });
+  btn.disabled = false; btn.textContent = '📧 Sıfırlama Maili Gönder';
+  if (error) { msg.textContent = 'Hata: ' + error.message; msg.className = 'profile-msg error'; }
+  else { msg.textContent = 'Mail gönderildi! ✓'; msg.className = 'profile-msg success'; setTimeout(() => { msg.className = 'profile-msg'; msg.textContent = ''; }, 5000); }
 }
 
-supa.auth.onAuthStateChange((event, session) => {
-  if (event === 'SIGNED_IN' && session) {
-    showUserLoggedIn(session.user.email);
-    closeAuth();
-    checkContactAuth();
-  } else if (event === 'PASSWORD_RECOVERY') {
-    // Kullanıcı mail linkinden döndü — yeni şifre giriş paneli göster
-    _showNewPasswordPanel();
-  } else if (event === 'SIGNED_OUT') {
-    showUserLoggedOut();
-    checkContactAuth();
-  }
-});
+function _showNewPasswordPanel() {
+  if (document.getElementById('new-pass-overlay')) return;
+  const o = document.createElement('div');
+  o.id = 'new-pass-overlay';
+  o.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:600;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)';
+  o.innerHTML = `<div style="background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px;width:100%;max-width:420px;margin:20px">
+    <div style="text-align:center;font-size:2rem;margin-bottom:16px">🔒</div>
+    <div style="font-family:Syne,sans-serif;font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:24px">Yeni Şifre</div>
+    <div style="margin-bottom:14px"><label style="display:block;font-size:0.8rem;color:var(--muted);margin-bottom:6px;font-weight:500">Yeni Şifre</label>
+    <input type="password" id="new-pass-input" placeholder="En az 6 karakter" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box"/></div>
+    <div style="margin-bottom:20px"><label style="display:block;font-size:0.8rem;color:var(--muted);margin-bottom:6px;font-weight:500">Şifre Tekrar</label>
+    <input type="password" id="new-pass-input2" placeholder="••••••••" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box"/></div>
+    <div id="new-pass-msg" style="text-align:center;font-size:0.82rem;margin-bottom:12px;min-height:20px"></div>
+    <button id="new-pass-btn" onclick="_submitNewPassword()" style="width:100%;background:linear-gradient(135deg,var(--accent),#9b7eff);color:#fff;border:none;border-radius:12px;padding:13px;font-family:DM Sans,sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer">Şifreyi Kaydet</button>
+  </div>`;
+  document.body.appendChild(o);
+}
 
-checkSession();
-checkContactAuth();
+async function _submitNewPassword() {
+  const pass = document.getElementById('new-pass-input').value;
+  const pass2 = document.getElementById('new-pass-input2').value;
+  const btn = document.getElementById('new-pass-btn');
+  const msg = document.getElementById('new-pass-msg');
+  msg.style.color = 'var(--accent2)';
+  if (!pass || pass.length < 6) { msg.textContent = 'Şifre en az 6 karakter olmalı!'; return; }
+  if (pass !== pass2) { msg.textContent = 'Şifreler eşleşmiyor!'; return; }
+  btn.disabled = true; btn.textContent = 'Kaydediliyor...';
+  const { error } = await supa.auth.updateUser({ password: pass });
+  btn.disabled = false; btn.textContent = 'Şifreyi Kaydet';
+  if (error) { msg.textContent = 'Hata: ' + error.message; }
+  else { msg.style.color = 'var(--green)'; msg.textContent = 'Şifre güncellendi ✓'; setTimeout(() => document.getElementById('new-pass-overlay')?.remove(), 1500); }
+}
 
+// ════════════════════════════════════════════════
+//  PRESENCE
+// ════════════════════════════════════════════════
+async function startPresence() {
+  const { data: { session } } = await supa.auth.getSession();
+  if (!session) return;
+  const uid = session.user.id, email = session.user.email;
+  await _pingPresence(uid, email);
+  if (_presenceTimer) clearInterval(_presenceTimer);
+  _presenceTimer = setInterval(() => _pingPresence(uid, email), 30000);
+  window.addEventListener('beforeunload', () => _setOffline(uid));
+  document.addEventListener('visibilitychange', () => { if (document.hidden) _setOffline(uid); else _pingPresence(uid, email); });
+}
+async function _pingPresence(uid, email) {
+  await supa.from('user_presence').upsert({ user_id: uid, email, last_seen: new Date().toISOString(), is_online: true }, { onConflict: 'user_id' });
+}
+async function _setOffline(uid) {
+  await supa.from('user_presence').update({ is_online: false, last_seen: new Date().toISOString() }).eq('user_id', uid);
+}
+function stopPresence() { if (_presenceTimer) { clearInterval(_presenceTimer); _presenceTimer = null; } }
+
+// ════════════════════════════════════════════════
+//  İLETİŞİM FORMU
+// ════════════════════════════════════════════════
 async function checkContactAuth() {
   const { data: { session } } = await supa.auth.getSession();
   const note = document.getElementById('contact-login-note');
@@ -1165,273 +739,300 @@ async function checkContactAuth() {
   if (session) { note.style.display = 'none'; form.style.display = 'block'; }
   else { note.style.display = 'block'; form.style.display = 'none'; }
 }
-
 async function sendContact() {
   const { data: { session } } = await supa.auth.getSession();
   if (!session) { openAuth(); return; }
-
   const name = document.getElementById('c-name').value.trim();
   const subject = document.getElementById('c-subject').value;
   const message = document.getElementById('c-message').value.trim();
-  const email = session.user.email;
-
   if (!name || !message) { alert('Lütfen ad soyad ve mesaj alanlarını doldur!'); return; }
-
   const btn = document.getElementById('contact-btn');
   btn.disabled = true; btn.textContent = 'Gönderiliyor...';
-
   try {
-    const [res] = await Promise.all([
-      fetch('https://formspree.io/f/xnjgjwqd', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ name, email, subject, message })
-      }),
-      supa.from('contact_messages').insert({
-        name, email, subject: subject || 'general',
-        type: subject || 'general',
-        message,
-        created_at: new Date().toISOString()
-      })
+    await Promise.all([
+      fetch('https://formspree.io/f/xnjgjwqd', { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({ name, email: session.user.email, subject, message }) }),
+      supa.from('contact_messages').insert({ name, email: session.user.email, type: subject, message, created_at: new Date().toISOString() })
     ]);
-    if (res.ok) {
-      document.getElementById('contact-success').style.display = 'block';
-      document.getElementById('c-name').value = '';
-      document.getElementById('c-message').value = '';
-      btn.textContent = '✅ Gönderildi';
-    } else {
-      alert('Bir hata oluştu, tekrar dene!');
-      btn.disabled = false; btn.textContent = '📨 Gönder';
-    }
-  } catch(e) {
-    alert('Bağlantı hatası!');
-    btn.disabled = false; btn.textContent = '📨 Gönder';
+    document.getElementById('contact-success').style.display = 'block';
+    document.getElementById('c-name').value = ''; document.getElementById('c-message').value = '';
+    btn.textContent = '✅ Gönderildi';
+  } catch(e) { alert('Bağlantı hatası!'); btn.disabled = false; btn.textContent = '📨 Gönder'; }
+}
+
+// ════════════════════════════════════════════════
+//  ADMİN PANELİ
+// ════════════════════════════════════════════════
+function switchAdminTab(tab, btn) {
+  document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('admin-' + tab).classList.add('active');
+}
+async function loadAdminUsers() {
+  document.getElementById('user-list').innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
+  const { data: presence } = await supa.from('user_presence').select('*').order('is_online', { ascending: false }).order('last_seen', { ascending: false });
+  if (!presence || !presence.length) {
+    document.getElementById('user-list').innerHTML = '<div class="admin-empty">Henüz kayıtlı kullanıcı yok.</div>';
+    document.getElementById('a-total-users').textContent = '0';
+    document.getElementById('a-online-users').textContent = '0';
+    return;
   }
-}
-
-function _showNewPasswordPanel() {
-  // Zaten açık mı kontrol et
-  if (document.getElementById('new-pass-overlay')) return;
-
-  const overlay = document.createElement('div');
-  overlay.id = 'new-pass-overlay';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:600;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)';
-
-  overlay.innerHTML = `
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px;width:100%;max-width:420px;margin:20px">
-      <div style="text-align:center;font-size:2rem;margin-bottom:8px">🔒</div>
-      <div style="font-family:Syne,sans-serif;font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:6px">Yeni Şifre</div>
-      <div style="color:var(--muted);font-size:0.85rem;text-align:center;margin-bottom:24px">Hesabın için yeni bir şifre belirle</div>
-      <div style="margin-bottom:14px">
-        <label style="display:block;font-size:0.8rem;color:var(--muted);margin-bottom:6px;font-weight:500">Yeni Şifre</label>
-        <input type="password" id="new-pass-input" placeholder="En az 6 karakter" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box"/>
+  const now = Date.now();
+  const onlineCount = presence.filter(u => (now - new Date(u.last_seen).getTime()) / 1000 < 90 && u.is_online).length;
+  document.getElementById('a-total-users').textContent = presence.length;
+  document.getElementById('a-online-users').textContent = onlineCount;
+  document.getElementById('user-list').innerHTML = presence.map(u => {
+    const isOnline = (now - new Date(u.last_seen).getTime()) / 1000 < 90 && u.is_online;
+    return `<div class="user-row ${isOnline ? 'online' : ''}">
+      <div class="user-avatar">${u.email[0].toUpperCase()}</div>
+      <div class="user-info">
+        <div class="user-email-text">${u.email}${u.email === ADMIN_EMAIL ? ' 👑' : ''}</div>
+        <div class="user-meta">${isOnline ? '🟢 Şu an aktif' : '⚫ Son görülme: ' + _timeAgo(u.last_seen)}</div>
       </div>
-      <div style="margin-bottom:20px">
-        <label style="display:block;font-size:0.8rem;color:var(--muted);margin-bottom:6px;font-weight:500">Şifre Tekrar</label>
-        <input type="password" id="new-pass-input2" placeholder="••••••••" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box"/>
-      </div>
-      <div id="new-pass-msg" style="text-align:center;font-size:0.82rem;margin-bottom:12px;min-height:20px"></div>
-      <button id="new-pass-btn" onclick="_submitNewPassword()" style="width:100%;background:linear-gradient(135deg,var(--accent),#9b7eff);color:#fff;border:none;border-radius:12px;padding:13px;font-family:DM Sans,sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer">Şifreyi Kaydet</button>
-    </div>
-  `;
-  document.body.appendChild(overlay);
+      <div class="online-dot ${isOnline ? 'active' : ''}"></div>
+      <span class="online-badge ${isOnline ? 'on' : 'off'}">${isOnline ? 'Online' : 'Offline'}</span>
+    </div>`;
+  }).join('');
 }
-
-async function _submitNewPassword() {
-  const pass = document.getElementById('new-pass-input').value;
-  const pass2 = document.getElementById('new-pass-input2').value;
-  const btn = document.getElementById('new-pass-btn');
-  const msg = document.getElementById('new-pass-msg');
-
-  msg.style.color = 'var(--accent2)';
-  if (!pass || pass.length < 6) { msg.textContent = 'Şifre en az 6 karakter olmalı!'; return; }
-  if (pass !== pass2) { msg.textContent = 'Şifreler eşleşmiyor!'; return; }
-
-  btn.disabled = true; btn.textContent = 'Kaydediliyor...';
-  const { error } = await supa.auth.updateUser({ password: pass });
-  btn.disabled = false; btn.textContent = 'Şifreyi Kaydet';
-
-  if (error) {
-    msg.textContent = 'Hata: ' + error.message;
-  } else {
-    msg.style.color = 'var(--green)';
-    msg.textContent = 'Şifre güncellendi ✓';
-    setTimeout(() => {
-      document.getElementById('new-pass-overlay')?.remove();
-    }, 1500);
+async function loadAdminMessages() {
+  document.getElementById('msg-list').innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
+  const { data: msgs } = await supa.from('contact_messages').select('*').order('created_at', { ascending: false });
+  if (!msgs || !msgs.length) {
+    document.getElementById('msg-list').innerHTML = '<div class="admin-empty">Henüz mesaj yok.</div>';
+    document.getElementById('a-total-msgs').textContent = '0';
+    return;
   }
+  document.getElementById('a-total-msgs').textContent = msgs.length;
+  const tagMap = { suggest:{label:'💡 Öneri',cls:'msg-tag-suggest'}, bug:{label:'🐛 Hata',cls:'msg-tag-bug'}, song:{label:'🎵 Şarkı',cls:'msg-tag-song'}, general:{label:'💬 Genel',cls:'msg-tag-general'} };
+  document.getElementById('msg-list').innerHTML = msgs.map(m => {
+    const tag = tagMap[m.type] || tagMap.general;
+    const dateStr = new Date(m.created_at).toLocaleDateString('tr-TR', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    return `<div class="msg-card" id="msg-${m.id}">
+      <div class="msg-header">
+        <div class="msg-from">${m.name || 'İsimsiz'} <span style="color:var(--muted);font-weight:400;font-size:0.82rem">&lt;${m.email || '—'}&gt;</span></div>
+        <div style="display:flex;align-items:center;gap:10px"><div class="msg-date">${dateStr}</div><button class="msg-delete" onclick="deleteMsg('${m.id}')">🗑</button></div>
+      </div>
+      <span class="msg-tag ${tag.cls}">${tag.label}</span>
+      <div class="msg-body">${m.message || ''}</div>
+    </div>`;
+  }).join('');
 }
-</script>
+async function deleteMsg(id) {
+  if (!confirm('Bu mesajı silmek istediğine emin misin?')) return;
+  await supa.from('contact_messages').delete().eq('id', id);
+  document.getElementById('msg-' + id)?.remove();
+  const r = document.querySelectorAll('.msg-card').length;
+  document.getElementById('a-total-msgs').textContent = r;
+  if (r === 0) document.getElementById('msg-list').innerHTML = '<div class="admin-empty">Henüz mesaj yok.</div>';
+}
+function _timeAgo(dateStr) {
+  const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
+  if (diff < 60) return diff + ' sn önce';
+  if (diff < 3600) return Math.floor(diff/60) + ' dk önce';
+  if (diff < 86400) return Math.floor(diff/3600) + ' sa önce';
+  return Math.floor(diff/86400) + ' gün önce';
+}
 
-<script>
-// ── YORUMLAR ──
+// ════════════════════════════════════════════════
+//  UYGULAMA LİSTESİ
+// ════════════════════════════════════════════════
+async function loadApps() {
+  try {
+    const res = await fetch('versions.json');
+    if (res.ok) { const data = await res.json(); allApps = data.apps || {}; }
+  } catch(e) {}
+  updateStats(); renderGrid(currentFilter);
+}
+function updateStats() {
+  const list = Object.values(allApps);
+  document.getElementById('s-total').textContent = list.length;
+  document.getElementById('s-game').textContent = list.filter(a => a.category === 'game').length;
+  document.getElementById('s-app').textContent = list.filter(a => a.category === 'app').length;
+  document.getElementById('s-force').textContent = list.filter(a => a.force_update).length;
+}
+function renderGrid(filter) {
+  const grid = document.getElementById('app-grid');
+  const entries = Object.entries(allApps).filter(([id, app]) => filter === 'all' ? true : filter === 'force' ? app.force_update : app.category === filter);
+  if (!entries.length) { grid.innerHTML = `<div style="color:var(--muted);grid-column:1/-1;text-align:center;padding:48px 0">Bu filtrede uygulama yok.</div>`; return; }
+  grid.innerHTML = entries.map(([id, app], i) => `
+    <div class="app-card" style="animation-delay:${i*0.07}s" onclick="showDetail('${id}')">
+      <div class="card-header">
+        <div class="app-icon">${app.icon || '📦'}</div>
+        <div>
+          <div class="app-name">${app.name}</div>
+          <div class="app-version">Versiyon <span class="ver-num">v${app.version}</span></div>
+          <div style="margin-top:7px;display:flex;gap:6px;flex-wrap:wrap">
+            <span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama'}</span>
+            ${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu</span>' : ''}
+          </div>
+        </div>
+      </div>
+      <div class="card-changelog"><strong>Son Güncelleme</strong>${app.changelog}</div>
+      <div class="card-footer">
+        <button class="detail-btn">🔍 Detayları Gör</button>
+        ${app.force_update ? `<span class="force-info">⚠️ Min: v${app.min_version}</span>` : `<span style="font-size:0.75rem;color:var(--muted)">Min: v${app.min_version}</span>`}
+      </div>
+    </div>`).join('');
+}
+function filterApps(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid(filter);
+}
+
+// ════════════════════════════════════════════════
+//  DETAY SAYFASI
+// ════════════════════════════════════════════════
+async function showDetail(id) {
+  const app = allApps[id], extra = appExtras[id] || {};
+  if (!app) return;
+  document.getElementById('d-nav-title').textContent = app.name;
+  document.getElementById('d-icon').textContent = app.icon || '📦';
+  document.getElementById('d-name').textContent = app.name;
+  document.getElementById('d-dev').textContent = '👤 ' + (extra.developer || 'judy658');
+  document.getElementById('d-ver').textContent = 'v' + app.version;
+  document.getElementById('d-minver').textContent = 'v' + app.min_version;
+  document.getElementById('d-avg-rating').textContent = '—';
+  document.getElementById('d-category').textContent = app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama';
+  document.getElementById('d-badges').innerHTML = `<span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama'}</span>${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu Güncelleme</span>' : ''}`;
+  const dlBtn = document.getElementById('d-dl-btn');
+  dlBtn.href = app.download_url;
+  dlBtn.onclick = () => { incrementDownload(id); return true; };
+  document.getElementById('d-dl-count').textContent = '...';
+  getDownloads(id).then(c => { document.getElementById('d-dl-count').textContent = c; });
+  const ssEl = document.getElementById('d-screenshots');
+  const screenshots = extra.screenshots || [];
+  ssEl.innerHTML = screenshots.length ? screenshots.map(url => `<div class="ss-item"><img src="${url}" alt="" onclick="openLightbox('${url}')"/></div>`).join('') : ['📱','📱','📱'].map(e => `<div class="ss-item">${e}<span style="color:var(--muted);font-size:0.75rem">Yakında</span></div>`).join('');
+  const desc = extra.description || app.changelog;
+  document.getElementById('d-desc').innerHTML = desc.split('\n').map(p => p ? `<p style="margin-bottom:10px">${p}</p>` : '').join('');
+  // Güncelleme geçmişi: önce versions.json'daki history, sonra appExtras'taki changelog_history
+  const jsonHistory = app.history ? app.history.map(h => ({ version: h.version, text: h.note })) : null;
+  const history = jsonHistory || extra.changelog_history || [{ version: 'V' + app.version, text: app.changelog }];
+  document.getElementById('d-changelog').innerHTML = history.map(h => `<div class="cl-item"><div class="cl-ver">${h.version}</div><div class="cl-text">${h.text}</div></div>`).join('');
+  loadComments(id);
+  document.getElementById('home-page').style.display = 'none';
+  const dp = document.getElementById('detail-page');
+  dp.classList.add('active'); dp.scrollTop = 0;
+}
+
+// ════════════════════════════════════════════════
+//  İNDİRME SAYACI
+// ════════════════════════════════════════════════
+async function getDownloads(appId) {
+  const { data } = await supa.from('app_stats').select('downloads').eq('app_id', appId).single();
+  return data ? data.downloads : 0;
+}
+async function incrementDownload(appId) {
+  const { data } = await supa.from('app_stats').select('downloads').eq('app_id', appId).single();
+  if (data) await supa.from('app_stats').update({ downloads: data.downloads + 1, updated_at: new Date().toISOString() }).eq('app_id', appId);
+  else await supa.from('app_stats').insert({ app_id: appId, downloads: 1 });
+}
+
+// ════════════════════════════════════════════════
+//  YORUMLAR
+// ════════════════════════════════════════════════
 function maskEmail(email) {
   const user = email.split('@')[0];
   if (user.length <= 2) return user[0] + '*****';
   return user.substring(0, 2) + '*'.repeat(Math.min(5, user.length - 2));
 }
-
 function calcAvgRating(data) {
-  if (!data || data.length === 0) return null;
+  if (!data || !data.length) return null;
   const rated = data.filter(c => c.rating > 0);
-  if (rated.length === 0) return null;
-  const avg = rated.reduce((s, c) => s + c.rating, 0) / rated.length;
-  return avg.toFixed(1);
+  if (!rated.length) return null;
+  return (rated.reduce((s, c) => s + c.rating, 0) / rated.length).toFixed(1);
 }
-let currentAppId = null;
-let selectedRating = 0;
-let currentUserEmail = null;
-let currentUserId = null;
-
 async function loadComments(appId) {
   currentAppId = appId;
   const { data: { session } } = await supa.auth.getSession();
   currentUserId = session ? session.user.id : null;
   currentUserEmail = session ? session.user.email : null;
-
-  if (session) {
-    document.getElementById('comment-form').style.display = 'block';
-    document.getElementById('comment-login-note').style.display = 'none';
-  } else {
-    document.getElementById('comment-form').style.display = 'none';
-    document.getElementById('comment-login-note').style.display = 'block';
-  }
-
-  const { data, error } = await supa
-    .from('comments')
-    .select('*')
-    .eq('app_id', appId)
-    .order('created_at', { ascending: false });
-
+  document.getElementById('comment-form').style.display = session ? 'block' : 'none';
+  document.getElementById('comment-login-note').style.display = session ? 'none' : 'block';
+  const { data } = await supa.from('comments').select('*').eq('app_id', appId).order('created_at', { ascending: false });
   const list = document.getElementById('comment-list');
   const countEl = document.getElementById('comment-count');
-
-  if (error || !data || data.length === 0) {
-    countEl.textContent = '';
-    list.innerHTML = '<div class="no-comments">Henüz yorum yok. İlk yorumu sen yap! 🎉</div>';
-    return;
-  }
-
+  if (!data || !data.length) { countEl.textContent = ''; list.innerHTML = '<div class="no-comments">Henüz yorum yok. İlk yorumu sen yap! 🎉</div>'; return; }
   const avg = calcAvgRating(data);
   countEl.textContent = '(' + data.length + ' yorum' + (avg ? ' · ★ ' + avg : '') + ')';
-
   const avgEl = document.getElementById('d-avg-rating');
-  if (avgEl) avgEl.textContent = avg ? '★ ' + avg : '';
-
+  if (avgEl) avgEl.textContent = avg ? '★ ' + avg : '—';
   const isAdmin = currentUserEmail === ADMIN_EMAIL;
   list.innerHTML = data.map(c => {
     const stars = '★'.repeat(c.rating || 0) + '☆'.repeat(5 - (c.rating || 0));
     const date = new Date(c.created_at).toLocaleDateString('tr-TR');
-    const emailShort = maskEmail(c.email);
     const isOwn = currentUserId && c.user_id === currentUserId;
-    const replyHtml = c.reply ? `
-      <div class="comment-reply">
-        <div class="comment-reply-header">👨‍💻 Geliştirici Yanıtı ${isAdmin ? `<button onclick="deleteReply('${c.id}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.72rem;margin-left:8px;">🗑 Yanıtı Sil</button>` : ''}</div>
-        <div class="comment-reply-text">${c.reply}</div>
-      </div>` : '';
-    const adminReplyBtn = isAdmin && !c.reply ? `
-      <button class="admin-reply-trigger" onclick="toggleReplyForm('${c.id}')">↩ Yanıtla</button>
-      <div class="reply-form" id="reply-form-${c.id}">
-        <textarea placeholder="Yanıtını yaz..." id="reply-input-${c.id}"></textarea>
-        <button class="reply-btn" onclick="submitReply('${c.id}')">Gönder</button>
-        <button class="reply-btn" style="margin-left:6px;border-color:var(--muted);color:var(--muted)" onclick="toggleReplyForm('${c.id}')">İptal</button>
-      </div>` : '';
-    return `
-      <div class="comment-item" id="comment-${c.id}">
-        <div class="comment-header">
-          <span class="comment-author">👤 ${emailShort}</span>
-          <div style="display:flex;align-items:center;gap:10px">
-            <span class="comment-date">${date}</span>
-            ${isOwn ? `<button class="comment-delete" onclick="deleteComment('${c.id}')">🗑 Sil</button>` : ''}
-          </div>
-        </div>
-        <div class="comment-stars">${stars}</div>
-        <div class="comment-text">${c.content}</div>
-        ${replyHtml}
-        ${adminReplyBtn}
-      </div>`;
+    const replyHtml = c.reply ? `<div class="comment-reply"><div class="comment-reply-header">👨‍💻 Geliştirici Yanıtı ${isAdmin ? `<button onclick="deleteReply('${c.id}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.72rem;margin-left:8px">🗑 Yanıtı Sil</button>` : ''}</div><div class="comment-reply-text">${c.reply}</div></div>` : '';
+    const adminReplyBtn = isAdmin && !c.reply ? `<button class="admin-reply-trigger" onclick="toggleReplyForm('${c.id}')">↩ Yanıtla</button><div class="reply-form" id="reply-form-${c.id}"><textarea placeholder="Yanıtını yaz..." id="reply-input-${c.id}"></textarea><button class="reply-btn" onclick="submitReply('${c.id}')">Gönder</button><button class="reply-btn" style="margin-left:6px;border-color:var(--muted);color:var(--muted)" onclick="toggleReplyForm('${c.id}')">İptal</button></div>` : '';
+    return `<div class="comment-item" id="comment-${c.id}">
+      <div class="comment-header"><span class="comment-author">👤 ${maskEmail(c.email)}</span>
+        <div style="display:flex;align-items:center;gap:10px"><span class="comment-date">${date}</span>${isOwn ? `<button class="comment-delete" onclick="deleteComment('${c.id}')">🗑 Sil</button>` : ''}</div>
+      </div>
+      <div class="comment-stars">${stars}</div>
+      <div class="comment-text">${c.content}</div>
+      ${replyHtml}${adminReplyBtn}
+    </div>`;
   }).join('');
 }
-
-function setRating(val) {
-  selectedRating = val;
-  document.querySelectorAll('.star').forEach(s => {
-    s.classList.toggle('active', parseInt(s.dataset.v) <= val);
-  });
-}
-
-document.addEventListener('input', e => {
-  if (e.target.id === 'comment-input') {
-    document.getElementById('comment-char').textContent = e.target.value.length + '/500';
-  }
-});
-
+function setRating(val) { selectedRating = val; document.querySelectorAll('.star').forEach(s => s.classList.toggle('active', parseInt(s.dataset.v) <= val)); }
+document.addEventListener('input', e => { if (e.target.id === 'comment-input') document.getElementById('comment-char').textContent = e.target.value.length + '/500'; });
 async function submitComment() {
   const content = document.getElementById('comment-input').value.trim();
   if (!content) return;
   if (selectedRating === 0) return alert('Lütfen bir puan ver!');
   const { data: { session } } = await supa.auth.getSession();
   if (!session) return openAuth();
-
-  const { data: existing } = await supa
-    .from('comments')
-    .select('id')
-    .eq('app_id', currentAppId)
-    .eq('user_id', session.user.id);
-
-  if (existing && existing.length > 0) {
-    alert('Bu uygulama için zaten bir yorum bıraktın!');
-    return;
-  }
-
+  const { data: existing } = await supa.from('comments').select('id').eq('app_id', currentAppId).eq('user_id', session.user.id);
+  if (existing && existing.length > 0) { alert('Bu uygulama için zaten bir yorum bıraktın!'); return; }
   const btn = document.querySelector('.comment-submit');
   btn.disabled = true; btn.textContent = 'Gönderiliyor...';
-
-  const { error } = await supa.from('comments').insert({
-    app_id: currentAppId,
-    user_id: session.user.id,
-    email: session.user.email,
-    content,
-    rating: selectedRating
-  });
-
+  const { error } = await supa.from('comments').insert({ app_id: currentAppId, user_id: session.user.id, email: session.user.email, content, rating: selectedRating });
   btn.disabled = false; btn.textContent = 'Yorum Gönder';
   if (error) { alert('Hata: ' + error.message); return; }
-
   document.getElementById('comment-input').value = '';
   document.getElementById('comment-char').textContent = '0/500';
   selectedRating = 0;
   document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
   loadComments(currentAppId);
 }
-
 async function deleteReply(id) {
   if (!confirm('Yanıtı silmek istediğine emin misin?')) return;
   await supa.from('comments').update({ reply: null, reply_at: null }).eq('id', id);
   loadComments(currentAppId);
 }
-
-function toggleReplyForm(id) {
-  const form = document.getElementById('reply-form-' + id);
-  form.style.display = form.style.display === 'block' ? 'none' : 'block';
-}
-
+function toggleReplyForm(id) { const f = document.getElementById('reply-form-' + id); f.style.display = f.style.display === 'block' ? 'none' : 'block'; }
 async function submitReply(id) {
   const text = document.getElementById('reply-input-' + id).value.trim();
   if (!text) return;
-  const { error } = await supa.from('comments').update({
-    reply: text,
-    reply_at: new Date().toISOString()
-  }).eq('id', id);
+  const { error } = await supa.from('comments').update({ reply: text, reply_at: new Date().toISOString() }).eq('id', id);
   if (error) { alert('Hata: ' + error.message); return; }
   loadComments(currentAppId);
 }
-
 async function deleteComment(id) {
   if (!confirm('Yorumu silmek istediğine emin misin?')) return;
   await supa.from('comments').delete().eq('id', id);
   document.getElementById('comment-' + id)?.remove();
 }
+
+// ════════════════════════════════════════════════
+//  LIGHTBOX & YARDIMCILAR
+// ════════════════════════════════════════════════
+function openLightbox(url) { document.getElementById('lightbox-img').src = url; document.getElementById('lightbox').classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow = ''; }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+function copyUrl() {
+  navigator.clipboard.writeText(document.getElementById('api-url-text').textContent).then(() => {
+    const btn = document.querySelector('.copy-btn'); btn.textContent = 'Kopyalandı ✓';
+    setTimeout(() => btn.textContent = 'Kopyala', 2000);
+  });
+}
+
+// ════════════════════════════════════════════════
+//  BAŞLAT
+// ════════════════════════════════════════════════
+loadApps();
+checkSession();
 </script>
 </body>
 </html>
