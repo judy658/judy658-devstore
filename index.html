@@ -149,6 +149,11 @@
     .admin-stat-val { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; display: block; }
     .admin-stat-label { font-size: 0.72rem; color: var(--muted); margin-top: 3px; }
     .admin-refresh { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 7px 16px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; margin-left: auto; display: block; margin-bottom: 16px; }
+    .notif-tag-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 7px 16px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; }
+    .notif-tag-btn:hover { border-color: var(--accent); color: var(--text); }
+    .notif-tag-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .notif-history-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+    .notif-history-tag { font-size: 0.72rem; font-weight: 600; padding: 3px 10px; border-radius: 7px; background: rgba(124,92,252,0.15); color: var(--accent); display: inline-block; margin-bottom: 6px; }
     .admin-refresh:hover { border-color: var(--accent); color: var(--accent); }
     .admin-empty { text-align: center; color: var(--muted); padding: 48px 24px; font-size: 0.9rem; }
     .user-list { display: flex; flex-direction: column; gap: 10px; }
@@ -433,6 +438,7 @@
     <div class="admin-tabs">
       <button class="admin-tab active" onclick="switchAdminTab('users',this)">👥 Kullanıcılar</button>
       <button class="admin-tab" onclick="switchAdminTab('messages',this)">📬 Mesajlar</button>
+      <button class="admin-tab" onclick="switchAdminTab('notifications',this)">📢 Bildirim Gönder</button>
     </div>
     <div class="admin-section active" id="admin-users">
       <button class="admin-refresh" onclick="loadAdminUsers()">↻ Yenile</button>
@@ -441,6 +447,61 @@
     <div class="admin-section" id="admin-messages">
       <button class="admin-refresh" onclick="loadAdminMessages()">↻ Yenile</button>
       <div class="msg-list" id="msg-list"><div class="admin-empty">Yükleniyor...</div></div>
+    </div>
+    <div class="admin-section" id="admin-notifications">
+      <div style="display:flex;flex-direction:column;gap:16px">
+
+        <!-- Tag seçici -->
+        <div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:500">Bildirim Türü</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap" id="notif-tags">
+            <button class="notif-tag-btn active" onclick="selectNotifTag(this,'🆕 Yeni Uygulama')">🆕 Yeni Uygulama</button>
+            <button class="notif-tag-btn" onclick="selectNotifTag(this,'🔄 Yeni Güncelleme')">🔄 Yeni Güncelleme</button>
+            <button class="notif-tag-btn" onclick="selectNotifTag(this,'📣 Duyuru')">📣 Duyuru</button>
+            <button class="notif-tag-btn" onclick="selectNotifTag(this,'🎁 Özel Teklif')">🎁 Özel Teklif</button>
+            <button class="notif-tag-btn" onclick="selectNotifTag(this,'🔧 Bakım')">🔧 Bakım</button>
+          </div>
+        </div>
+
+        <!-- Başlık -->
+        <div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:500">Başlık</div>
+          <input type="text" id="notif-title" placeholder="Bildirim başlığı..."
+            style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box"/>
+        </div>
+
+        <!-- İçerik -->
+        <div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:500">İçerik</div>
+          <textarea id="notif-content" placeholder="Bildirim içeriği..." rows="4"
+            style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;resize:none;box-sizing:border-box"></textarea>
+        </div>
+
+        <!-- Alıcılar -->
+        <div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:500">Alıcılar</div>
+          <div style="display:flex;gap:8px">
+            <button class="notif-tag-btn active" id="rcpt-all" onclick="selectRecipients('all')">👥 Tüm Kullanıcılar</button>
+            <button class="notif-tag-btn" id="rcpt-online" onclick="selectRecipients('online')">🟢 Sadece Online</button>
+          </div>
+          <div style="font-size:0.75rem;color:var(--muted);margin-top:6px" id="notif-rcpt-count">Yükleniyor...</div>
+        </div>
+
+        <!-- Gönder butonu -->
+        <div style="display:flex;align-items:center;gap:14px">
+          <button onclick="sendNotification()" id="notif-send-btn"
+            style="background:linear-gradient(135deg,var(--accent),#9b7eff);color:#fff;border:none;border-radius:11px;padding:13px 32px;font-family:DM Sans,sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer;transition:all 0.2s">
+            📢 Bildirimi Gönder
+          </button>
+          <span id="notif-status" style="font-size:0.85rem"></span>
+        </div>
+
+        <!-- Geçmiş -->
+        <div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:10px;font-weight:500;margin-top:8px">Gönderim Geçmişi</div>
+          <div id="notif-history"><div class="admin-empty">Henüz bildirim gönderilmedi.</div></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -627,6 +688,7 @@ async function showAdminPanel() {
   document.getElementById('admin-page').scrollTop = 0;
   loadAdminUsers();
   loadAdminMessages();
+  loadNotifData();
 }
 
 // ════════════════════════════════════════════════
@@ -845,6 +907,105 @@ async function sendContact() {
 // ════════════════════════════════════════════════
 //  ADMİN PANELİ
 // ════════════════════════════════════════════════
+// ════════════════════════════════════════════════
+//  BİLDİRİM SİSTEMİ
+// ════════════════════════════════════════════════
+let _notifTag = '🆕 Yeni Uygulama';
+let _notifRecipients = 'all';
+
+function selectNotifTag(btn, tag) {
+  _notifTag = tag;
+  document.querySelectorAll('.notif-tag-btn[onclick^="selectNotifTag"]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function selectRecipients(type) {
+  _notifRecipients = type;
+  document.getElementById('rcpt-all').classList.toggle('active', type === 'all');
+  document.getElementById('rcpt-online').classList.toggle('active', type === 'online');
+}
+
+async function loadNotifData() {
+  // Alıcı sayısını göster
+  const { data: presence } = await supa.from('user_presence').select('email, is_online, last_seen');
+  if (presence) {
+    const now = Date.now();
+    const online = presence.filter(u => (now - new Date(u.last_seen).getTime()) / 1000 < 60);
+    document.getElementById('notif-rcpt-count').textContent =
+      `Toplam ${presence.length} kullanıcı · ${online.length} şu an online`;
+  }
+  // Geçmişi yükle
+  loadNotifHistory();
+}
+
+async function loadNotifHistory() {
+  const { data: notifs } = await supa.from('notifications').select('*').order('created_at', { ascending: false }).limit(10);
+  const el = document.getElementById('notif-history');
+  if (!notifs || !notifs.length) { el.innerHTML = '<div class="admin-empty">Henüz bildirim gönderilmedi.</div>'; return; }
+  el.innerHTML = notifs.map(n => {
+    const date = new Date(n.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    const to = n.sent_to === 'all' ? '👥 Tüm kullanıcılar' : '🟢 Online kullanıcılar';
+    return `<div class="notif-history-item">
+      <span class="notif-history-tag">${n.tag || '📢'}</span>
+      <div style="font-size:0.88rem;font-weight:600;color:var(--text);margin-bottom:4px">${n.title}</div>
+      <div style="font-size:0.82rem;color:var(--muted)">${n.content}</div>
+      <div style="font-size:0.75rem;color:var(--muted);margin-top:6px">${to} · ${date}</div>
+    </div>`;
+  }).join('');
+}
+
+async function sendNotification() {
+  const title   = document.getElementById('notif-title').value.trim();
+  const content = document.getElementById('notif-content').value.trim();
+  const status  = document.getElementById('notif-status');
+  const btn     = document.getElementById('notif-send-btn');
+
+  if (!title) { status.textContent = '⚠️ Başlık boş olamaz!'; status.style.color = 'var(--accent2)'; return; }
+  if (!content) { status.textContent = '⚠️ İçerik boş olamaz!'; status.style.color = 'var(--accent2)'; return; }
+
+  btn.disabled = true; btn.textContent = '⏳ Gönderiliyor...';
+  status.textContent = ''; 
+
+  try {
+    // Alıcıları belirle
+    let recipients = 'all';
+    if (_notifRecipients === 'online') {
+      const { data: presence } = await supa.from('user_presence').select('email, last_seen');
+      const now = Date.now();
+      recipients = (presence || [])
+        .filter(u => (now - new Date(u.last_seen).getTime()) / 1000 < 60)
+        .map(u => u.email);
+    }
+
+    const { data: { session } } = await supa.auth.getSession();
+    const res = await fetch('https://jnuckqaiutmkiquptvzu.supabase.co/functions/v1/send-notification', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + session.access_token
+      },
+      body: JSON.stringify({ title, content, tag: _notifTag, recipients })
+    });
+
+    const result = await res.json();
+    if (result.success) {
+      status.textContent = `✅ ${result.sent}/${result.total} kullanıcıya gönderildi!`;
+      status.style.color = 'var(--green)';
+      document.getElementById('notif-title').value = '';
+      document.getElementById('notif-content').value = '';
+      loadNotifHistory();
+    } else {
+      status.textContent = '✗ Hata: ' + (result.error || 'Bilinmeyen hata');
+      status.style.color = 'var(--accent2)';
+    }
+  } catch(e) {
+    status.textContent = '✗ Bağlantı hatası!';
+    status.style.color = 'var(--accent2)';
+  }
+
+  btn.disabled = false; btn.textContent = '📢 Bildirimi Gönder';
+}
+
 function switchAdminTab(tab, btn) {
   document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
