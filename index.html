@@ -982,7 +982,7 @@ async function sendNotification() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + session.access_token
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpudWNrcWFpdXRta2lxdXB0dnp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDgzMTAsImV4cCI6MjA4ODk4NDMxMH0.sP_FoTrYOFWiIS7PdaFYtR1JbP5vGf_KLgc_jh7zhZY'
       },
       body: JSON.stringify({ title, content, tag: _notifTag, recipients })
     });
@@ -1038,7 +1038,7 @@ async function loadAdminUsers() {
     </div>`;
   }).join('');
 }
-async function loadAdminMessages() {
+async function loadAdminMessages() {G
   document.getElementById('msg-list').innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
   const { data: msgs } = await supa.from('contact_messages').select('*').order('created_at', { ascending: false });
   if (!msgs || !msgs.length) {
