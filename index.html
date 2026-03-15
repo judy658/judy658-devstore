@@ -51,6 +51,7 @@
     .badge-game { background: rgba(124,92,252,0.15); color: var(--accent); }
     .badge-app { background: rgba(61,220,151,0.12); color: var(--green); }
     .badge-force { background: rgba(252,92,125,0.15); color: var(--accent2); }
+    .badge-windows { background: rgba(0,120,212,0.15); color: #4da6ff; }
     .card-changelog { font-size: 0.85rem; color: var(--muted); padding-left: 12px; line-height: 1.6; margin-bottom: 18px; border-left: 2px solid var(--border); }
     .card-changelog strong { color: var(--text); display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
     .card-footer { display: flex; align-items: center; justify-content: space-between; }
@@ -573,6 +574,7 @@ const appExtras = {
   },
   sportify_downloader: {
     developer: "judy658",
+    platform: "windows",
     description: "Sportify Downloader, YouTube'dan MP3 ve video indirmenizi sağlayan masaüstü uygulamasıdır.\n\nŞarkı adı veya YouTube linki girerek tek tek ya da toplu indirme yapabilirsiniz. YouTube playlist desteği sayesinde tüm bir çalma listesini tek seferde indirebilirsiniz.\n\nİndirilen MP3\'lere otomatik olarak kapak fotoğrafı ve etiket bilgileri eklenir. Windows için hazır, kurulum gerektirmez.",
     screenshots: [
       "https://raw.githubusercontent.com/judy658/judy658-devstore/main/downloader_ss1.png",
@@ -945,6 +947,7 @@ function renderGrid(filter) {
           <div style="margin-top:7px;display:flex;gap:6px;flex-wrap:wrap">
             <span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama'}</span>
             ${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu</span>' : ''}
+            ${extra && extra.platform === 'windows' ? '<span class="badge badge-windows">🖥️ Sadece Windows</span>' : ''}
           </div>
         </div>
       </div>
@@ -976,10 +979,17 @@ async function showDetail(id) {
   document.getElementById('d-minver').textContent = 'v' + app.min_version;
   document.getElementById('d-avg-rating').textContent = '—';
   document.getElementById('d-category').textContent = app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama';
-  document.getElementById('d-badges').innerHTML = `<span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama'}</span>${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu Güncelleme</span>' : ''}`;
+  document.getElementById('d-badges').innerHTML = `<span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama'}</span>${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu Güncelleme</span>' : ''}${extra && extra.platform === 'windows' ? '<span class="badge badge-windows">🖥️ Sadece Windows</span>' : ''}`;
   const dlBtn = document.getElementById('d-dl-btn');
   dlBtn.href = app.download_url;
   dlBtn.onclick = () => { incrementDownload(id); return true; };
+  // İndirme butonu metnini dosya türüne göre güncelle
+  const extra2 = appExtras[id] || {};
+  if (extra2.platform === 'windows' || app.download_url.endsWith('.zip') || app.download_url.endsWith('.rar')) {
+    dlBtn.innerHTML = '⬇ ZIP İndir';
+  } else {
+    dlBtn.innerHTML = '⬇ APK İndir';
+  }
   document.getElementById('d-dl-count').textContent = '...';
   getDownloads(id).then(c => { document.getElementById('d-dl-count').textContent = c; });
   const ssEl = document.getElementById('d-screenshots');
