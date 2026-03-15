@@ -937,7 +937,9 @@ function renderGrid(filter) {
   const grid = document.getElementById('app-grid');
   const entries = Object.entries(allApps).filter(([id, app]) => filter === 'all' ? true : filter === 'force' ? app.force_update : app.category === filter);
   if (!entries.length) { grid.innerHTML = `<div style="color:var(--muted);grid-column:1/-1;text-align:center;padding:48px 0">Bu filtrede uygulama yok.</div>`; return; }
-  grid.innerHTML = entries.map(([id, app], i) => `
+  grid.innerHTML = entries.map(([id, app], i) => {
+    const ex = appExtras[id] || {};
+    return `
     <div class="app-card" style="animation-delay:${i*0.07}s" onclick="showDetail('${id}')">
       <div class="card-header">
         <div class="app-icon">${app.icon || '📦'}</div>
@@ -947,7 +949,7 @@ function renderGrid(filter) {
           <div style="margin-top:7px;display:flex;gap:6px;flex-wrap:wrap">
             <span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama'}</span>
             ${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu</span>' : ''}
-            ${extra && extra.platform === 'windows' ? '<span class="badge badge-windows">🖥️ Sadece Windows</span>' : ''}
+            ${ex.platform === 'windows' ? '<span class="badge badge-windows">🖥️ Sadece Windows</span>' : ''}
           </div>
         </div>
       </div>
@@ -956,7 +958,8 @@ function renderGrid(filter) {
         <button class="detail-btn">🔍 Detayları Gör</button>
         ${app.force_update ? `<span class="force-info">⚠️ Min: v${app.min_version}</span>` : `<span style="font-size:0.75rem;color:var(--muted)">Min: v${app.min_version}</span>`}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 function filterApps(filter, btn) {
   currentFilter = filter;
