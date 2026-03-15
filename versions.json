@@ -8,14 +8,27 @@
       "download_url": "https://github.com/judy658/judy658-devstore/releases/download/v1.0/Sportify_V_15Yeni_Tasarim.apk",
       "icon": "🎵",
       "category": "app",
-      "changelog": "tasarım değişirildi ve offline mod geldi.Artık şarkılar indirilebiliyor.",
+      "changelog": "tasarım değiştirildi ve offline mod geldi.Artık şarkılar indirilebiliyor.",
       "history": [
-        { "version": "V15", "note": "tasarım değişirildi ve offline mod geldi.Artık şarkılar indirilebiliyor."},
+        { "version": "V15", "note": "tasarım değiştirildi ve offline mod geldi.Artık şarkılar indirilebiliyor."},
         { "version": "V14", "note": "buglar düzeltildi,teknik iyileştirmeler yapıldı."},
         { "version": "V13", "note": "key sistemi kaldırıldı, oturum açılarak sportify'a girilebilir. En popüler şarkıları bulma sistemi geliştirildi." },
         { "version": "V12", "note": "Yeni şarkılar eklendi (HITLER, Bir Baskedir). 6 dakika üzeri 5 şarkı kaldırıldı. Performans iyileştirmeleri yapıldı." },
         { "version": "V11", "note": "Şarkı listesi güncellendi, yeni özellikler eklendi." },
         { "version": "V10", "note": "İlk stabil sürüm yayınlandı." }
+      ]
+    },
+    "sportify_downloader": {
+      "name": "Sportify Downloader",
+      "version": "1",
+      "min_version": "1",
+      "force_update": false,
+      "download_url": "https://github.com/judy658/judy658-devstore/releases/download/downloader-v1.0/SportifyDownloader.zip",
+      "icon": "⬇",
+      "category": "app",
+      "changelog": "İlk sürüm yayınlandı.",
+      "history": [
+        { "version": "V1", "note": "YouTube'dan MP3/MP4 indirme, playlist desteği, otomatik etiket düzenleme, kapak fotoğrafı gömme." }
       ]
     }
   }
