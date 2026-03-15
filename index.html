@@ -250,6 +250,7 @@
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
 <div class="glow1"></div><div class="glow2"></div>
@@ -964,42 +965,69 @@ async function sendNotification() {
   if (!content) { status.textContent = '⚠️ İçerik boş olamaz!'; status.style.color = 'var(--accent2)'; return; }
 
   btn.disabled = true; btn.textContent = '⏳ Gönderiliyor...';
-  status.textContent = ''; 
+  status.textContent = '';
 
   try {
     // Alıcıları belirle
-    let recipients = 'all';
+    let emails = [];
     if (_notifRecipients === 'online') {
       const { data: presence } = await supa.from('user_presence').select('email, last_seen');
       const now = Date.now();
-      recipients = (presence || [])
+      emails = (presence || [])
         .filter(u => (now - new Date(u.last_seen).getTime()) / 1000 < 60)
         .map(u => u.email);
+    } else {
+      const { data: users } = await supa.from('user_emails').select('email');
+      emails = (users || []).map(u => u.email);
     }
 
-    const { data: { session } } = await supa.auth.getSession();
-    const res = await fetch('https://jnuckqaiutmkiquptvzu.supabase.co/functions/v1/send-notification', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpudWNrcWFpdXRta2lxdXB0dnp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDgzMTAsImV4cCI6MjA4ODk4NDMxMH0.sP_FoTrYOFWiIS7PdaFYtR1JbP5vGf_KLgc_jh7zhZY'
-      },
-      body: JSON.stringify({ title, content, tag: _notifTag, recipients })
+    if (!emails.length) {
+      status.textContent = '⚠️ Gönderilecek kullanıcı bulunamadı!';
+      status.style.color = 'var(--accent2)';
+      btn.disabled = false; btn.textContent = '📢 Bildirimi Gönder';
+      return;
+    }
+
+    // EmailJS ile her kullanıcıya mail at
+    const EMAILJS_PUBLIC_KEY  = 'r8ASbmPn5vAERuB8C';
+    const EMAILJS_SERVICE_ID  = 'service_tf1icj3';
+    const EMAILJS_TEMPLATE_ID = 'template_oecb0bq';
+
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+
+    let sent = 0;
+    for (const email of emails) {
+      try {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+          to_email: email,
+          title:    title,
+          message:  content,
+          tag:      _notifTag
+        });
+        sent++;
+        status.textContent = `⏳ ${sent}/${emails.length} gönderiliyor...`;
+        status.style.color = 'var(--muted)';
+      } catch(e) {
+        console.error('Mail gönderilemedi:', email, e);
+      }
+    }
+
+    // Bildirimi geçmişe kaydet
+    await supa.from('notifications').insert({
+      title, content, tag: _notifTag,
+      recipients: _notifRecipients,
+      sent_count: sent,
+      total_count: emails.length
     });
 
-    const result = await res.json();
-    if (result.success) {
-      status.textContent = `✅ ${result.sent}/${result.total} kullanıcıya gönderildi!`;
-      status.style.color = 'var(--green)';
-      document.getElementById('notif-title').value = '';
-      document.getElementById('notif-content').value = '';
-      loadNotifHistory();
-    } else {
-      status.textContent = '✗ Hata: ' + (result.error || 'Bilinmeyen hata');
-      status.style.color = 'var(--accent2)';
-    }
+    status.textContent = `✅ ${sent}/${emails.length} kullanıcıya gönderildi!`;
+    status.style.color = 'var(--green)';
+    document.getElementById('notif-title').value = '';
+    document.getElementById('notif-content').value = '';
+    loadNotifHistory();
+
   } catch(e) {
-    status.textContent = '✗ Bağlantı hatası!';
+    status.textContent = '✗ Hata: ' + e.message;
     status.style.color = 'var(--accent2)';
   }
 
