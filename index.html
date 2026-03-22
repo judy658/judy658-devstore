@@ -482,11 +482,16 @@
         <!-- Alıcılar -->
         <div>
           <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:500">Alıcılar</div>
-          <div style="display:flex;gap:8px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button class="notif-tag-btn active" id="rcpt-all" onclick="selectRecipients('all')">👥 Tüm Kullanıcılar</button>
             <button class="notif-tag-btn" id="rcpt-online" onclick="selectRecipients('online')">🟢 Sadece Online</button>
+            <button class="notif-tag-btn" id="rcpt-select" onclick="selectRecipients('select')">☑️ Seç</button>
           </div>
           <div style="font-size:0.75rem;color:var(--muted);margin-top:6px" id="notif-rcpt-count">Yükleniyor...</div>
+          <div id="rcpt-user-list" style="display:none;margin-top:12px;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:12px;max-height:220px;overflow-y:auto;">
+            <div style="font-size:0.75rem;color:var(--muted);margin-bottom:8px">Bildirim göndermek istediğin kullanıcıları seç:</div>
+            <div id="rcpt-user-checkboxes" style="display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
         </div>
 
         <!-- Gönder butonu -->
@@ -962,6 +967,27 @@ function selectRecipients(type) {
   _notifRecipients = type;
   document.getElementById('rcpt-all').classList.toggle('active', type === 'all');
   document.getElementById('rcpt-online').classList.toggle('active', type === 'online');
+  document.getElementById('rcpt-select').classList.toggle('active', type === 'select');
+  const listEl = document.getElementById('rcpt-user-list');
+  if (type === 'select') {
+    listEl.style.display = 'block';
+    loadRcptUserList();
+  } else {
+    listEl.style.display = 'none';
+  }
+}
+
+async function loadRcptUserList() {
+  const box = document.getElementById('rcpt-user-checkboxes');
+  box.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">Yükleniyor...</div>';
+  const { data: presence } = await supa.from('user_presence').select('email').order('email', { ascending: true });
+  if (!presence || !presence.length) { box.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">Kullanıcı bulunamadı.</div>'; return; }
+  box.innerHTML = presence.map(u => `
+    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:7px 10px;border-radius:8px;transition:background 0.15s;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='transparent'">
+      <input type="checkbox" value="${u.email}" style="accent-color:var(--accent);width:15px;height:15px;cursor:pointer;">
+      <span style="font-size:0.85rem;color:var(--text)">${u.email}</span>
+    </label>
+  `).join('');
 }
 
 async function loadNotifData() {
@@ -983,7 +1009,7 @@ async function loadNotifHistory() {
   if (!notifs || !notifs.length) { el.innerHTML = '<div class="admin-empty">Henüz bildirim gönderilmedi.</div>'; return; }
   el.innerHTML = notifs.map(n => {
     const date = new Date(n.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-    const to = n.sent_to === 'all' ? '👥 Tüm kullanıcılar' : '🟢 Online kullanıcılar';
+    const to = n.sent_to === 'all' ? '👥 Tüm kullanıcılar' : n.sent_to === 'online' ? '🟢 Online kullanıcılar' : '☑️ Seçili kullanıcılar';
     return `<div class="notif-history-item">
       <span class="notif-history-tag">${n.tag || '📢'}</span>
       <div style="font-size:0.88rem;font-weight:600;color:var(--text);margin-bottom:4px">${n.title}</div>
@@ -1014,6 +1040,15 @@ async function sendNotification() {
       emails = (presence || [])
         .filter(u => (now - new Date(u.last_seen).getTime()) / 1000 < 60)
         .map(u => u.email);
+    } else if (_notifRecipients === 'select') {
+      const checkboxes = document.querySelectorAll('#rcpt-user-checkboxes input[type=checkbox]:checked');
+      emails = Array.from(checkboxes).map(cb => cb.value);
+      if (!emails.length) {
+        status.textContent = '⚠️ En az bir kullanıcı seç!';
+        status.style.color = 'var(--accent2)';
+        btn.disabled = false; btn.textContent = '📢 Bildirimi Gönder';
+        return;
+      }
     } else {
       const { data: users } = await supa.from('user_emails').select('email');
       emails = (users || []).map(u => u.email);
