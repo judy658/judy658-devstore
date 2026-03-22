@@ -8,8 +8,9 @@
       "download_url": "https://github.com/judy658/judy658-devstore/releases/download/v1.0/sportify_new_music_update.apk",
       "icon": "🎵",
       "category": "app",
-      "changelog": "Yeni şarkılar eklendi,şarkı adları güncellendi bozuk olanlar düzeltildi.",
+      "changelog": "arayüz güncellendi,tasarım değişti.",
       "history": [
+        { "version": "V17", "note": "arayüz güncellendi,tasarım değişti."},
         { "version": "V16", "note": "Yeni şarkılar eklendi,şarkı adları güncellendi bozuk olanlar düzeltildi."},
         { "version": "V15", "note": "tasarım değiştirildi ve offline mod geldi.Artık şarkılar indirilebiliyor."},
         { "version": "V14", "note": "buglar düzeltildi,teknik iyileştirmeler yapıldı."},
