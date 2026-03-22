@@ -440,6 +440,7 @@
       <button class="admin-tab active" onclick="switchAdminTab('users',this)">👥 Kullanıcılar</button>
       <button class="admin-tab" onclick="switchAdminTab('messages',this)">📬 Mesajlar</button>
       <button class="admin-tab" onclick="switchAdminTab('notifications',this)">📢 Bildirim Gönder</button>
+      <button class="admin-tab" onclick="switchAdminTab('deadaccounts',this)">💀 Ölü Hesaplar</button>
     </div>
     <div class="admin-section active" id="admin-users">
       <button class="admin-refresh" onclick="loadAdminUsers()">↻ Yenile</button>
@@ -504,6 +505,43 @@
         </div>
       </div>
     </div>
+
+    <div class="admin-section" id="admin-deadaccounts">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px">💀 Ölü Hesap Yönetimi</div>
+          <div style="font-size:0.8rem;color:var(--muted)">7 gündür aktif olmayan hesaplar. Cron her gece 02:00 UTC'de çalışır.</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="admin-refresh" style="margin:0" onclick="loadDeadAccounts()">↻ Yenile</button>
+          <button id="run-cleaner-btn" onclick="runCleanerNow()" style="background:linear-gradient(135deg,var(--accent2),#ff6b9d);color:#fff;border:none;border-radius:10px;padding:8px 18px;font-family:'DM Sans',sans-serif;font-size:0.83rem;font-weight:600;cursor:pointer;transition:all 0.2s">▶ Şimdi Çalıştır</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px">
+        <div style="flex:1;background:var(--surface);padding:16px;text-align:center">
+          <span style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;display:block;color:var(--accent2)" id="da-warn-count">—</span>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:3px">Uyarı Bekleyen</div>
+        </div>
+        <div style="flex:1;background:var(--surface);padding:16px;text-align:center">
+          <span style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;display:block;color:var(--yellow)" id="da-warned-count">—</span>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:3px">Uyarıldı</div>
+        </div>
+        <div style="flex:1;background:var(--surface);padding:16px;text-align:center">
+          <span style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;display:block;color:var(--green)" id="da-safe-count">—</span>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:3px">Aktif</div>
+        </div>
+      </div>
+      <div id="da-last-run" style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:20px;font-size:0.83rem;color:var(--muted);display:none">
+        <span style="color:var(--green);font-weight:600">✅ Son çalışma:</span> <span id="da-last-run-text"></span>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+        <button class="notif-tag-btn active" id="da-filter-all" onclick="filterDeadList('all',this)">Tümü</button>
+        <button class="notif-tag-btn" id="da-filter-warn" onclick="filterDeadList('warn',this)">⚠️ Uyarı Bekleyen</button>
+        <button class="notif-tag-btn" id="da-filter-warned" onclick="filterDeadList('warned',this)">📧 Uyarıldı</button>
+      </div>
+      <div id="dead-account-list"><div class="admin-empty">Yükleniyor...</div></div>
+    </div>
+
   </div>
 </div>
 
@@ -1039,6 +1077,104 @@ function switchAdminTab(tab, btn) {
   btn.classList.add('active');
   document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
   document.getElementById('admin-' + tab).classList.add('active');
+  if (tab === 'deadaccounts') loadDeadAccounts();
+  if (tab === 'users') loadAdminUsers();
+  if (tab === 'messages') loadAdminMessages();
+  if (tab === 'notifications') loadNotifData();
+}
+
+// ═══════════════════════════════════════
+// Ölü Hesap Yönetimi
+// ═══════════════════════════════════════
+let _deadList = [];
+let _deadFilter = 'all';
+
+async function loadDeadAccounts() {
+  const el = document.getElementById('dead-account-list');
+  el.innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
+  const now = new Date();
+  const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+  const { data: dead } = await supa.from('user_presence').select('user_id, email, last_seen, warned_at').lt('last_seen', sevenDaysAgo.toISOString()).order('last_seen', { ascending: true });
+  const { data: active } = await supa.from('user_presence').select('email').gte('last_seen', sevenDaysAgo.toISOString());
+  _deadList = dead ?? [];
+  const toWarn = _deadList.filter(u => !u.warned_at);
+  const warned = _deadList.filter(u => u.warned_at);
+  document.getElementById('da-warn-count').textContent = toWarn.length;
+  document.getElementById('da-warned-count').textContent = warned.length;
+  document.getElementById('da-safe-count').textContent = (active ?? []).length;
+  renderDeadList();
+}
+
+function filterDeadList(filter, btn) {
+  _deadFilter = filter;
+  document.querySelectorAll('[id^="da-filter-"]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderDeadList();
+}
+
+function renderDeadList() {
+  const el = document.getElementById('dead-account-list');
+  const now = new Date();
+  const warnCutoff = new Date(now - 24 * 60 * 60 * 1000);
+  let list = _deadList;
+  if (_deadFilter === 'warn') list = list.filter(u => !u.warned_at);
+  else if (_deadFilter === 'warned') list = list.filter(u => u.warned_at);
+  if (!list.length) { el.innerHTML = '<div class="admin-empty">Bu kategoride kullanici yok. 🎉</div>'; return; }
+  el.innerHTML = list.map(u => {
+    const lastSeen = new Date(u.last_seen);
+    const daysInactive = Math.floor((now - lastSeen) / (1000 * 60 * 60 * 24));
+    const isDeletePending = u.warned_at && new Date(u.warned_at) < warnCutoff;
+    const isWarned = u.warned_at && !isDeletePending;
+    const hoursLeft = u.warned_at ? Math.max(0, Math.ceil((new Date(u.warned_at).getTime() + 24 * 60 * 60 * 1000 - now.getTime()) / (1000 * 60 * 60))) : null;
+    const warnedDate = u.warned_at ? new Date(u.warned_at).toLocaleDateString('tr-TR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) : '—';
+    let statusBadge = '';
+    if (isDeletePending) statusBadge = '<span style="background:rgba(252,92,125,0.2);color:var(--accent2);border-radius:8px;padding:3px 10px;font-size:0.72rem;font-weight:700">🗑️ SILINECEK</span>';
+    else if (isWarned) statusBadge = '<span style="background:rgba(255,209,102,0.15);color:var(--yellow);border-radius:8px;padding:3px 10px;font-size:0.72rem;font-weight:700">📧 UYARILDI · ' + hoursLeft + 's kaldi</span>';
+    else statusBadge = '<span style="background:rgba(107,107,133,0.2);color:var(--muted);border-radius:8px;padding:3px 10px;font-size:0.72rem;font-weight:700">⏳ UYARI BEKLIYOR</span>';
+    return '<div style="background:var(--surface);border:1px solid ' + (isDeletePending ? 'rgba(252,92,125,0.3)' : isWarned ? 'rgba(255,209,102,0.2)' : 'var(--border)') + ';border-radius:14px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">'
+      + '<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,' + (isDeletePending ? '#fc5c7d,#ff9a3c' : isWarned ? '#ffd166,#f7971e' : 'var(--surface2),var(--bg)') + ');display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;font-weight:700;color:' + (isDeletePending || isWarned ? '#fff' : 'var(--muted)') + '">' + u.email[0].toUpperCase() + '</div>'
+      + '<div style="flex:1;min-width:180px"><div style="font-size:0.9rem;font-weight:600;margin-bottom:3px">' + u.email + '</div>'
+      + '<div style="font-size:0.75rem;color:var(--muted)">Son görülme: <strong style="color:var(--text)">' + lastSeen.toLocaleDateString('tr-TR', { day:'numeric', month:'short', year:'numeric' }) + '</strong> · <strong style="color:var(--accent2)">' + daysInactive + ' gün</strong> önce · Uyari: <strong style="color:var(--text)">' + warnedDate + '</strong></div></div>'
+      + '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' + statusBadge
+      + '<button onclick="deleteDeadAccount(\'' + u.user_id + '\',\'' + u.email + '\',this)" style="background:rgba(252,92,125,0.12);border:1px solid rgba(252,92,125,0.3);color:var(--accent2);border-radius:8px;padding:6px 14px;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s">🗑️ Sil</button></div></div>';
+  }).join('');
+}
+
+async function deleteDeadAccount(userId, email, btn) {
+  if (!confirm('"' + email + '" hesabini kalici olarak silmek istedigine emin misin?')) return;
+  btn.disabled = true; btn.textContent = 'Siliniyor...';
+  try {
+    await supa.from('comments').delete().eq('user_id', userId);
+    await supa.from('contact_messages').delete().eq('email', email);
+    await supa.from('user_presence').delete().eq('user_id', userId);
+    await supa.auth.admin.deleteUser(userId);
+    _deadList = _deadList.filter(u => u.user_id !== userId);
+    renderDeadList();
+    document.getElementById('da-warn-count').textContent = _deadList.filter(u => !u.warned_at).length;
+    document.getElementById('da-warned-count').textContent = _deadList.filter(u => u.warned_at).length;
+  } catch(e) { btn.disabled = false; btn.textContent = '🗑️ Sil'; alert('Hata: ' + e.message); }
+}
+
+async function runCleanerNow() {
+  const btn = document.getElementById('run-cleaner-btn');
+  btn.disabled = true; btn.textContent = '⏳ Çalışıyor...';
+  try {
+    const { data: { session } } = await supa.auth.getSession();
+    const res = await fetch('https://jnuckqaiutmkiquptvzu.supabase.co/functions/v1/dead-account-cleaner', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+      body: '{}'
+    });
+    const result = await res.json();
+    if (result.success) {
+      const { warned = [], deleted = [], errors = [] } = result.results;
+      const lastRunEl = document.getElementById('da-last-run');
+      lastRunEl.style.display = 'block';
+      document.getElementById('da-last-run-text').textContent = new Date().toLocaleTimeString('tr-TR') + ' — ' + warned.length + ' uyari gönderildi, ' + deleted.length + ' hesap silindi' + (errors.length ? ', ' + errors.length + ' hata' : '');
+      await loadDeadAccounts();
+    } else { alert('Hata: ' + result.error); }
+  } catch(e) { alert('Baglanti hatasi: ' + e.message); }
+  btn.disabled = false; btn.textContent = '▶ Şimdi Çalıştır';
 }
 async function loadAdminUsers() {
   document.getElementById('user-list').innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
