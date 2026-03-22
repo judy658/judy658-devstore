@@ -1,6 +1,7 @@
 {
   "apps": {
     "sportify": {
+      "image": "https://raw.githubusercontent.com/judy658/judy658-devstore/main/sportify_icon.png",
       "name": "Sportify",
       "version": "17",
       "min_version": "17",
