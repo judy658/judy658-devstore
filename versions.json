@@ -3,8 +3,8 @@
     "sportify": {
       "image": "https://raw.githubusercontent.com/judy658/judy658-devstore/main/sportify_icon.png",
       "name": "Sportify",
-      "version": "16",
-      "min_version": "16",
+      "version": "18",
+      "min_version": "18",
       "force_update": true,
       "download_url": "https://github.com/judy658/judy658-devstore/releases/tag/v1.0/sportify.new.music.update.apk",
       "icon": "🎵",
