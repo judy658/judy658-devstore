@@ -901,19 +901,21 @@ async function startPresence() {
   const { data: { session } } = await supa.auth.getSession();
   if (!session) return;
   const uid = session.user.id, email = session.user.email;
-  await _pingPresence(uid, email);
+  await _pingPresence(uid, email, true); // İlk ping: isInitial = true
   if (_presenceTimer) clearInterval(_presenceTimer);
-  _presenceTimer = setInterval(() => _pingPresence(uid, email), 30000);
+  _presenceTimer = setInterval(() => _pingPresence(uid, email, false), 30000);
   window.addEventListener('beforeunload', () => _setOffline(uid));
   document.addEventListener('visibilitychange', () => { if (document.hidden) _setOffline(uid); else _pingPresence(uid, email); });
 }
-async function _pingPresence(uid, email) {
-  // Canlanmayı (Resurrection) önleme: Eğer veritabanında kayıt yoksa (silinmişse) ping atma ve çıkış yap
-  const { data: exists, error: checkError } = await supa.from('user_presence').select('id').eq('email', email).maybeSingle();
-  if (!exists) {
-    console.log('[Presence] Hesap veritabanında bulunamadı (silinmiş). Oturum kapatılıyor...');
-    doSignOut();
-    return;
+async function _pingPresence(uid, email, isInitial = false) {
+  // Canlanmayı (Resurrection) önleme: Sadece periyodik pinglerde (isInitial değilse) kontrol yap
+  if (!isInitial) {
+    const { data: exists } = await supa.from('user_presence').select('id').eq('email', email).maybeSingle();
+    if (!exists) {
+      console.log('[Presence] Hesap veritabanında bulunamadı. Oturum kapatılıyor...');
+      doSignOut();
+      return;
+    }
   }
   await supa.from('user_presence').upsert({ user_id: uid, email, last_seen: new Date().toISOString(), is_online: true, current_app: 'devstore' }, { onConflict: 'email' });
 }
