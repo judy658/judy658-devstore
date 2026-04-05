@@ -1240,16 +1240,32 @@ async function loadAdminUsers() {
   document.getElementById('a-online-users').textContent = onlineCount;
   document.getElementById('user-list').innerHTML = presence.map(u => {
     const isOnline = (now - new Date(u.last_seen).getTime()) / 1000 < 60;
+    const isMe = u.email === ADMIN_EMAIL;
     return `<div class="user-row ${isOnline ? 'online' : ''}">
       <div class="user-avatar">${u.email[0].toUpperCase()}</div>
       <div class="user-info">
-        <div class="user-email-text">${u.email}${u.email === ADMIN_EMAIL ? ' 👑' : ''}</div>
+        <div class="user-email-text">${u.email}${isMe ? ' 👑' : ''}</div>
         <div class="user-meta">${isOnline ? '🟢 Şu an aktif' + (u.current_app ? ' · ' + (u.current_app === 'sportify' ? '🎵 Sportify' : '🌐 DevStore') : '') : '⚫ Son görülme: ' + _timeAgo(u.last_seen)}</div>
       </div>
-      <div class="online-dot ${isOnline ? 'active' : ''}"></div>
-      <span class="online-badge ${isOnline ? 'on' : 'off'}">${isOnline ? 'Online' : 'Offline'}</span>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="online-dot ${isOnline ? 'active' : ''}"></div>
+        <span class="online-badge ${isOnline ? 'on' : 'off'}">${isOnline ? 'Online' : 'Offline'}</span>
+        ${!isMe ? `<button onclick="banUser('${u.user_id}','${u.email}',this)" style="background:rgba(255,70,70,0.1);color:#ff4646;border:1px solid rgba(255,70,70,0.3);padding:6px 12px;border-radius:8px;font-size:0.75rem;cursor:pointer;transition:all 0.2s">🚫 Yasakla</button>` : ''}
+      </div>
     </div>`;
   }).join('');
+}
+
+async function banUser(userId, email, btn) {
+  if (email === ADMIN_EMAIL) return;
+  if (!confirm('"' + email + '" kullanıcısını tamamen yasaklamak istediğine emin misin? Bu işlem geri alınamaz ve kullanıcı bir daha giremez.')) return;
+  btn.disabled = true; btn.textContent = 'Yasaklanıyor...';
+  try {
+    await supa.from('comments').delete().eq('user_id', userId);
+    await supa.from('contact_messages').delete().eq('email', email);
+    await supa.from('user_presence').delete().eq('user_id', userId);
+    await loadAdminUsers();
+  } catch(e) { btn.disabled = false; btn.textContent = '🚫 Yasakla'; alert('Hata: ' + e.message); }
 }
 async function loadAdminMessages() {G
   document.getElementById('msg-list').innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
