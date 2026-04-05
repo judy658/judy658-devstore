@@ -908,6 +908,13 @@ async function startPresence() {
   document.addEventListener('visibilitychange', () => { if (document.hidden) _setOffline(uid); else _pingPresence(uid, email); });
 }
 async function _pingPresence(uid, email) {
+  // Canlanmayı (Resurrection) önleme: Eğer veritabanında kayıt yoksa (silinmişse) ping atma ve çıkış yap
+  const { data: exists, error: checkError } = await supa.from('user_presence').select('id').eq('email', email).maybeSingle();
+  if (!exists) {
+    console.log('[Presence] Hesap veritabanında bulunamadı (silinmiş). Oturum kapatılıyor...');
+    doSignOut();
+    return;
+  }
   await supa.from('user_presence').upsert({ user_id: uid, email, last_seen: new Date().toISOString(), is_online: true, current_app: 'devstore' }, { onConflict: 'email' });
 }
 async function _setOffline(uid) {
@@ -1182,7 +1189,14 @@ async function deleteDeadAccount(userId, email, btn) {
     await supa.from('comments').delete().eq('user_id', userId);
     await supa.from('contact_messages').delete().eq('email', email);
     await supa.from('user_presence').delete().eq('user_id', userId);
-    await supa.auth.admin.deleteUser(userId);
+    
+    // Auth silecek anahtara sahip değilse hata fırlatabilir, bu yüzden try-catch içine alıyoruz
+    try {
+      await supa.auth.admin.deleteUser(userId);
+    } catch(authE) {
+      console.warn('Auth kullanıcısı silinemedi (yetki kısıtı olabilir), ancak veritabanından başarıyla silindi.', authE);
+    }
+
     _deadList = _deadList.filter(u => u.user_id !== userId);
     renderDeadList();
     document.getElementById('da-warn-count').textContent = _deadList.filter(u => !u.warned_at).length;
