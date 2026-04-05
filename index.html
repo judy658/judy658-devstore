@@ -908,15 +908,21 @@ async function startPresence() {
   document.addEventListener('visibilitychange', () => { if (document.hidden) _setOffline(uid); else _pingPresence(uid, email); });
 }
 async function _pingPresence(uid, email, isInitial = false) {
-  // Canlanmayı (Resurrection) önleme: Sadece periyodik pinglerde (isInitial değilse) kontrol yap
-  if (!isInitial) {
-    const { data: exists } = await supa.from('user_presence').select('id').eq('email', email).maybeSingle();
-    if (!exists) {
-      console.log('[Presence] Hesap veritabanında bulunamadı. Oturum kapatılıyor...');
-      doSignOut();
-      return;
-    }
+  // Ban Kontrolü: 1990 tarihi banlı olduğu anlamına gelir
+  const { data: presence } = await supa.from('user_presence').select('last_seen').eq('email', email).maybeSingle();
+  
+  if (presence && presence.last_seen.startsWith('1990')) {
+    console.log('[Presence] Hesap banlı. Oturum kapatılıyor...');
+    doSignOut();
+    return;
   }
+
+  // Eğer ilk ping değilse ve kayıt yoksa (silinmişse) çıkış yap
+  if (!isInitial && !presence) {
+    doSignOut();
+    return;
+  }
+
   await supa.from('user_presence').upsert({ user_id: uid, email, last_seen: new Date().toISOString(), is_online: true, current_app: 'devstore' }, { onConflict: 'email' });
 }
 async function _setOffline(uid) {
@@ -1260,13 +1266,13 @@ async function loadAdminUsers() {
 
 async function banUser(userId, email, btn) {
   if (email === ADMIN_EMAIL) return;
-  if (!confirm('"' + email + '" kullanıcısını tamamen yasaklamak istediğine emin misin? Bu işlem geri alınamaz ve kullanıcı bir daha giremez.')) return;
-  btn.disabled = true; btn.textContent = 'Yasaklanıyor...';
+  if (!confirm('"' + email + '" kullanıcısını yasaklamak istediğine emin misin?')) return;
+  btn.disabled = true; btn.textContent = '⏱...';
   try {
-    await supa.from('comments').delete().eq('user_id', userId);
-    await supa.from('contact_messages').delete().eq('email', email);
-    await supa.from('user_presence').delete().eq('user_id', userId);
-    await loadAdminUsers();
+    // SİLMEK YERİNE TARİHİ 1990 YAPARAK BANLIYORUZ (Canlanmayı önlemek için)
+    await supa.from('user_presence').upsert({ user_id: userId, email, last_seen: '1990-01-01T00:00:00+00:00', is_online: false }, { onConflict: 'email' });
+    alert('Kullanıcı yasaklandı.');
+    loadAdminUsers();
   } catch(e) { btn.disabled = false; btn.textContent = '🚫 Yasakla'; alert('Hata: ' + e.message); }
 }
 async function loadAdminMessages() {G
