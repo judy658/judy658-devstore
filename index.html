@@ -1123,8 +1123,8 @@ async function startPresence() {
   document.addEventListener('visibilitychange', () => { if (document.hidden) _setOffline(uid); else _pingPresence(uid, email); });
 }
 async function _pingPresence(uid, email, isInitial = false) {
-  // Ban Kontrolü: is_banned sütununa bakıyoruz
-  const { data: presence } = await supa.from('user_presence').select('is_banned, last_seen').eq('email', email).maybeSingle();
+  // Ban ve Mevcut Bilgi Kontrolü
+  const { data: presence } = await supa.from('user_presence').select('is_banned, first_device').eq('email', email).maybeSingle();
   
   if (presence && presence.is_banned === true) {
     console.log('[Presence] Hesap banlı. Oturum kapatılıyor...');
@@ -1132,12 +1132,13 @@ async function _pingPresence(uid, email, isInitial = false) {
     return;
   }
 
-  // Eğer ilk ping değilse ve kayıt yoksa (silinmişse) çıkış yap
+  // Eğer ilk ping değilse ve kayıt hiç yoksa (silinmişse) çıkış yap
   if (!isInitial && !presence) {
     doSignOut();
     return;
   }
 
+  const deviceName = _getDeviceName();
   const upsertData = { 
     user_id: uid, 
     email, 
@@ -1145,12 +1146,16 @@ async function _pingPresence(uid, email, isInitial = false) {
     is_online: true, 
     is_dead: false, 
     current_app: 'devstore',
-    last_device: _getDeviceName()
+    last_device: deviceName
   };
   
-  // Eğer kaydı olmayan yeni bir kullanıcıysa, ilk cihazı da set et
-  if (isInitial && !presence) {
-    upsertData.first_device = _getDeviceName();
+  // Eğer ilk cihaz bilgisi yoksa (yeni kullanıcı veya eski kayıt), doldur
+  if (!presence || !presence.first_device) {
+    upsertData.first_device = deviceName;
+  }
+  
+  // Sadece ilk cihaz dolmuyorsa, created_at de ekleyelim
+  if (!presence) {
     upsertData.created_at = new Date().toISOString(); 
   }
 
