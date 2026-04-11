@@ -920,10 +920,10 @@ async function startPresence() {
   document.addEventListener('visibilitychange', () => { if (document.hidden) _setOffline(uid); else _pingPresence(uid, email); });
 }
 async function _pingPresence(uid, email, isInitial = false) {
-  // Ban Kontrolü: 1990 tarihi banlı olduğu anlamına gelir
-  const { data: presence } = await supa.from('user_presence').select('last_seen').eq('email', email).maybeSingle();
+  // Ban Kontrolü: is_banned sütununa bakıyoruz
+  const { data: presence } = await supa.from('user_presence').select('is_banned, last_seen').eq('email', email).maybeSingle();
   
-  if (presence && presence.last_seen.startsWith('1990')) {
+  if (presence && presence.is_banned === true) {
     console.log('[Presence] Hesap banlı. Oturum kapatılıyor...');
     doSignOut();
     return;
@@ -1157,7 +1157,7 @@ async function loadDeadAccounts() {
   el.innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
   const now = new Date();
   const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
-  const { data: dead } = await supa.from('user_presence').select('user_id, email, last_seen, warned_at').lt('last_seen', sevenDaysAgo.toISOString()).not('last_seen', 'ilike', '1990%').order('last_seen', { ascending: true });
+  const { data: dead } = await supa.from('user_presence').select('user_id, email, last_seen, warned_at').lt('last_seen', sevenDaysAgo.toISOString()).eq('is_banned', false).order('last_seen', { ascending: true });
   const { data: active } = await supa.from('user_presence').select('email').gte('last_seen', sevenDaysAgo.toISOString());
   _deadList = dead ?? [];
   const toWarn = _deadList.filter(u => !u.warned_at);
@@ -1249,24 +1249,25 @@ async function runCleanerNow() {
 }
 async function loadAdminUsers() {
   document.getElementById('user-list').innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
-  const { data: presence } = await supa.from('user_presence').select('*').order('is_online', { ascending: false }).order('last_seen', { ascending: false });
+  const { data: presence } = await supa.from('user_presence').select('*').eq('is_banned', false).order('is_online', { ascending: false }).order('last_seen', { ascending: false });
+  
   if (!presence || !presence.length) {
     document.getElementById('user-list').innerHTML = '<div class="admin-empty">Henüz kayıtlı kullanıcı yok.</div>';
     document.getElementById('a-total-users').textContent = '0';
     document.getElementById('a-online-users').textContent = '0';
     return;
   }
-  // Banlananları filtrele (1990 tarihli olanlar)
-  const filtered = presence.filter(u => !u.last_seen.startsWith('1990'));
+
   const now = Date.now();
-  const onlineCount = filtered.filter(u => (now - new Date(u.last_seen).getTime()) / 1000 < 60).length;
-  document.getElementById('a-total-users').textContent = filtered.length;
+  const onlineCount = presence.filter(u => (now - new Date(u.last_seen).getTime()) / 1000 < 60).length;
+  document.getElementById('a-total-users').textContent = presence.length;
   document.getElementById('a-online-users').textContent = onlineCount;
-  document.getElementById('user-list').innerHTML = filtered.map(u => {
+  
+  document.getElementById('user-list').innerHTML = presence.map(u => {
     const isOnline = (now - new Date(u.last_seen).getTime()) / 1000 < 60;
     const isMe = u.email === ADMIN_EMAIL;
     return `<div class="user-row ${isOnline ? 'online' : ''}">
-      <div class="user-avatar">${u.email[0].toUpperCase()}</div>
+      <div class="user-avatar">${u.email ? u.email[0].toUpperCase() : '?'}</div>
       <div class="user-info">
         <div class="user-email-text">${u.email}${isMe ? ' 👑' : ''}</div>
         <div class="user-meta">${isOnline ? '🟢 Şu an aktif' + (u.current_app ? ' · ' + (u.current_app === 'sportify' ? '🎵 Sportify' : '🌐 DevStore') : '') : '⚫ Son görülme: ' + _timeAgo(u.last_seen)}</div>
@@ -1285,7 +1286,7 @@ async function banUser(userId, email, btn) {
   if (!confirm('"' + email + '" kullanıcısını yasaklamak istediğine emin misin?')) return;
   btn.disabled = true; btn.textContent = '⏱...';
   try {
-    await supa.from('user_presence').upsert({ user_id: userId, email, last_seen: '1990-01-01T00:00:00+00:00', is_online: false }, { onConflict: 'email' });
+    await supa.from('user_presence').upsert({ user_id: userId, email, is_banned: true, last_seen: '1990-01-01T00:00:00+00:00', is_online: false }, { onConflict: 'email' });
     await loadAdminUsers();
   } catch(e) { btn.disabled = false; btn.textContent = '🚫 Yasakla'; alert('Hata: ' + e.message); }
 }
@@ -1293,7 +1294,7 @@ async function banUser(userId, email, btn) {
 async function loadBannedUsers() {
   const el = document.getElementById('banned-user-list');
   el.innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
-  const { data: banned } = await supa.from('user_presence').select('*').lt('last_seen', '1991-01-01T00:00:00Z').order('email', { ascending: true });
+  const { data: banned } = await supa.from('user_presence').select('*').eq('is_banned', true).order('email', { ascending: true });
   if (!banned || !banned.length) {
     el.innerHTML = '<div class="admin-empty">🎉 Hiç banlı kullanıcı yok!</div>';
     return;
@@ -1314,7 +1315,7 @@ async function unbanUser(userId, email, btn) {
   if (!confirm('"' + email + '" kullanıcısının yasağını kaldırmak istediğine emin misin?')) return;
   btn.disabled = true; btn.textContent = 'Kaldırılıyor...';
   try {
-    await supa.from('user_presence').update({ last_seen: new Date().toISOString(), is_online: false }).eq('user_id', userId);
+    await supa.from('user_presence').update({ is_banned: false, last_seen: new Date().toISOString(), is_online: false }).eq('user_id', userId);
     await loadBannedUsers();
   } catch(e) { btn.disabled = false; btn.textContent = '🔓 Yasağı Kaldır'; alert('Hata: ' + e.message); }
 }
