@@ -863,6 +863,8 @@ function initAdminRealtime() {
     });
 }
 
+const _lastLogStatus = {}; // Kullanıcıların son durumunu hafızada tut
+
 function _handlePresenceUpdate(payload) {
   const feed = document.getElementById('admin-live-feed');
   if (!feed) return;
@@ -870,29 +872,46 @@ function _handlePresenceUpdate(payload) {
   const empty = feed.querySelector('.admin-empty');
   if (empty) empty.remove();
   
-  let msg = '';
-  let icon = 'fa-info-circle';
-  let color = 'var(--accent)';
   const data = payload.new || payload.old;
   const email = data.email || 'Bilinmeyen Kullanıcı';
   
+  let msg = '';
+  let icon = 'fa-info-circle';
+  let color = 'var(--accent)';
+
+  // Durum Takibi ve Filtreleme
+  const prevState = _lastLogStatus[email];
+  const currentState = payload.new?.is_online;
+  const currentApp = payload.new?.current_app;
+
   if (payload.eventType === 'INSERT') {
     msg = `<b>${email}</b> sisteme katıldı! 🚀`;
     icon = 'fa-user-plus';
     color = 'var(--green)';
   } else if (payload.eventType === 'UPDATE') {
-    if (payload.new.is_online && !payload.old.is_online) {
+    // Sadece gerçekten durum değişmişse mesaj yaz
+    if (currentState === true && prevState !== true) {
       msg = `<b>${email}</b> şu an online. 🟢`;
       icon = 'fa-plug';
       color = 'var(--green)';
-    } else if (payload.new.current_app !== payload.old.current_app) {
-      msg = `<b>${email}</b> geçti: <b>${payload.new.current_app}</b>`;
+    } else if (currentState === false && prevState === true) {
+      msg = `<b>${email}</b> çevrimdışı oldu. ⚫`;
+      icon = 'fa-power-off';
+      color = 'var(--muted)';
+    } else if (currentApp !== _lastLogStatus[email + '_app']) {
+      msg = `<b>${email}</b> geçti: <b>${currentApp}</b>`;
       icon = 'fa-exchange-alt';
-    } else if (payload.new.is_banned && !payload.old.is_banned) {
+    } else if (payload.new.is_banned && !payload.old?.is_banned) {
       msg = `<b>${email}</b> yasaklandı! 🚫`;
       icon = 'fa-ban';
       color = 'var(--accent2)';
     }
+  }
+  
+  // Hafızayı güncelle
+  if (payload.new) {
+    _lastLogStatus[email] = currentState;
+    _lastLogStatus[email + '_app'] = currentApp;
   }
   
   if (!msg) return;
