@@ -441,6 +441,7 @@
       <button class="admin-tab" onclick="switchAdminTab('messages',this)">📬 Mesajlar</button>
       <button class="admin-tab" onclick="switchAdminTab('notifications',this)">📢 Bildirim Gönder</button>
       <button class="admin-tab" onclick="switchAdminTab('deadaccounts',this)">💀 Ölü Hesaplar</button>
+      <button class="admin-tab" onclick="switchAdminTab('banned',this)">🚫 Banlılar</button>
     </div>
     <div class="admin-section active" id="admin-users">
       <button class="admin-refresh" onclick="loadAdminUsers()">↻ Yenile</button>
@@ -545,6 +546,17 @@
         <button class="notif-tag-btn" id="da-filter-warned" onclick="filterDeadList('warned',this)">📧 Uyarıldı</button>
       </div>
       <div id="dead-account-list"><div class="admin-empty">Yükleniyor...</div></div>
+    </div>
+
+    <div class="admin-section" id="admin-banned">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px">🚫 Banlı Kullanıcılar</div>
+          <div style="font-size:0.8rem;color:var(--muted)">Kalıcı olarak yasaklanmış hesaplar. Yasağı kaldırabilirsin.</div>
+        </div>
+        <button class="admin-refresh" style="margin:0" onclick="loadBannedUsers()">↻ Yenile</button>
+      </div>
+      <div id="banned-user-list"><div class="admin-empty">Yükleniyor...</div></div>
     </div>
 
   </div>
@@ -1131,6 +1143,7 @@ function switchAdminTab(tab, btn) {
   if (tab === 'users') loadAdminUsers();
   if (tab === 'messages') loadAdminMessages();
   if (tab === 'notifications') loadNotifData();
+  if (tab === 'banned') loadBannedUsers();
 }
 
 // ═══════════════════════════════════════
@@ -1242,11 +1255,13 @@ async function loadAdminUsers() {
     document.getElementById('a-online-users').textContent = '0';
     return;
   }
+  // Banlananları filtrele (1990 tarihli olanlar)
+  const filtered = presence.filter(u => !u.last_seen.startsWith('1990'));
   const now = Date.now();
-  const onlineCount = presence.filter(u => (now - new Date(u.last_seen).getTime()) / 1000 < 60).length;
-  document.getElementById('a-total-users').textContent = presence.length;
+  const onlineCount = filtered.filter(u => (now - new Date(u.last_seen).getTime()) / 1000 < 60).length;
+  document.getElementById('a-total-users').textContent = filtered.length;
   document.getElementById('a-online-users').textContent = onlineCount;
-  document.getElementById('user-list').innerHTML = presence.map(u => {
+  document.getElementById('user-list').innerHTML = filtered.map(u => {
     const isOnline = (now - new Date(u.last_seen).getTime()) / 1000 < 60;
     const isMe = u.email === ADMIN_EMAIL;
     return `<div class="user-row ${isOnline ? 'online' : ''}">
@@ -1269,11 +1284,38 @@ async function banUser(userId, email, btn) {
   if (!confirm('"' + email + '" kullanıcısını yasaklamak istediğine emin misin?')) return;
   btn.disabled = true; btn.textContent = '⏱...';
   try {
-    // SİLMEK YERİNE TARİHİ 1990 YAPARAK BANLIYORUZ (Canlanmayı önlemek için)
     await supa.from('user_presence').upsert({ user_id: userId, email, last_seen: '1990-01-01T00:00:00+00:00', is_online: false }, { onConflict: 'email' });
-    alert('Kullanıcı yasaklandı.');
-    loadAdminUsers();
+    await loadAdminUsers();
   } catch(e) { btn.disabled = false; btn.textContent = '🚫 Yasakla'; alert('Hata: ' + e.message); }
+}
+
+async function loadBannedUsers() {
+  const el = document.getElementById('banned-user-list');
+  el.innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
+  const { data: banned } = await supa.from('user_presence').select('*').like('last_seen', '1990%').order('email', { ascending: true });
+  if (!banned || !banned.length) {
+    el.innerHTML = '<div class="admin-empty">🎉 Hiç banlı kullanıcı yok!</div>';
+    return;
+  }
+  el.innerHTML = banned.map(u => `
+    <div style="background:var(--surface);border:1px solid rgba(252,92,125,0.3);border-radius:14px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#fc5c7d,#ff9a3c);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:#fff;flex-shrink:0">${u.email[0].toUpperCase()}</div>
+      <div style="flex:1;min-width:180px">
+        <div style="font-size:0.9rem;font-weight:600;margin-bottom:3px">${u.email}</div>
+        <div style="font-size:0.75rem;color:var(--accent2);font-weight:600">🚫 Kalıcı olarak yasaklandı</div>
+      </div>
+      <button onclick="unbanUser('${u.user_id}','${u.email}',this)" style="background:rgba(61,220,151,0.1);color:var(--green);border:1px solid rgba(61,220,151,0.3);padding:8px 16px;border-radius:8px;font-size:0.78rem;cursor:pointer;transition:all 0.2s">🔓 Yasağı Kaldır</button>
+    </div>
+  `).join('');
+}
+
+async function unbanUser(userId, email, btn) {
+  if (!confirm('"' + email + '" kullanıcısının yasağını kaldırmak istediğine emin misin?')) return;
+  btn.disabled = true; btn.textContent = 'Kaldırılıyor...';
+  try {
+    await supa.from('user_presence').update({ last_seen: new Date().toISOString(), is_online: false }).eq('user_id', userId);
+    await loadBannedUsers();
+  } catch(e) { btn.disabled = false; btn.textContent = '🔓 Yasağı Kaldır'; alert('Hata: ' + e.message); }
 }
 async function loadAdminMessages() {G
   document.getElementById('msg-list').innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
