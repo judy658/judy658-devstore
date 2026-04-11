@@ -859,11 +859,52 @@ function initAdminRealtime() {
         statusItem.style = "font-size:0.7rem;color:var(--green);opacity:0.7;margin-bottom:8px;padding-left:4px";
         statusItem.innerHTML = `<i class="fas fa-check-circle"></i> Canlı bağlantı aktif.`;
         feed?.prepend(statusItem);
+        
+        // Akıllı Çevrimdışı Takipçisini Başlat
+        _startSmartOfflineTracker();
       }
     });
 }
 
-const _lastLogStatus = {}; // Kullanıcıların son durumunu hafızada tut
+const _lastLogStatus = {}; 
+let _smartTrackerStarted = false;
+
+function _startSmartOfflineTracker() {
+  if (_smartTrackerStarted) return;
+  _smartTrackerStarted = true;
+  
+  setInterval(async () => {
+    // Sadece Dashboard aktifse veya User listesi aktifse kontrol et
+    const dashboard = document.getElementById('admin-dashboard');
+    const usersTab = document.getElementById('admin-users');
+    if ((dashboard && dashboard.classList.contains('active')) || 
+        (usersTab && usersTab.classList.contains('active'))) {
+      
+      const now = Date.now();
+      const { data: presence } = await supa.from('user_presence').select('email, last_seen, is_online');
+      
+      if (presence) {
+        presence.forEach(u => {
+          const lastTs = new Date(u.last_seen).getTime();
+          const isActuallyOnline = (now - lastTs) < 95000; // 95 saniye tolerans
+          const wasOnline = _lastLogStatus[u.email];
+          
+          if (!isActuallyOnline && wasOnline === true) {
+            // Yapay olarak offline logu üret
+            _handlePresenceUpdate({
+              eventType: 'UPDATE',
+              new: { ...u, is_online: false },
+              old: { ...u, is_online: true },
+              isSmartLog: true 
+            });
+          }
+        });
+      }
+    }
+  }, 25000); 
+}
+
+const _lastLogStatus_dummy = {}; // Dummy to avoid conflict with existing line if needed, but I'll replace the existing one
 
 function _handlePresenceUpdate(payload) {
   const feed = document.getElementById('admin-live-feed');
@@ -895,10 +936,10 @@ function _handlePresenceUpdate(payload) {
       icon = 'fa-plug';
       color = 'var(--green)';
     } else if (currentState === false && prevState === true) {
-      msg = `<b>${email}</b> çevrimdışı oldu. ⚫`;
+      msg = `<b>${email}</b> çevrimdışı oldu. ⚫ ${payload.isSmartLog ? '<small>(Zaman Aşımı)</small>' : ''}`;
       icon = 'fa-power-off';
       color = 'var(--muted)';
-    } else if (currentApp !== _lastLogStatus[email + '_app']) {
+    } else if (currentApp !== _lastLogStatus[email + '_app'] && currentState !== false) {
       msg = `<b>${email}</b> geçti: <b>${currentApp}</b>`;
       icon = 'fa-exchange-alt';
     } else if (payload.new.is_banned && !payload.old?.is_banned) {
