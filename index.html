@@ -1157,7 +1157,7 @@ async function loadDeadAccounts() {
   el.innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
   const now = new Date();
   const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
-  const { data: dead } = await supa.from('user_presence').select('user_id, email, last_seen, warned_at').lt('last_seen', sevenDaysAgo.toISOString()).order('last_seen', { ascending: true });
+  const { data: dead } = await supa.from('user_presence').select('user_id, email, last_seen, warned_at').lt('last_seen', sevenDaysAgo.toISOString()).not('last_seen', 'ilike', '1990%').order('last_seen', { ascending: true });
   const { data: active } = await supa.from('user_presence').select('email').gte('last_seen', sevenDaysAgo.toISOString());
   _deadList = dead ?? [];
   const toWarn = _deadList.filter(u => !u.warned_at);
@@ -1194,9 +1194,10 @@ function renderDeadList() {
     if (isDeletePending) statusBadge = '<span style="background:rgba(252,92,125,0.2);color:var(--accent2);border-radius:8px;padding:3px 10px;font-size:0.72rem;font-weight:700">🗑️ SILINECEK</span>';
     else if (isWarned) statusBadge = '<span style="background:rgba(255,209,102,0.15);color:var(--yellow);border-radius:8px;padding:3px 10px;font-size:0.72rem;font-weight:700">📧 UYARILDI · ' + hoursLeft + 's kaldi</span>';
     else statusBadge = '<span style="background:rgba(107,107,133,0.2);color:var(--muted);border-radius:8px;padding:3px 10px;font-size:0.72rem;font-weight:700">⏳ UYARI BEKLIYOR</span>';
+    const userChar = u.email ? u.email[0].toUpperCase() : '?';
     return '<div style="background:var(--surface);border:1px solid ' + (isDeletePending ? 'rgba(252,92,125,0.3)' : isWarned ? 'rgba(255,209,102,0.2)' : 'var(--border)') + ';border-radius:14px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">'
-      + '<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,' + (isDeletePending ? '#fc5c7d,#ff9a3c' : isWarned ? '#ffd166,#f7971e' : 'var(--surface2),var(--bg)') + ');display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;font-weight:700;color:' + (isDeletePending || isWarned ? '#fff' : 'var(--muted)') + '">' + u.email[0].toUpperCase() + '</div>'
-      + '<div style="flex:1;min-width:180px"><div style="font-size:0.9rem;font-weight:600;margin-bottom:3px">' + u.email + '</div>'
+      + '<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,' + (isDeletePending ? '#fc5c7d,#ff9a3c' : isWarned ? '#ffd166,#f7971e' : 'var(--surface2),var(--bg)') + ');display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;font-weight:700;color:' + (isDeletePending || isWarned ? '#fff' : 'var(--muted)') + '">' + userChar + '</div>'
+      + '<div style="flex:1;min-width:180px"><div style="font-size:0.9rem;font-weight:600;margin-bottom:3px">' + (u.email || 'Bilinmiyor') + '</div>'
       + '<div style="font-size:0.75rem;color:var(--muted)">Son görülme: <strong style="color:var(--text)">' + lastSeen.toLocaleDateString('tr-TR', { day:'numeric', month:'short', year:'numeric' }) + '</strong> · <strong style="color:var(--accent2)">' + daysInactive + ' gün</strong> önce · Uyari: <strong style="color:var(--text)">' + warnedDate + '</strong></div></div>'
       + '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' + statusBadge
       + '<button onclick="deleteDeadAccount(\'' + u.user_id + '\',\'' + u.email + '\',this)" style="background:rgba(252,92,125,0.12);border:1px solid rgba(252,92,125,0.3);color:var(--accent2);border-radius:8px;padding:6px 14px;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s">🗑️ Sil</button></div></div>';
@@ -1292,7 +1293,7 @@ async function banUser(userId, email, btn) {
 async function loadBannedUsers() {
   const el = document.getElementById('banned-user-list');
   el.innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
-  const { data: banned } = await supa.from('user_presence').select('*').like('last_seen', '1990%').order('email', { ascending: true });
+  const { data: banned } = await supa.from('user_presence').select('*').lt('last_seen', '1991-01-01T00:00:00Z').order('email', { ascending: true });
   if (!banned || !banned.length) {
     el.innerHTML = '<div class="admin-empty">🎉 Hiç banlı kullanıcı yok!</div>';
     return;
@@ -1317,7 +1318,7 @@ async function unbanUser(userId, email, btn) {
     await loadBannedUsers();
   } catch(e) { btn.disabled = false; btn.textContent = '🔓 Yasağı Kaldır'; alert('Hata: ' + e.message); }
 }
-async function loadAdminMessages() {G
+async function loadAdminMessages() {
   document.getElementById('msg-list').innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
   const { data: msgs } = await supa.from('contact_messages').select('*').order('created_at', { ascending: false });
   if (!msgs || !msgs.length) {
