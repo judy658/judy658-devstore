@@ -640,6 +640,14 @@
         <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">SON GÖRÜLME</div>
         <div id="m-user-lastseen" style="font-size:0.85rem;font-weight:700"></div>
       </div>
+      <div class="admin-card" style="padding:14px;background:var(--surface2);text-align:center">
+        <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">İLK CİHAZ</div>
+        <div id="m-user-firstdevice" style="font-size:0.8rem;font-weight:600"></div>
+      </div>
+      <div class="admin-card" style="padding:14px;background:var(--surface2);text-align:center">
+        <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">SON CİHAZ</div>
+        <div id="m-user-lastdevice" style="font-size:0.8rem;font-weight:600"></div>
+      </div>
     </div>
     <div style="display:flex;gap:10px">
       <button id="m-ban-btn" style="flex:1;padding:12px;border:none;border-radius:12px;font-weight:600;cursor:pointer;background:rgba(252,92,125,0.1);color:var(--accent2);border:1px solid rgba(252,92,125,0.2)"></button>
@@ -1130,7 +1138,33 @@ async function _pingPresence(uid, email, isInitial = false) {
     return;
   }
 
-  await supa.from('user_presence').upsert({ user_id: uid, email, last_seen: new Date().toISOString(), is_online: true, is_dead: false, current_app: 'devstore' }, { onConflict: 'email' });
+  const upsertData = { 
+    user_id: uid, 
+    email, 
+    last_seen: new Date().toISOString(), 
+    is_online: true, 
+    is_dead: false, 
+    current_app: 'devstore',
+    last_device: _getDeviceName()
+  };
+  
+  // Eğer kaydı olmayan yeni bir kullanıcıysa, ilk cihazı da set et
+  if (isInitial && !presence) {
+    upsertData.first_device = _getDeviceName();
+    upsertData.created_at = new Date().toISOString(); 
+  }
+
+  await supa.from('user_presence').upsert(upsertData, { onConflict: 'email' });
+}
+
+function _getDeviceName() {
+  const ua = navigator.userAgent;
+  if (/Android/i.test(ua)) return "📱 Android";
+  if (/iPhone|iPad|iPod/i.test(ua)) return "🍎 iOS Device";
+  if (/Windows/i.test(ua)) return "💻 Windows PC";
+  if (/Macintosh/i.test(ua)) return "🍎 Mac";
+  if (/Linux/i.test(ua)) return "🐧 Linux PC";
+  return "🌐 Web Tarayıcı";
 }
 async function _setOffline(uid) {
   const { data: { session } } = await supa.auth.getSession();
@@ -1531,6 +1565,8 @@ function showUserDetail(userId) {
   document.getElementById('m-user-status').innerHTML = isOnline ? '<span style="color:var(--green)">Online</span>' : '<span style="color:var(--muted)">Offline</span>';
   document.getElementById('m-user-app').textContent = user.current_app === 'sportify' ? '🎵 Sportify' : '🌐 DevStore';
   document.getElementById('m-user-lastseen').textContent = _timeAgo(user.last_seen) + ' (' + new Date(user.last_seen).toLocaleString() + ')';
+  document.getElementById('m-user-firstdevice').textContent = user.first_device || 'Bilinmiyor';
+  document.getElementById('m-user-lastdevice').textContent = user.last_device || 'Bilinmiyor';
   
   const banBtn = document.getElementById('m-ban-btn');
   banBtn.textContent = user.is_banned ? '🔓 Yasağı Kaldır' : '🚫 Yasakla';
