@@ -897,6 +897,11 @@ function _handlePresenceUpdate(payload) {
   
   if (!msg) return;
 
+  // Listenin otomatik tazelenmesini tetikle
+  if (document.getElementById('admin-users').classList.contains('active')) {
+    loadAdminUsers(); 
+  }
+
   const item = document.createElement('div');
   item.style = `background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:10px 14px;font-size:0.82rem;display:flex;align-items:center;gap:12px;animation:fadeUp 0.3s ease both`;
   item.innerHTML = `<i class="fas ${icon}" style="color:${color}"></i><span>${msg}</span><span style="margin-left:auto;font-size:0.7rem;color:var(--muted)">${new Date().toLocaleTimeString()}</span>`;
