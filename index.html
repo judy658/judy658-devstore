@@ -940,7 +940,7 @@ async function _pingPresence(uid, email, isInitial = false) {
     return;
   }
 
-  await supa.from('user_presence').upsert({ user_id: uid, email, last_seen: new Date().toISOString(), is_online: true, current_app: 'devstore' }, { onConflict: 'email' });
+  await supa.from('user_presence').upsert({ user_id: uid, email, last_seen: new Date().toISOString(), is_online: true, is_dead: false, current_app: 'devstore' }, { onConflict: 'email' });
 }
 async function _setOffline(uid) {
   const { data: { session } } = await supa.auth.getSession();
@@ -1162,7 +1162,7 @@ async function loadDeadAccounts() {
   el.innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
   const now = new Date();
   const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
-  const { data: dead } = await supa.from('user_presence').select('user_id, email, last_seen, warned_at').lt('last_seen', sevenDaysAgo.toISOString()).eq('is_banned', false).order('last_seen', { ascending: true });
+  const { data: dead } = await supa.from('user_presence').select('user_id, email, last_seen, warned_at').eq('is_dead', true).order('last_seen', { ascending: true });
   const { data: active } = await supa.from('user_presence').select('email').gte('last_seen', sevenDaysAgo.toISOString());
   _deadList = dead ?? [];
   const toWarn = _deadList.filter(u => !u.warned_at);
@@ -1205,8 +1205,20 @@ function renderDeadList() {
       + '<div style="flex:1;min-width:180px"><div style="font-size:0.9rem;font-weight:600;margin-bottom:3px">' + (u.email || 'Bilinmiyor') + '</div>'
       + '<div style="font-size:0.75rem;color:var(--muted)">Son görülme: <strong style="color:var(--text)">' + lastSeen.toLocaleDateString('tr-TR', { day:'numeric', month:'short', year:'numeric' }) + '</strong> · <strong style="color:var(--accent2)">' + daysInactive + ' gün</strong> önce · Uyari: <strong style="color:var(--text)">' + warnedDate + '</strong></div></div>'
       + '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' + statusBadge
+      + '<button onclick="toggleDeadStatus(\'' + u.user_id + '\',\'' + u.email + '\',false,this)" style="background:rgba(61,220,151,0.1);border:1px solid rgba(61,220,151,0.3);color:var(--green);border-radius:8px;padding:6px 14px;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s">✨ Canlandır</button>'
       + '<button onclick="deleteDeadAccount(\'' + u.user_id + '\',\'' + u.email + '\',this)" style="background:rgba(252,92,125,0.12);border:1px solid rgba(252,92,125,0.3);color:var(--accent2);border-radius:8px;padding:6px 14px;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s">🗑️ Sil</button></div></div>';
   }).join('');
+}
+
+async function toggleDeadStatus(userId, email, status, btn) {
+  const actionText = status ? 'ölü olarak işaretlemek' : 'canlandırmak';
+  if (!confirm('"' + email + '" kullanıcısını ' + actionText + ' istediğine emin misin?')) return;
+  btn.disabled = true; btn.textContent = '...';
+  try {
+    await supa.from('user_presence').update({ is_dead: status }).eq('user_id', userId);
+    if (document.getElementById('admin-deadaccounts').classList.contains('active')) loadDeadAccounts();
+    else loadAdminUsers();
+  } catch(e) { btn.disabled = false; btn.textContent = status ? '💀 Ölü İşaretle' : '✨ Canlandır'; alert('Hata: ' + e.message); }
 }
 
 async function deleteDeadAccount(userId, email, btn) {
@@ -1280,7 +1292,10 @@ async function loadAdminUsers() {
       <div style="display:flex;align-items:center;gap:12px">
         <div class="online-dot ${isOnline ? 'active' : ''}"></div>
         <span class="online-badge ${isOnline ? 'on' : 'off'}">${isOnline ? 'Online' : 'Offline'}</span>
-        ${!isMe ? `<button onclick="banUser('${u.user_id}','${u.email}',this)" style="background:rgba(255,70,70,0.1);color:#ff4646;border:1px solid rgba(255,70,70,0.3);padding:6px 12px;border-radius:8px;font-size:0.75rem;cursor:pointer;transition:all 0.2s">🚫 Yasakla</button>` : ''}
+        <div style="display:flex;align-items:center;gap:8px">
+          ${!isMe ? `<button onclick="toggleDeadStatus('${u.user_id}','${u.email}',true,this)" style="background:rgba(255,209,102,0.1);color:var(--yellow);border:1px solid rgba(255,209,102,0.3);padding:6px 12px;border-radius:8px;font-size:0.75rem;cursor:pointer;transition:all 0.2s">💀 Ölü İşaretle</button>` : ''}
+          ${!isMe ? `<button onclick="banUser('${u.user_id}','${u.email}',this)" style="background:rgba(255,70,70,0.1);color:#ff4646;border:1px solid rgba(255,70,70,0.3);padding:6px 12px;border-radius:8px;font-size:0.75rem;cursor:pointer;transition:all 0.2s">🚫 Yasakla</button>` : ''}
+        </div>
       </div>
     </div>`;
   }).join('');
@@ -1365,6 +1380,7 @@ async function resetWholeSystem() {
     // Tüm kullanıcıları güncelle
     const { error } = await supa.from('user_presence').update({ 
       is_banned: false, 
+      is_dead: false,
       last_seen: oneMinAgo, 
       warned_at: null,
       is_online: false 
