@@ -1185,7 +1185,10 @@ async function startPresence() {
   if (_presenceTimer) clearInterval(_presenceTimer);
   _presenceTimer = setInterval(() => _pingPresence(uid, email, false), 30000);
   window.addEventListener('beforeunload', () => _setOffline(uid));
-  document.addEventListener('visibilitychange', () => { if (document.hidden) _setOffline(uid); else _pingPresence(uid, email); });
+  document.addEventListener('visibilitychange', () => { 
+    if (!document.hidden) _pingPresence(uid, email); 
+    // Sekme gizlendiğinde hemen offline yapma (Smart Tracker zaten 90sn sonra halledecek)
+  });
 }
 async function _pingPresence(uid, email, isInitial = false) {
   // Ban ve Mevcut Bilgi Kontrolü
