@@ -429,8 +429,13 @@
     <span class="detail-nav-title">🛡️ Admin Paneli</span>
   </div></div>
   <div class="admin-wrap">
-    <div class="admin-title">Admin <span>Paneli</span></div>
-    <div style="color:var(--muted);font-size:0.85rem;margin-top:4px;margin-bottom:28px"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2740424442494e494f464c4e4a4e545352434e4867404a464e4b0944484a">[email&#160;protected]</a></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px">
+      <div>
+        <div class="admin-title">Admin <span>Paneli</span></div>
+        <div style="color:var(--muted);font-size:0.85rem;margin-top:4px"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6e090b0d0b000700060f050703071d1a1b0a07012e09030f0702400d0103">[email&#160;protected]</a></div>
+      </div>
+      <button onclick="resetWholeSystem()" id="reset-system-btn" style="background:rgba(124,92,252,0.1);color:var(--accent);border:1px solid var(--accent);border-radius:10px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s">🔄 Tüm Sistemi Sıfırla (Arındır)</button>
+    </div>
     <div class="admin-stats-row">
       <div class="admin-stat"><span class="admin-stat-val" id="a-total-users">—</span><div class="admin-stat-label">Toplam Kullanıcı</div></div>
       <div class="admin-stat"><span class="admin-stat-val" id="a-online-users" style="color:var(--green)">—</span><div class="admin-stat-label">Şu An Online</div></div>
@@ -1350,6 +1355,33 @@ async function deleteMsg(id) {
   document.getElementById('a-total-msgs').textContent = r;
   if (r === 0) document.getElementById('msg-list').innerHTML = '<div class="admin-empty">Henüz mesaj yok.</div>';
 }
+async function resetWholeSystem() {
+  if (!confirm('DİKKAT: Tüm banlar kalkacak ve herkesin son görülme tarihi 1 dakika önceye alınacak. Sistemsel hataları temizlemek için bu işlem gerekli. Emin misin?')) return;
+  const btn = document.getElementById('reset-system-btn');
+  if (!btn) return;
+  btn.disabled = true; btn.textContent = '⏳ Sıfırlanıyor...';
+  try {
+    const oneMinAgo = new Date(Date.now() - 60000).toISOString();
+    // Tüm kullanıcıları güncelle
+    const { error } = await supa.from('user_presence').update({ 
+      is_banned: false, 
+      last_seen: oneMinAgo, 
+      warned_at: null,
+      is_online: false 
+    }).neq('user_id', 'placeholder-value-to-affect-all'); // Filter that affects all rows correctly in Supabase
+
+    if (error) throw error;
+
+    alert('Sistem başarıyla sıfırlandı! ✅ Tüm kullanıcılar aktif ve temizlendi.');
+    loadAdminUsers();
+    if (document.getElementById('admin-deadaccounts').classList.contains('active')) loadDeadAccounts();
+    if (document.getElementById('admin-banned').classList.contains('active')) loadBannedUsers();
+  } catch(e) {
+    alert('Sıfırlama hatası: ' + e.message);
+  }
+  btn.disabled = false; btn.textContent = '🔄 Tüm Sistemi Sıfırla (Arındır)';
+}
+
 function _timeAgo(dateStr) {
   const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
   if (diff < 60) return diff + ' sn önce';
