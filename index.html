@@ -238,6 +238,49 @@
     .lightbox img { max-width: 92vw; max-height: 92vh; border-radius: 12px; box-shadow: 0 30px 80px rgba(0,0,0,0.8); }
     .lightbox-close { position: absolute; top: 20px; right: 28px; color: #fff; font-size: 2rem; cursor: pointer; line-height: 1; opacity: 0.7; }
     .lightbox-close:hover { opacity: 1; }
+
+    /* ğŸ•¶ï¸ J.A.R.V.I.S UI - STARK INDUSTRIES PREMIUM */
+    #jarvis-trigger {
+      position: fixed; bottom: 30px; right: 30px; width: 64px; height: 64px;
+      background: radial-gradient(circle, #00d2ff 0%, #002c4b 100%);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 1000; box-shadow: 0 0 25px rgba(0, 210, 255, 0.4);
+      border: 2px solid rgba(0, 210, 255, 0.5); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    #jarvis-trigger:hover { transform: scale(1.1) rotate(15deg); box-shadow: 0 0 35px rgba(0, 210, 255, 0.7); }
+    #jarvis-trigger .core {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: #fff; box-shadow: 0 0 15px #fff, 0 0 30px #00d2ff;
+      animation: jarvisPulse 2s infinite;
+    }
+    @keyframes jarvisPulse {
+      0% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 10px #fff; }
+      50% { transform: scale(1.25); opacity: 1; box-shadow: 0 0 25px #00d2ff, 0 0 40px #00d2ff; }
+      100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 10px #fff; }
+    }
+    #jarvis-panel {
+      position: fixed; bottom: 105px; right: 30px; width: 360px; max-height: 550px;
+      background: rgba(10, 10, 15, 0.9); backdrop-filter: blur(25px);
+      border: 1px solid rgba(0, 210, 255, 0.3); border-radius: 24px;
+      display: none; flex-direction: column; z-index: 1000; box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+      animation: slideUp 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) both;
+      overflow: hidden;
+    }
+    #jarvis-panel.active { display: flex; }
+    .jarvis-header { padding: 18px; border-bottom: 1px solid rgba(0, 210, 255, 0.15); display: flex; align-items: center; justify-content: space-between; background: rgba(0, 210, 255, 0.03); }
+    .jarvis-header-left { display: flex; align-items: center; gap: 12px; }
+    .jarvis-mini-core { width: 12px; height: 12px; background: #00d2ff; border-radius: 50%; box-shadow: 0 0 10px #00d2ff; animation: pulse 1.5s infinite; }
+    .jarvis-header .title { font-family: 'Syne', sans-serif; font-weight: 800; color: #00d2ff; font-size: 0.95rem; letter-spacing: 1px; }
+    .jarvis-chat { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; min-height: 300px; scrollbar-width: none; }
+    .jarvis-msg { font-size: 0.88rem; padding: 12px 16px; border-radius: 18px; max-width: 85%; line-height: 1.6; animation: fadeUp 0.3s ease both; }
+    .jarvis-msg.ai { background: rgba(0, 210, 255, 0.08); color: #e8e8f0; align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid rgba(0, 210, 255, 0.1); }
+    .jarvis-msg.user { background: var(--surface2); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; border: 1px solid var(--border); }
+    .jarvis-input-area { padding: 16px; background: rgba(0,0,0,0.2); display: flex; gap: 10px; align-items: center; }
+    .jarvis-input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 10px 16px; color: #fff; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+    .jarvis-input:focus { border-color: #00d2ff; }
+    .jarvis-send { background: linear-gradient(135deg, #00d2ff, #0072ff); color: #000; border: none; border-radius: 12px; width: 42px; height: 42px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
+    .jarvis-send:hover { transform: scale(1.1); }
+    .jarvis-status { font-size: 0.7rem; color: #00d2ff; opacity: 0.6; padding: 0 20px 10px; }
     @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
     @keyframes fadeDown { from { opacity:0; transform:translateY(-14px); } to { opacity:1; transform:translateY(0); } }
     @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
@@ -263,9 +306,9 @@
 
 <nav>
   <div class="nav-inner">
-    <div class="logo" onclick="showHome()">⬡ DevStore</div>
+    <div class="logo" onclick="showHome()">â¬¡ DevStore</div>
     <div id="nav-user-area">
-      <button class="user-btn" onclick="openAuth()" id="login-btn">🔑 Giriş Yap</button>
+      <button class="user-btn" onclick="openAuth()" id="login-btn">ğŸ”‘ GiriÅŸ Yap</button>
       <button class="user-btn" onclick="showProfile()" id="user-info" style="display:none"><span class="user-dot"></span><span id="user-email-short"></span></button>
     </div>
   </div>
@@ -275,12 +318,12 @@
 <div id="home-page">
   <div class="wrap">
     <div class="hero">
-      <div class="hero-tag">🚀 Kişisel Uygulama Mağazası</div>
-      <h1>Tüm oyunların &<br/><em>uygulamalar</em> burada</h1>
-      <p>Her uygulama otomatik güncelleme sistemiyle korunur. Yeni sürüm yayınlandığında kullanıcılar anında haberdar olur.</p>
+      <div class="hero-tag">ğŸš€ KiÅŸisel Uygulama MaÄŸazasÄ±</div>
+      <h1>TÃ¼m oyunlarÄ±n &<br/><em>uygulamalar</em> burada</h1>
+      <p>Her uygulama otomatik gÃ¼ncelleme sistemiyle korunur. Yeni sÃ¼rÃ¼m yayÄ±nlandÄ±ÄŸÄ±nda kullanÄ±cÄ±lar anÄ±nda haberdar olur.</p>
     </div>
 
-    <!-- ═══ HAFTANIN ŞARKISI PANOSU ═══ -->
+    <!-- â•â•â• HAFTANIN ÅARKISI PANOSU â•â•â• -->
     <style>
       .weekly-banner { margin: 0 auto 44px; position: relative; z-index: 1; }
       .weekly-inner { position: relative; border-radius: 24px; overflow: hidden; border: 1px solid rgba(124,92,252,0.25); background: var(--surface); cursor: pointer; }
@@ -310,20 +353,20 @@
       <div class="weekly-inner" id="weekly-banner-box">
         <div class="weekly-video-wrap">
           <video id="weekly-video" src="https://raw.githubusercontent.com/judy658/judy658-devstore/main/passobemsalto.mp4" autoplay muted loop playsinline preload="auto"></video>
-          <div class="weekly-badge">Haftanın Şarkısı</div>
+          <div class="weekly-badge">HaftanÄ±n ÅarkÄ±sÄ±</div>
         </div>
         <div class="weekly-info">
           <div class="weekly-left">
-            <div class="weekly-icon">🎵</div>
+            <div class="weekly-icon">ğŸµ</div>
             <div>
-              <div class="weekly-label">Bu hafta en çok dinlenen</div>
+              <div class="weekly-label">Bu hafta en Ã§ok dinlenen</div>
               <div class="weekly-song" id="weekly-song-name">Passo</div>
               <div class="weekly-artist" id="weekly-artist-name">ATLXS</div>
             </div>
           </div>
           <div class="weekly-right">
-            <button class="weekly-mute-btn" id="weekly-mute-btn" onclick="toggleWeeklyMute()">🔇 Ses</button>
-            <button class="weekly-play-btn" onclick="if(typeof showDetail==='function') showDetail('sportify')">🎵 Sportify'da Dinle</button>
+            <button class="weekly-mute-btn" id="weekly-mute-btn" onclick="toggleWeeklyMute()">ğŸ”‡ Ses</button>
+            <button class="weekly-play-btn" onclick="if(typeof showDetail==='function') showDetail('sportify')">ğŸµ Sportify'da Dinle</button>
           </div>
         </div>
       </div>
@@ -336,7 +379,7 @@
         const btn = document.getElementById('weekly-mute-btn');
         weeklyMuted = !weeklyMuted;
         v.muted = weeklyMuted;
-        btn.textContent = weeklyMuted ? '🔇 Ses' : '🔊 Ses';
+        btn.textContent = weeklyMuted ? 'ğŸ”‡ Ses' : 'ğŸ”Š Ses';
       }
       document.getElementById('weekly-banner-box').addEventListener('click', function(e) {
         if (e.target.tagName === 'BUTTON') return;
@@ -344,25 +387,25 @@
         v.paused ? v.play() : v.pause();
       });
     </script>
-    <!-- ═══ HAFTANIN ŞARKISI PANOSU BİTİŞİ ═══ -->
+    <!-- â•â•â• HAFTANIN ÅARKISI PANOSU BÄ°TÄ°ÅÄ° â•â•â• -->
 
     <div class="filters">
-      <button class="filter-btn active" onclick="filterApps('all',this)">Tümü</button>
-      <button class="filter-btn" onclick="filterApps('game',this)">🎮 Oyunlar</button>
-      <button class="filter-btn" onclick="filterApps('app',this)">📱 Uygulamalar</button>
-      <button class="filter-btn" onclick="filterApps('force',this)">⚠️ Zorunlu Güncelleme</button>
+      <button class="filter-btn active" onclick="filterApps('all',this)">TÃ¼mÃ¼</button>
+      <button class="filter-btn" onclick="filterApps('game',this)">ğŸ® Oyunlar</button>
+      <button class="filter-btn" onclick="filterApps('app',this)">ğŸ“± Uygulamalar</button>
+      <button class="filter-btn" onclick="filterApps('force',this)">âš ï¸ Zorunlu GÃ¼ncelleme</button>
     </div>
     <div class="stats-bar">
-      <div class="stat"><span class="stat-num" id="s-total">—</span><div class="stat-label">Toplam Uygulama</div></div>
-      <div class="stat"><span class="stat-num" id="s-game">—</span><div class="stat-label">Oyun</div></div>
-      <div class="stat"><span class="stat-num" id="s-app">—</span><div class="stat-label">Uygulama</div></div>
-      <div class="stat"><span class="stat-num" id="s-force">—</span><div class="stat-label">Zorunlu Güncelleme</div></div>
+      <div class="stat"><span class="stat-num" id="s-total">â€”</span><div class="stat-label">Toplam Uygulama</div></div>
+      <div class="stat"><span class="stat-num" id="s-game">â€”</span><div class="stat-label">Oyun</div></div>
+      <div class="stat"><span class="stat-num" id="s-app">â€”</span><div class="stat-label">Uygulama</div></div>
+      <div class="stat"><span class="stat-num" id="s-force">â€”</span><div class="stat-label">Zorunlu GÃ¼ncelleme</div></div>
     </div>
     <div class="section-title">Uygulamalar & Oyunlar</div>
     <div class="app-grid" id="app-grid"></div>
     <div class="api-box">
-      <h3>🔌 Versiyon Kontrol API</h3>
-      <p>Godot oyunlarında bu URL'yi kullan — güncel sürüm bilgisini JSON olarak döner.</p>
+      <h3>ğŸ”Œ Versiyon Kontrol API</h3>
+      <p>Godot oyunlarÄ±nda bu URL'yi kullan â€” gÃ¼ncel sÃ¼rÃ¼m bilgisini JSON olarak dÃ¶ner.</p>
       <div class="api-url-row">
         <code id="api-url-text">https://judy658.github.io/judy658-devstore/versions.json</code>
         <button class="copy-btn" onclick="copyUrl()">Kopyala</button>
@@ -371,89 +414,89 @@
   </div>
   <div class="wrap">
     <div class="contact-box">
-      <h3>📬 İletişim</h3>
-      <p>Öneri, geri bildirim veya hata bildirimi için aşağıdaki formu doldur!</p>
+      <h3>ğŸ“¬ Ä°letiÅŸim</h3>
+      <p>Ã–neri, geri bildirim veya hata bildirimi iÃ§in aÅŸaÄŸÄ±daki formu doldur!</p>
       <div id="contact-login-note" style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px 20px;text-align:center;color:var(--muted);font-size:0.88rem;display:none">
-        Mesaj göndermek için <button onclick="openAuth()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.88rem;font-weight:600">giriş yap</button> veya hesap oluştur.
+        Mesaj gÃ¶ndermek iÃ§in <button onclick="openAuth()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.88rem;font-weight:600">giriÅŸ yap</button> veya hesap oluÅŸtur.
       </div>
       <div id="contact-form-inner">
         <div class="contact-grid">
-          <div class="contact-field full"><label>Ad Soyad</label><input type="text" id="c-name" placeholder="Adın Soyadın"/></div>
+          <div class="contact-field full"><label>Ad Soyad</label><input type="text" id="c-name" placeholder="AdÄ±n SoyadÄ±n"/></div>
           <div class="contact-field full"><label>Konu</label>
             <select id="c-subject">
-              <option value="suggest">💡 Öneri</option>
-              <option value="bug">🐛 Hata Bildirimi</option>
-              <option value="song">🎵 Yeni Şarkı İsteği</option>
-              <option value="general">💬 Genel</option>
+              <option value="suggest">ğŸ’¡ Ã–neri</option>
+              <option value="bug">ğŸ› Hata Bildirimi</option>
+              <option value="song">ğŸµ Yeni ÅarkÄ± Ä°steÄŸi</option>
+              <option value="general">ğŸ’¬ Genel</option>
             </select>
           </div>
-          <div class="contact-field full"><label>Mesaj</label><textarea id="c-message" placeholder="Mesajını yaz..."></textarea></div>
+          <div class="contact-field full"><label>Mesaj</label><textarea id="c-message" placeholder="MesajÄ±nÄ± yaz..."></textarea></div>
         </div>
-        <button class="contact-send-btn" onclick="sendContact()" id="contact-btn">📨 Gönder</button>
-        <div class="contact-success" id="contact-success">✅ Mesajın iletildi! En kısa sürede dönüş yapacağım.</div>
+        <button class="contact-send-btn" onclick="sendContact()" id="contact-btn">ğŸ“¨ GÃ¶nder</button>
+        <div class="contact-success" id="contact-success">âœ… MesajÄ±n iletildi! En kÄ±sa sÃ¼rede dÃ¶nÃ¼ÅŸ yapacaÄŸÄ±m.</div>
       </div>
     </div>
   </div>
-  <footer>DevStore — Kişisel uygulama mağazası. Veriler <code>versions.json</code> dosyasından okunur.</footer>
+  <footer>DevStore â€” KiÅŸisel uygulama maÄŸazasÄ±. Veriler <code>versions.json</code> dosyasÄ±ndan okunur.</footer>
 </div>
 
-<!-- PROFİL SAYFASI -->
+<!-- PROFÄ°L SAYFASI -->
 <div id="profile-page">
   <div class="detail-nav"><div class="detail-nav-inner">
-    <button class="back-btn" onclick="showHome()">← Geri</button>
+    <button class="back-btn" onclick="showHome()">â† Geri</button>
     <span class="detail-nav-title">Profilim</span>
   </div></div>
   <div class="profile-wrap">
-    <div class="profile-avatar">👤</div>
+    <div class="profile-avatar">ğŸ‘¤</div>
     <div class="profile-email" id="profile-email-display"></div>
     <div class="profile-since" id="profile-since"></div>
     <div class="profile-card">
-      <h3>📋 Hesap Bilgileri</h3>
+      <h3>ğŸ“‹ Hesap Bilgileri</h3>
       <div class="profile-field"><label>E-posta Adresi</label><input type="email" id="profile-email-input" disabled/></div>
-      <div style="font-size:0.78rem;color:var(--muted)">E-posta adresi değiştirilemez.</div>
+      <div style="font-size:0.78rem;color:var(--muted)">E-posta adresi deÄŸiÅŸtirilemez.</div>
     </div>
     <div class="profile-card">
-      <h3>🔒 Şifre Değiştir</h3>
-      <p style="color:var(--muted);font-size:0.86rem;margin-bottom:16px">E-posta adresine şifre sıfırlama bağlantısı gönderilecek.</p>
+      <h3>ğŸ”’ Åifre DeÄŸiÅŸtir</h3>
+      <p style="color:var(--muted);font-size:0.86rem;margin-bottom:16px">E-posta adresine ÅŸifre sÄ±fÄ±rlama baÄŸlantÄ±sÄ± gÃ¶nderilecek.</p>
       <div style="display:flex;align-items:center;gap:12px">
-        <button class="profile-save-btn" onclick="sendPasswordReset()" id="pass-reset-btn">📧 Sıfırlama Maili Gönder</button>
+        <button class="profile-save-btn" onclick="sendPasswordReset()" id="pass-reset-btn">ğŸ“§ SÄ±fÄ±rlama Maili GÃ¶nder</button>
         <span class="profile-msg" id="pass-msg"></span>
       </div>
     </div>
     <div class="profile-card profile-danger">
-      <h3>⚠️ Oturum</h3>
-      <p style="color:var(--muted);font-size:0.86rem;margin-bottom:16px">Tüm cihazlardan çıkış yapar.</p>
-      <button class="signout-btn" onclick="doSignOut()">🚪 Çıkış Yap</button>
+      <h3>âš ï¸ Oturum</h3>
+      <p style="color:var(--muted);font-size:0.86rem;margin-bottom:16px">TÃ¼m cihazlardan Ã§Ä±kÄ±ÅŸ yapar.</p>
+      <button class="signout-btn" onclick="doSignOut()">ğŸšª Ã‡Ä±kÄ±ÅŸ Yap</button>
     </div>
   </div>
 </div>
 
-<!-- ADMİN SAYFASI -->
+<!-- ADMÄ°N SAYFASI -->
 <div id="admin-page">
   <div class="detail-nav"><div class="detail-nav-inner">
-    <button class="back-btn" onclick="showHome()">← Geri</button>
-    <span class="detail-nav-title">🛡️ Admin Paneli</span>
+    <button class="back-btn" onclick="showHome()">â† Geri</button>
+    <span class="detail-nav-title">ğŸ›¡ï¸ Admin Paneli</span>
   </div></div>
   <div class="admin-wrap">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px">
       <div>
         <div class="admin-title">Admin <span>Paneli</span></div>
-        <div style="color:var(--muted);font-size:0.85rem;margin-top:4px">📧 geceninhakimistudio@gmail.com</div>
+        <div style="color:var(--muted);font-size:0.85rem;margin-top:4px">ğŸ“§ geceninhakimistudio@gmail.com</div>
       </div>
-      <button onclick="resetWholeSystem()" id="reset-system-btn" style="background:rgba(124,92,252,0.1);color:var(--accent);border:1px solid var(--accent);border-radius:10px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s">🔄 Tüm Sistemi Sıfırla (Arındır)</button>
+      <button onclick="resetWholeSystem()" id="reset-system-btn" style="background:rgba(124,92,252,0.1);color:var(--accent);border:1px solid var(--accent);border-radius:10px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s">ğŸ”„ TÃ¼m Sistemi SÄ±fÄ±rla (ArÄ±ndÄ±r)</button>
     </div>
     <div class="admin-stats-row">
-      <div class="admin-stat"><span class="admin-stat-val" id="a-total-users">—</span><div class="admin-stat-label">Toplam Kullanıcı</div></div>
-      <div class="admin-stat"><span class="admin-stat-val" id="a-online-users" style="color:var(--green)">—</span><div class="admin-stat-label">Şu An Online</div></div>
-      <div class="admin-stat"><span class="admin-stat-val" id="a-total-msgs">—</span><div class="admin-stat-label">Toplam Mesaj</div></div>
+      <div class="admin-stat"><span class="admin-stat-val" id="a-total-users">â€”</span><div class="admin-stat-label">Toplam KullanÄ±cÄ±</div></div>
+      <div class="admin-stat"><span class="admin-stat-val" id="a-online-users" style="color:var(--green)">â€”</span><div class="admin-stat-label">Åu An Online</div></div>
+      <div class="admin-stat"><span class="admin-stat-val" id="a-total-msgs">â€”</span><div class="admin-stat-label">Toplam Mesaj</div></div>
     </div>
     <div class="admin-tabs">
       <button class="admin-tab active" onclick="switchAdminTab('dashboard',this)"><i class="fas fa-chart-line"></i> Dashboard</button>
-      <button class="admin-tab" onclick="switchAdminTab('users',this)"><i class="fas fa-users"></i> Kullanıcılar</button>
+      <button class="admin-tab" onclick="switchAdminTab('users',this)"><i class="fas fa-users"></i> KullanÄ±cÄ±lar</button>
       <button class="admin-tab" onclick="switchAdminTab('messages',this)"><i class="fas fa-envelope"></i> Mesajlar</button>
-      <button class="admin-tab" onclick="switchAdminTab('notifications',this)"><i class="fas fa-bell"></i> Bildirim Gönder</button>
-      <button class="admin-tab" onclick="switchAdminTab('deadaccounts',this)"><i class="fas fa-ghost"></i> Ölü Hesaplar</button>
-      <button class="admin-tab" onclick="switchAdminTab('banned',this)"><i class="fas fa-ban"></i> Banlılar</button>
+      <button class="admin-tab" onclick="switchAdminTab('notifications',this)"><i class="fas fa-bell"></i> Bildirim GÃ¶nder</button>
+      <button class="admin-tab" onclick="switchAdminTab('deadaccounts',this)"><i class="fas fa-ghost"></i> Ã–lÃ¼ Hesaplar</button>
+      <button class="admin-tab" onclick="switchAdminTab('banned',this)"><i class="fas fa-ban"></i> BanlÄ±lar</button>
     </div>
 
     <!-- Dashboard Content -->
@@ -461,7 +504,7 @@
       <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:20px;margin-bottom:24px">
         <div class="admin-card" style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px">
           <div style="font-weight:600;margin-bottom:16px;color:var(--text);display:flex;align-items:center;gap:8px">
-            <i class="fas fa-chart-pie" style="color:var(--accent)"></i> Uygulama Dağılımı
+            <i class="fas fa-chart-pie" style="color:var(--accent)"></i> Uygulama DaÄŸÄ±lÄ±mÄ±
           </div>
           <div style="height:200px;display:flex;align-items:center;justify-content:center">
             <canvas id="app-dist-chart"></canvas>
@@ -469,7 +512,7 @@
         </div>
         <div class="admin-card" style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px">
           <div style="font-weight:600;margin-bottom:16px;color:var(--text);display:flex;align-items:center;gap:8px">
-            <i class="fas fa-user-shield" style="color:var(--yellow)"></i> Hesap Durumları
+            <i class="fas fa-user-shield" style="color:var(--yellow)"></i> Hesap DurumlarÄ±
           </div>
           <div style="height:200px;display:flex;align-items:center;justify-content:center">
             <canvas id="status-dist-chart"></canvas>
@@ -479,7 +522,7 @@
       
       <div class="admin-card" style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px">
         <div style="font-weight:600;margin-bottom:16px;color:var(--text);display:flex;align-items:center;gap:8px">
-          <i class="fas fa-stream" style="color:var(--green)"></i> Canlı Aktivite Akışı
+          <i class="fas fa-stream" style="color:var(--green)"></i> CanlÄ± Aktivite AkÄ±ÅŸÄ±
         </div>
         <div id="admin-live-feed" style="max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:8px">
           <div class="admin-empty" style="padding:20px">Aktivite bekleniyor...</div>
@@ -494,75 +537,75 @@
           <input type="text" id="admin-user-search" placeholder="E-posta veya ID ara..." oninput="filterUserList()" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:12px;padding:12px 12px 12px 40px;color:var(--text);font-family:inherit;outline:none;transition:all 0.2s">
         </div>
         <select id="admin-app-filter" onchange="filterUserList()" style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;color:var(--text);outline:none;cursor:pointer">
-          <option value="all">Tüm Uygulamalar</option>
-          <option value="sportify">🎵 Sportify</option>
-          <option value="devstore">🌐 DevStore</option>
+          <option value="all">TÃ¼m Uygulamalar</option>
+          <option value="sportify">ğŸµ Sportify</option>
+          <option value="devstore">ğŸŒ DevStore</option>
         </select>
-        <button class="admin-refresh" onclick="loadAdminUsers()">↻ Yenile</button>
+        <button class="admin-refresh" onclick="loadAdminUsers()">â†» Yenile</button>
       </div>
-      <div class="user-list" id="user-list"><div class="admin-empty">Yükleniyor...</div></div>
+      <div class="user-list" id="user-list"><div class="admin-empty">YÃ¼kleniyor...</div></div>
     </div>
     <div class="admin-section" id="admin-messages">
-      <button class="admin-refresh" onclick="loadAdminMessages()">↻ Yenile</button>
-      <div class="msg-list" id="msg-list"><div class="admin-empty">Yükleniyor...</div></div>
+      <button class="admin-refresh" onclick="loadAdminMessages()">â†» Yenile</button>
+      <div class="msg-list" id="msg-list"><div class="admin-empty">YÃ¼kleniyor...</div></div>
     </div>
     <div class="admin-section" id="admin-notifications">
       <div style="display:flex;flex-direction:column;gap:16px">
 
-        <!-- Tag seçici -->
+        <!-- Tag seÃ§ici -->
         <div>
-          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:500">Bildirim Türü</div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:500">Bildirim TÃ¼rÃ¼</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap" id="notif-tags">
-            <button class="notif-tag-btn active" onclick="selectNotifTag(this,'🆕 Yeni Uygulama')">🆕 Yeni Uygulama</button>
-            <button class="notif-tag-btn" onclick="selectNotifTag(this,'🔄 Yeni Güncelleme')">🔄 Yeni Güncelleme</button>
-            <button class="notif-tag-btn" onclick="selectNotifTag(this,'📣 Duyuru')">📣 Duyuru</button>
-            <button class="notif-tag-btn" onclick="selectNotifTag(this,'🎁 Özel Teklif')">🎁 Özel Teklif</button>
-            <button class="notif-tag-btn" onclick="selectNotifTag(this,'🔧 Bakım')">🔧 Bakım</button>
+            <button class="notif-tag-btn active" onclick="selectNotifTag(this,'ğŸ†• Yeni Uygulama')">ğŸ†• Yeni Uygulama</button>
+            <button class="notif-tag-btn" onclick="selectNotifTag(this,'ğŸ”„ Yeni GÃ¼ncelleme')">ğŸ”„ Yeni GÃ¼ncelleme</button>
+            <button class="notif-tag-btn" onclick="selectNotifTag(this,'ğŸ“£ Duyuru')">ğŸ“£ Duyuru</button>
+            <button class="notif-tag-btn" onclick="selectNotifTag(this,'ğŸ Ã–zel Teklif')">ğŸ Ã–zel Teklif</button>
+            <button class="notif-tag-btn" onclick="selectNotifTag(this,'ğŸ”§ BakÄ±m')">ğŸ”§ BakÄ±m</button>
           </div>
         </div>
 
-        <!-- Başlık -->
+        <!-- BaÅŸlÄ±k -->
         <div>
-          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:500">Başlık</div>
-          <input type="text" id="notif-title" placeholder="Bildirim başlığı..."
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:500">BaÅŸlÄ±k</div>
+          <input type="text" id="notif-title" placeholder="Bildirim baÅŸlÄ±ÄŸÄ±..."
             style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box"/>
         </div>
 
-        <!-- İçerik -->
+        <!-- Ä°Ã§erik -->
         <div>
-          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:500">İçerik</div>
-          <textarea id="notif-content" placeholder="Bildirim içeriği..." rows="4"
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:500">Ä°Ã§erik</div>
+          <textarea id="notif-content" placeholder="Bildirim iÃ§eriÄŸi..." rows="4"
             style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;resize:none;box-sizing:border-box"></textarea>
         </div>
 
-        <!-- Alıcılar -->
+        <!-- AlÄ±cÄ±lar -->
         <div>
-          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:500">Alıcılar</div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:500">AlÄ±cÄ±lar</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="notif-tag-btn active" id="rcpt-all" onclick="selectRecipients('all')">👥 Tüm Kullanıcılar</button>
-            <button class="notif-tag-btn" id="rcpt-online" onclick="selectRecipients('online')">🟢 Sadece Online</button>
-            <button class="notif-tag-btn" id="rcpt-select" onclick="selectRecipients('select')">☑️ Seç</button>
+            <button class="notif-tag-btn active" id="rcpt-all" onclick="selectRecipients('all')">ğŸ‘¥ TÃ¼m KullanÄ±cÄ±lar</button>
+            <button class="notif-tag-btn" id="rcpt-online" onclick="selectRecipients('online')">ğŸŸ¢ Sadece Online</button>
+            <button class="notif-tag-btn" id="rcpt-select" onclick="selectRecipients('select')">â˜‘ï¸ SeÃ§</button>
           </div>
-          <div style="font-size:0.75rem;color:var(--muted);margin-top:6px" id="notif-rcpt-count">Yükleniyor...</div>
+          <div style="font-size:0.75rem;color:var(--muted);margin-top:6px" id="notif-rcpt-count">YÃ¼kleniyor...</div>
           <div id="rcpt-user-list" style="display:none;margin-top:12px;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:12px;max-height:220px;overflow-y:auto;">
-            <div style="font-size:0.75rem;color:var(--muted);margin-bottom:8px">Bildirim göndermek istediğin kullanıcıları seç:</div>
+            <div style="font-size:0.75rem;color:var(--muted);margin-bottom:8px">Bildirim gÃ¶ndermek istediÄŸin kullanÄ±cÄ±larÄ± seÃ§:</div>
             <div id="rcpt-user-checkboxes" style="display:flex;flex-direction:column;gap:8px;"></div>
           </div>
         </div>
 
-        <!-- Gönder butonu -->
+        <!-- GÃ¶nder butonu -->
         <div style="display:flex;align-items:center;gap:14px">
           <button onclick="sendNotification()" id="notif-send-btn"
             style="background:linear-gradient(135deg,var(--accent),#9b7eff);color:#fff;border:none;border-radius:11px;padding:13px 32px;font-family:DM Sans,sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer;transition:all 0.2s">
-            📢 Bildirimi Gönder
+            ğŸ“¢ Bildirimi GÃ¶nder
           </button>
           <span id="notif-status" style="font-size:0.85rem"></span>
         </div>
 
-        <!-- Geçmiş -->
+        <!-- GeÃ§miÅŸ -->
         <div>
-          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:10px;font-weight:500;margin-top:8px">Gönderim Geçmişi</div>
-          <div id="notif-history"><div class="admin-empty">Henüz bildirim gönderilmedi.</div></div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:10px;font-weight:500;margin-top:8px">GÃ¶nderim GeÃ§miÅŸi</div>
+          <div id="notif-history"><div class="admin-empty">HenÃ¼z bildirim gÃ¶nderilmedi.</div></div>
         </div>
       </div>
     </div>
@@ -570,48 +613,48 @@
     <div class="admin-section" id="admin-deadaccounts">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
         <div>
-          <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px">💀 Ölü Hesap Yönetimi</div>
-          <div style="font-size:0.8rem;color:var(--muted)">7 gündür aktif olmayan hesaplar. Cron her gece 02:00 UTC'de çalışır.</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px">ğŸ’€ Ã–lÃ¼ Hesap YÃ¶netimi</div>
+          <div style="font-size:0.8rem;color:var(--muted)">7 gÃ¼ndÃ¼r aktif olmayan hesaplar. Cron her gece 02:00 UTC'de Ã§alÄ±ÅŸÄ±r.</div>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="admin-refresh" style="margin:0" onclick="loadDeadAccounts()">↻ Yenile</button>
-          <button id="run-cleaner-btn" onclick="runCleanerNow()" style="background:linear-gradient(135deg,var(--accent2),#ff6b9d);color:#fff;border:none;border-radius:10px;padding:8px 18px;font-family:'DM Sans',sans-serif;font-size:0.83rem;font-weight:600;cursor:pointer;transition:all 0.2s">▶ Şimdi Çalıştır</button>
+          <button class="admin-refresh" style="margin:0" onclick="loadDeadAccounts()">â†» Yenile</button>
+          <button id="run-cleaner-btn" onclick="runCleanerNow()" style="background:linear-gradient(135deg,var(--accent2),#ff6b9d);color:#fff;border:none;border-radius:10px;padding:8px 18px;font-family:'DM Sans',sans-serif;font-size:0.83rem;font-weight:600;cursor:pointer;transition:all 0.2s">â–¶ Åimdi Ã‡alÄ±ÅŸtÄ±r</button>
         </div>
       </div>
       <div style="display:flex;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px">
         <div style="flex:1;background:var(--surface);padding:16px;text-align:center">
-          <span style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;display:block;color:var(--accent2)" id="da-warn-count">—</span>
-          <div style="font-size:0.72rem;color:var(--muted);margin-top:3px">Uyarı Bekleyen</div>
+          <span style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;display:block;color:var(--accent2)" id="da-warn-count">â€”</span>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:3px">UyarÄ± Bekleyen</div>
         </div>
         <div style="flex:1;background:var(--surface);padding:16px;text-align:center">
-          <span style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;display:block;color:var(--yellow)" id="da-warned-count">—</span>
-          <div style="font-size:0.72rem;color:var(--muted);margin-top:3px">Uyarıldı</div>
+          <span style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;display:block;color:var(--yellow)" id="da-warned-count">â€”</span>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:3px">UyarÄ±ldÄ±</div>
         </div>
         <div style="flex:1;background:var(--surface);padding:16px;text-align:center">
-          <span style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;display:block;color:var(--green)" id="da-safe-count">—</span>
+          <span style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;display:block;color:var(--green)" id="da-safe-count">â€”</span>
           <div style="font-size:0.72rem;color:var(--muted);margin-top:3px">Aktif</div>
         </div>
       </div>
       <div id="da-last-run" style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:20px;font-size:0.83rem;color:var(--muted);display:none">
-        <span style="color:var(--green);font-weight:600">✅ Son çalışma:</span> <span id="da-last-run-text"></span>
+        <span style="color:var(--green);font-weight:600">âœ… Son Ã§alÄ±ÅŸma:</span> <span id="da-last-run-text"></span>
       </div>
       <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-        <button class="notif-tag-btn active" id="da-filter-all" onclick="filterDeadList('all',this)">Tümü</button>
-        <button class="notif-tag-btn" id="da-filter-warn" onclick="filterDeadList('warn',this)">⚠️ Uyarı Bekleyen</button>
-        <button class="notif-tag-btn" id="da-filter-warned" onclick="filterDeadList('warned',this)">📧 Uyarıldı</button>
+        <button class="notif-tag-btn active" id="da-filter-all" onclick="filterDeadList('all',this)">TÃ¼mÃ¼</button>
+        <button class="notif-tag-btn" id="da-filter-warn" onclick="filterDeadList('warn',this)">âš ï¸ UyarÄ± Bekleyen</button>
+        <button class="notif-tag-btn" id="da-filter-warned" onclick="filterDeadList('warned',this)">ğŸ“§ UyarÄ±ldÄ±</button>
       </div>
-      <div id="dead-account-list"><div class="admin-empty">Yükleniyor...</div></div>
+      <div id="dead-account-list"><div class="admin-empty">YÃ¼kleniyor...</div></div>
     </div>
 
     <div class="admin-section" id="admin-banned">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
         <div>
-          <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px">🚫 Banlı Kullanıcılar</div>
-          <div style="font-size:0.8rem;color:var(--muted)">Kalıcı olarak yasaklanmış hesaplar. Yasağı kaldırabilirsin.</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px">ğŸš« BanlÄ± KullanÄ±cÄ±lar</div>
+          <div style="font-size:0.8rem;color:var(--muted)">KalÄ±cÄ± olarak yasaklanmÄ±ÅŸ hesaplar. YasaÄŸÄ± kaldÄ±rabilirsin.</div>
         </div>
-        <button class="admin-refresh" style="margin:0" onclick="loadBannedUsers()">↻ Yenile</button>
+        <button class="admin-refresh" style="margin:0" onclick="loadBannedUsers()">â†» Yenile</button>
       </div>
-      <div id="banned-user-list"><div class="admin-empty">Yükleniyor...</div></div>
+      <div id="banned-user-list"><div class="admin-empty">YÃ¼kleniyor...</div></div>
     </div>
 
   </div>
@@ -637,15 +680,15 @@
         <div id="m-user-app" style="font-size:0.85rem;font-weight:700"></div>
       </div>
       <div class="admin-card" style="padding:14px;background:var(--surface2);text-align:center;grid-column:span 2">
-        <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">SON GÖRÜLME</div>
+        <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">SON GÃ–RÃœLME</div>
         <div id="m-user-lastseen" style="font-size:0.85rem;font-weight:700"></div>
       </div>
       <div class="admin-card" style="padding:14px;background:var(--surface2);text-align:center">
-        <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">İLK CİHAZ</div>
+        <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">Ä°LK CÄ°HAZ</div>
         <div id="m-user-firstdevice" style="font-size:0.8rem;font-weight:600"></div>
       </div>
       <div class="admin-card" style="padding:14px;background:var(--surface2);text-align:center">
-        <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">SON CİHAZ</div>
+        <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">SON CÄ°HAZ</div>
         <div id="m-user-lastdevice" style="font-size:0.8rem;font-weight:600"></div>
       </div>
     </div>
@@ -660,7 +703,7 @@
 <!-- DETAY SAYFASI -->
 <div id="detail-page">
   <div class="detail-nav"><div class="detail-nav-inner">
-    <button class="back-btn" onclick="showHome()">← Geri</button>
+    <button class="back-btn" onclick="showHome()">â† Geri</button>
     <span class="detail-nav-title" id="d-nav-title"></span>
   </div></div>
   <div class="detail-wrap">
@@ -670,32 +713,32 @@
         <div class="detail-name" id="d-name"></div>
         <div class="detail-developer" id="d-dev"></div>
         <div class="detail-badges" id="d-badges"></div>
-        <a class="download-main-btn" id="d-dl-btn" href="#" target="_blank" rel="noopener noreferrer">⬇ APK İndir</a>
+        <a class="download-main-btn" id="d-dl-btn" href="#" target="_blank" rel="noopener noreferrer">â¬‡ APK Ä°ndir</a>
       </div>
     </div>
     <div class="detail-stats">
-      <div class="detail-stat"><span class="detail-stat-val" id="d-ver">—</span><div class="detail-stat-label">Versiyon</div></div>
-      <div class="detail-stat"><span class="detail-stat-val" id="d-minver">—</span><div class="detail-stat-label">Min. Versiyon</div></div>
-      <div class="detail-stat"><span class="detail-stat-val" id="d-avg-rating" style="color:var(--yellow)">—</span><div class="detail-stat-label">Ortalama Puan</div></div>
-      <div class="detail-stat"><span class="detail-stat-val" id="d-dl-count" style="color:var(--green)">—</span><div class="detail-stat-label">İndirme</div></div>
-      <div class="detail-stat"><span class="detail-stat-val" id="d-category">—</span><div class="detail-stat-label">Kategori</div></div>
+      <div class="detail-stat"><span class="detail-stat-val" id="d-ver">â€”</span><div class="detail-stat-label">Versiyon</div></div>
+      <div class="detail-stat"><span class="detail-stat-val" id="d-minver">â€”</span><div class="detail-stat-label">Min. Versiyon</div></div>
+      <div class="detail-stat"><span class="detail-stat-val" id="d-avg-rating" style="color:var(--yellow)">â€”</span><div class="detail-stat-label">Ortalama Puan</div></div>
+      <div class="detail-stat"><span class="detail-stat-val" id="d-dl-count" style="color:var(--green)">â€”</span><div class="detail-stat-label">Ä°ndirme</div></div>
+      <div class="detail-stat"><span class="detail-stat-val" id="d-category">â€”</span><div class="detail-stat-label">Kategori</div></div>
     </div>
-    <div class="detail-section"><p class="ss-title">📸 Ekran Görüntüleri</p><div class="screenshots-row" id="d-screenshots"></div></div>
-    <div class="detail-section"><h3>📝 Uygulama Hakkında</h3><div class="desc-text" id="d-desc"></div></div>
-    <div class="detail-section"><h3>📋 Güncelleme Geçmişi</h3><div id="d-changelog"></div></div>
+    <div class="detail-section"><p class="ss-title">ğŸ“¸ Ekran GÃ¶rÃ¼ntÃ¼leri</p><div class="screenshots-row" id="d-screenshots"></div></div>
+    <div class="detail-section"><h3>ğŸ“ Uygulama HakkÄ±nda</h3><div class="desc-text" id="d-desc"></div></div>
+    <div class="detail-section"><h3>ğŸ“‹ GÃ¼ncelleme GeÃ§miÅŸi</h3><div id="d-changelog"></div></div>
     <div class="comments-section">
-      <h3>💬 Yorumlar <span id="comment-count" style="color:var(--muted);font-size:0.85rem;font-weight:400"></span></h3>
-      <div id="comment-login-note" class="comment-login-note" style="display:none">Yorum yapmak için <button onclick="openAuth()">giriş yap</button> veya hesap oluştur.</div>
+      <h3>ğŸ’¬ Yorumlar <span id="comment-count" style="color:var(--muted);font-size:0.85rem;font-weight:400"></span></h3>
+      <div id="comment-login-note" class="comment-login-note" style="display:none">Yorum yapmak iÃ§in <button onclick="openAuth()">giriÅŸ yap</button> veya hesap oluÅŸtur.</div>
       <div id="comment-form" class="comment-form" style="display:none">
         <div class="stars-row" id="stars-row">
-          <span class="star" data-v="1" onclick="setRating(1)">★</span><span class="star" data-v="2" onclick="setRating(2)">★</span>
-          <span class="star" data-v="3" onclick="setRating(3)">★</span><span class="star" data-v="4" onclick="setRating(4)">★</span>
-          <span class="star" data-v="5" onclick="setRating(5)">★</span>
+          <span class="star" data-v="1" onclick="setRating(1)">â˜…</span><span class="star" data-v="2" onclick="setRating(2)">â˜…</span>
+          <span class="star" data-v="3" onclick="setRating(3)">â˜…</span><span class="star" data-v="4" onclick="setRating(4)">â˜…</span>
+          <span class="star" data-v="5" onclick="setRating(5)">â˜…</span>
         </div>
-        <textarea id="comment-input" placeholder="Bu uygulama hakkında ne düşünüyorsun?" maxlength="500"></textarea>
+        <textarea id="comment-input" placeholder="Bu uygulama hakkÄ±nda ne dÃ¼ÅŸÃ¼nÃ¼yorsun?" maxlength="500"></textarea>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
           <span style="font-size:0.75rem;color:var(--muted)" id="comment-char">0/500</span>
-          <button class="comment-submit" onclick="submitComment()">Yorum Gönder</button>
+          <button class="comment-submit" onclick="submitComment()">Yorum GÃ¶nder</button>
         </div>
       </div>
       <div class="comment-list" id="comment-list"></div>
@@ -706,34 +749,34 @@
 <!-- AUTH MODAL -->
 <div class="auth-overlay" id="auth-overlay" onclick="handleOverlayClick(event)">
   <div class="auth-box">
-    <div class="auth-logo">⬡</div>
+    <div class="auth-logo">â¬¡</div>
     <div class="auth-title">DevStore</div>
-    <div class="auth-sub">Hesabına giriş yap veya yeni hesap oluştur</div>
+    <div class="auth-sub">HesabÄ±na giriÅŸ yap veya yeni hesap oluÅŸtur</div>
     <div class="auth-tabs">
-      <button class="auth-tab active" onclick="switchTab('login')">Giriş Yap</button>
-      <button class="auth-tab" onclick="switchTab('register')">Kayıt Ol</button>
+      <button class="auth-tab active" onclick="switchTab('login')">GiriÅŸ Yap</button>
+      <button class="auth-tab" onclick="switchTab('register')">KayÄ±t Ol</button>
     </div>
     <div id="auth-login">
       <div class="auth-field"><label>E-posta</label><input type="email" id="login-email" placeholder="ornek@email.com"/></div>
-      <div class="auth-field"><label>Şifre</label><input type="password" id="login-pass" placeholder="••••••••"/></div>
-      <button class="auth-submit" onclick="doLogin()">Giriş Yap</button>
+      <div class="auth-field"><label>Åifre</label><input type="password" id="login-pass" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"/></div>
+      <button class="auth-submit" onclick="doLogin()">GiriÅŸ Yap</button>
     </div>
     <div id="auth-register" style="display:none">
       <div id="reg-step1">
         <div class="auth-field"><label>E-posta</label><input type="email" id="reg-email" placeholder="ornek@email.com"/></div>
-        <div class="auth-field"><label>Şifre</label><input type="password" id="reg-pass" placeholder="En az 6 karakter"/></div>
-        <div class="auth-field"><label>Şifre Tekrar</label><input type="password" id="reg-pass2" placeholder="••••••••"/></div>
-        <button class="auth-submit" onclick="doRegister()">Kod Gönder 📧</button>
+        <div class="auth-field"><label>Åifre</label><input type="password" id="reg-pass" placeholder="En az 6 karakter"/></div>
+        <div class="auth-field"><label>Åifre Tekrar</label><input type="password" id="reg-pass2" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"/></div>
+        <button class="auth-submit" onclick="doRegister()">Kod GÃ¶nder ğŸ“§</button>
       </div>
       <div id="reg-step2" style="display:none">
         <div style="text-align:center;margin-bottom:20px">
-          <div style="font-size:2rem;margin-bottom:8px">📧</div>
-          <div style="font-size:0.9rem;color:var(--text);font-weight:600">E-postanı kontrol et!</div>
-          <div style="font-size:0.82rem;color:var(--muted);margin-top:6px">6 haneli doğrulama kodu gönderildi</div>
+          <div style="font-size:2rem;margin-bottom:8px">ğŸ“§</div>
+          <div style="font-size:0.9rem;color:var(--text);font-weight:600">E-postanÄ± kontrol et!</div>
+          <div style="font-size:0.82rem;color:var(--muted);margin-top:6px">6 haneli doÄŸrulama kodu gÃ¶nderildi</div>
         </div>
-        <div class="auth-field"><label>Doğrulama Kodu</label><input type="text" id="reg-otp" placeholder="123456" maxlength="8" style="text-align:center;font-size:1.4rem;letter-spacing:0.3em;font-weight:700"/></div>
-        <button class="auth-submit" onclick="verifyOTP()">Hesabı Onayla ✓</button>
-        <div style="text-align:center;margin-top:12px"><button onclick="backToReg()" style="background:none;border:none;color:var(--muted);font-size:0.82rem;cursor:pointer;font-family:DM Sans,sans-serif">← Geri dön</button></div>
+        <div class="auth-field"><label>DoÄŸrulama Kodu</label><input type="text" id="reg-otp" placeholder="123456" maxlength="8" style="text-align:center;font-size:1.4rem;letter-spacing:0.3em;font-weight:700"/></div>
+        <button class="auth-submit" onclick="verifyOTP()">HesabÄ± Onayla âœ“</button>
+        <div style="text-align:center;margin-top:12px"><button onclick="backToReg()" style="background:none;border:none;color:var(--muted);font-size:0.82rem;cursor:pointer;font-family:DM Sans,sans-serif">â† Geri dÃ¶n</button></div>
       </div>
     </div>
     <div class="auth-msg" id="auth-msg"></div>
@@ -741,23 +784,45 @@
 </div>
 
 <!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox" onclick="closeLightbox()">
-  <span class="lightbox-close" onclick="closeLightbox()">✕</span>
-  <img id="lightbox-img" src="" alt=""/>
-</div>
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close" onclick="closeLightbox()">âœ•</span>
+    <img id="lightbox-img" src="" alt=""/>
+  </div>
+
+  <!-- ğŸ•¶ï¸ J.A.R.V.I.S MARKUP -->
+  <div id="jarvis-trigger" onclick="toggleJarvis()">
+    <div class="core"></div>
+  </div>
+  <div id="jarvis-panel">
+    <div class="jarvis-header">
+      <div class="jarvis-header-left">
+        <div class="jarvis-mini-core"></div>
+        <span class="title">J.A.R.V.I.S. ONLINE</span>
+      </div>
+      <button onclick="toggleJarvis()" style="background:none; border:none; color:var(--muted); cursor:pointer; font-size:1.2rem;">Ã—</button>
+    </div>
+    <div class="jarvis-chat" id="jarvis-chat">
+      <div class="jarvis-msg ai">Sisteme hoÅŸ geldiniz Kaptan. Ben J.A.R.V.I.S. Size nasÄ±l yardÄ±mcÄ± olabilirim?</div>
+    </div>
+    <div id="jarvis-typing" class="jarvis-status" style="display:none">DÃ¼ÅŸÃ¼nÃ¼lÃ¼yor...</div>
+    <div class="jarvis-input-area">
+      <input type="text" id="jarvis-input" class="jarvis-input" placeholder="Sisteme bir komut ver..." onkeypress="if(event.key==='Enter') sendToJarvis()">
+      <button class="jarvis-send" onclick="sendToJarvis()">ğŸš€</button>
+    </div>
+  </div>
 
 <script>
-// ════════════════════════════════════════════════
-//  SUPABASE & SABİTLER — tek yerde
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  SUPABASE & SABÄ°TLER â€” tek yerde
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const SUPA_URL   = "https://jnuckqaiutmkiquptvzu.supabase.co";
 const SUPA_KEY   = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpudWNrcWFpdXRta2lxdXB0dnp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDgzMTAsImV4cCI6MjA4ODk4NDMxMH0.sP_FoTrYOFWiIS7PdaFYtR1JbP5vGf_KLgc_jh7zhZY";
 const supa       = supabase.createClient(SUPA_URL, SUPA_KEY);
 const ADMIN_EMAIL = 'geceninhakimistudio@gmail.com';
 
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  GLOBAL STATE
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let allApps        = {};
 let currentFilter  = 'all';
 let currentUserEmail = null;
@@ -766,42 +831,42 @@ let currentAppId   = null;
 let selectedRating = 0;
 let _presenceTimer = null;
 
-// ════════════════════════════════════════════════
-//  UYGULAMA EKSTRA BİLGİLERİ
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  UYGULAMA EKSTRA BÄ°LGÄ°LERÄ°
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const appExtras = {
   sportify: {
     developer: "judy658",
-    description: "Sportify, GitHub üzerinden MP3 dosyalarını doğrudan stream eden kişisel bir müzik uygulamasıdır. 129 şarkılık geniş kütüphanesiyle Türkçe pop, yabancı müzik, arabesk ve daha fazlasını tek bir yerde dinleyebilirsiniz.\n\nÇalma listeleri oluşturabilir, favori şarkılarınızı kaydedebilir ve en çok dinlediklerinizi takip edebilirsiniz.",
+    description: "Sportify, GitHub Ã¼zerinden MP3 dosyalarÄ±nÄ± doÄŸrudan stream eden kiÅŸisel bir mÃ¼zik uygulamasÄ±dÄ±r. 129 ÅŸarkÄ±lÄ±k geniÅŸ kÃ¼tÃ¼phanesiyle TÃ¼rkÃ§e pop, yabancÄ± mÃ¼zik, arabesk ve daha fazlasÄ±nÄ± tek bir yerde dinleyebilirsiniz.\n\nÃ‡alma listeleri oluÅŸturabilir, favori ÅŸarkÄ±larÄ±nÄ±zÄ± kaydedebilir ve en Ã§ok dinlediklerinizi takip edebilirsiniz.",
     screenshots: [
       "https://raw.githubusercontent.com/judy658/judy658-devstore/main/sportify_ss1.png",
       "https://raw.githubusercontent.com/judy658/judy658-devstore/main/sportify_ss2.png",
       "https://raw.githubusercontent.com/judy658/judy658-devstore/main/sportify_ss3.png"
     ],
     changelog_history: [
-      { version: "V12", text: "Yeni şarkılar eklendi (HITLER, Bir Baskedir). 6 dakika üzeri 5 şarkı kaldırıldı. Performans iyileştirmeleri yapıldı." },
-      { version: "V11", text: "Şarkı listesi güncellendi, yeni özellikler eklendi." },
-      { version: "V10", text: "İlk stabil sürüm yayınlandı." }
+      { version: "V12", text: "Yeni ÅŸarkÄ±lar eklendi (HITLER, Bir Baskedir). 6 dakika Ã¼zeri 5 ÅŸarkÄ± kaldÄ±rÄ±ldÄ±. Performans iyileÅŸtirmeleri yapÄ±ldÄ±." },
+      { version: "V11", text: "ÅarkÄ± listesi gÃ¼ncellendi, yeni Ã¶zellikler eklendi." },
+      { version: "V10", text: "Ä°lk stabil sÃ¼rÃ¼m yayÄ±nlandÄ±." }
     ]
   },
   sportify_downloader: {
     developer: "judy658",
     platform: "windows",
-    description: "Sportify Downloader, YouTube'dan MP3 ve video indirmenizi sağlayan masaüstü uygulamasıdır.\n\nŞarkı adı veya YouTube linki girerek tek tek ya da toplu indirme yapabilirsiniz. YouTube playlist desteği sayesinde tüm bir çalma listesini tek seferde indirebilirsiniz.\n\nİndirilen MP3\'lere otomatik olarak kapak fotoğrafı ve etiket bilgileri eklenir. Windows için hazır, kurulum gerektirmez.",
+    description: "Sportify Downloader, YouTube'dan MP3 ve video indirmenizi saÄŸlayan masaÃ¼stÃ¼ uygulamasÄ±dÄ±r.\n\nÅarkÄ± adÄ± veya YouTube linki girerek tek tek ya da toplu indirme yapabilirsiniz. YouTube playlist desteÄŸi sayesinde tÃ¼m bir Ã§alma listesini tek seferde indirebilirsiniz.\n\nÄ°ndirilen MP3\'lere otomatik olarak kapak fotoÄŸrafÄ± ve etiket bilgileri eklenir. Windows iÃ§in hazÄ±r, kurulum gerektirmez.",
     screenshots: [
       "https://raw.githubusercontent.com/judy658/judy658-devstore/main/downloader_ss1.png",
       "https://raw.githubusercontent.com/judy658/judy658-devstore/main/downloader_ss2.png",
       "https://raw.githubusercontent.com/judy658/judy658-devstore/main/downloader_ss3.png"
     ],
     changelog_history: [
-      { version: "V1", text: "YouTube'dan MP3/MP4 indirme, playlist desteği, otomatik etiket düzenleme, kapak fotoğrafı gömme." }
+      { version: "V1", text: "YouTube'dan MP3/MP4 indirme, playlist desteÄŸi, otomatik etiket dÃ¼zenleme, kapak fotoÄŸrafÄ± gÃ¶mme." }
     ]
   }
 };
 
-// ════════════════════════════════════════════════
-//  SAYFA GEÇİŞLERİ
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  SAYFA GEÃ‡Ä°ÅLERÄ°
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function showHome() {
   document.getElementById('detail-page').classList.remove('active');
   document.getElementById('profile-page').classList.remove('active');
@@ -816,12 +881,12 @@ async function showProfile() {
   document.getElementById('profile-email-input').value = session.user.email;
   if (session.user.created_at) {
     const d = new Date(session.user.created_at);
-    document.getElementById('profile-since').textContent = 'Üyelik: ' + d.toLocaleDateString('tr-TR', { year:'numeric', month:'long', day:'numeric' });
+    document.getElementById('profile-since').textContent = 'Ãœyelik: ' + d.toLocaleDateString('tr-TR', { year:'numeric', month:'long', day:'numeric' });
   }
   const msg = document.getElementById('pass-msg');
   msg.className = 'profile-msg'; msg.textContent = '';
   const btn = document.getElementById('pass-reset-btn');
-  if (btn) { btn.disabled = false; btn.textContent = '📧 Sıfırlama Maili Gönder'; }
+  if (btn) { btn.disabled = false; btn.textContent = 'ğŸ“§ SÄ±fÄ±rlama Maili GÃ¶nder'; }
   document.getElementById('home-page').style.display = 'none';
   document.getElementById('detail-page').classList.remove('active');
   document.getElementById('admin-page').classList.remove('active');
@@ -849,7 +914,7 @@ function initAdminRealtime() {
   const feed = document.getElementById('admin-live-feed');
   window.adminChannel = supa.channel('admin-presence-all')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'user_presence' }, payload => {
-      console.log('[AdminFeed] Veri alındı:', payload);
+      console.log('[AdminFeed] Veri alÄ±ndÄ±:', payload);
       _handlePresenceUpdate(payload);
     })
     .subscribe((status) => {
@@ -857,10 +922,10 @@ function initAdminRealtime() {
         if (feed && feed.querySelector('.admin-empty')) feed.querySelector('.admin-empty').remove();
         const statusItem = document.createElement('div');
         statusItem.style = "font-size:0.7rem;color:var(--green);opacity:0.7;margin-bottom:8px;padding-left:4px";
-        statusItem.innerHTML = `<i class="fas fa-check-circle"></i> Canlı bağlantı aktif.`;
+        statusItem.innerHTML = `<i class="fas fa-check-circle"></i> CanlÄ± baÄŸlantÄ± aktif.`;
         feed?.prepend(statusItem);
         
-        // Akıllı Çevrimdışı Takipçisini Başlat
+        // AkÄ±llÄ± Ã‡evrimdÄ±ÅŸÄ± TakipÃ§isini BaÅŸlat
         _startSmartOfflineTracker();
       }
     });
@@ -890,7 +955,7 @@ function _startSmartOfflineTracker() {
           const wasOnline = _lastLogStatus[u.email];
           
           if (!isActuallyOnline && wasOnline === true) {
-            // Yapay olarak offline logu üret
+            // Yapay olarak offline logu Ã¼ret
             _handlePresenceUpdate({
               eventType: 'UPDATE',
               new: { ...u, is_online: false },
@@ -914,7 +979,7 @@ function _handlePresenceUpdate(payload) {
   if (empty) empty.remove();
   
   const data = payload.new || payload.old;
-  const email = data.email || 'Bilinmeyen Kullanıcı';
+  const email = data.email || 'Bilinmeyen KullanÄ±cÄ±';
   
   let msg = '';
   let icon = 'fa-info-circle';
@@ -926,30 +991,30 @@ function _handlePresenceUpdate(payload) {
   const currentApp = payload.new?.current_app;
 
   if (payload.eventType === 'INSERT') {
-    msg = `<b>${email}</b> sisteme katıldı! 🚀`;
+    msg = `<b>${email}</b> sisteme katÄ±ldÄ±! ğŸš€`;
     icon = 'fa-user-plus';
     color = 'var(--green)';
   } else if (payload.eventType === 'UPDATE') {
-    // Sadece gerçekten durum değişmişse mesaj yaz
+    // Sadece gerÃ§ekten durum deÄŸiÅŸmiÅŸse mesaj yaz
     if (currentState === true && prevState !== true) {
-      msg = `<b>${email}</b> şu an online. 🟢`;
+      msg = `<b>${email}</b> ÅŸu an online. ğŸŸ¢`;
       icon = 'fa-plug';
       color = 'var(--green)';
     } else if (currentState === false && prevState === true) {
-      msg = `<b>${email}</b> çevrimdışı oldu. ⚫ ${payload.isSmartLog ? '<small>(Zaman Aşımı)</small>' : ''}`;
+      msg = `<b>${email}</b> Ã§evrimdÄ±ÅŸÄ± oldu. âš« ${payload.isSmartLog ? '<small>(Zaman AÅŸÄ±mÄ±)</small>' : ''}`;
       icon = 'fa-power-off';
       color = 'var(--muted)';
     } else if (currentApp !== _lastLogStatus[email + '_app'] && currentState !== false) {
-      msg = `<b>${email}</b> geçti: <b>${currentApp}</b>`;
+      msg = `<b>${email}</b> geÃ§ti: <b>${currentApp}</b>`;
       icon = 'fa-exchange-alt';
     } else if (payload.new.is_banned && !payload.old?.is_banned) {
-      msg = `<b>${email}</b> yasaklandı! 🚫`;
+      msg = `<b>${email}</b> yasaklandÄ±! ğŸš«`;
       icon = 'fa-ban';
       color = 'var(--accent2)';
     }
   }
   
-  // Hafızayı güncelle
+  // HafÄ±zayÄ± gÃ¼ncelle
   if (payload.new) {
     _lastLogStatus[email] = currentState;
     _lastLogStatus[email + '_app'] = currentApp;
@@ -1007,7 +1072,7 @@ async function updateDashboardAnalytics() {
     window.chart2 = new Chart(ctx2, {
       type: 'pie',
       data: {
-        labels: ['Aktif', 'Banlı', 'Ölü'],
+        labels: ['Aktif', 'BanlÄ±', 'Ã–lÃ¼'],
         datasets: [{ data: [active, banned, dead], backgroundColor: ['#3ddc97', '#ff4646', '#6b6b85'], borderWidth: 0, hoverOffset: 4 }]
       },
       options: chartConfig
@@ -1015,9 +1080,9 @@ async function updateDashboardAnalytics() {
   }
 }
 
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  KULLANICI OTURUMU
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function showUserLoggedIn(email) {
   currentUserEmail = email;
   document.getElementById('login-btn').style.display = 'none';
@@ -1028,7 +1093,7 @@ function showUserLoggedIn(email) {
     const btn = document.createElement('button');
     btn.id = 'admin-nav-btn'; btn.className = 'user-btn';
     btn.style.cssText = 'background:rgba(124,92,252,0.15);border-color:rgba(124,92,252,0.4);color:var(--accent)';
-    btn.textContent = '🛡️ Admin'; btn.onclick = showAdminPanel;
+    btn.textContent = 'ğŸ›¡ï¸ Admin'; btn.onclick = showAdminPanel;
     document.getElementById('nav-user-area').prepend(btn);
   }
   startPresence();
@@ -1056,9 +1121,9 @@ supa.auth.onAuthStateChange((event, session) => {
   else if (event === 'SIGNED_OUT') { showUserLoggedOut(); }
 });
 
-// ════════════════════════════════════════════════
-//  AUTH FONKSİYONLARI
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  AUTH FONKSÄ°YONLARI
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function openAuth() { document.getElementById('auth-overlay').classList.add('open'); }
 function closeAuth() {
   document.getElementById('auth-overlay').classList.remove('open');
@@ -1077,13 +1142,13 @@ function showMsg(msg, type) { const el = document.getElementById('auth-msg'); el
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
   const pass  = document.getElementById('login-pass').value;
-  if (!email || !pass) return showMsg('E-posta ve şifre gir!', 'error');
+  if (!email || !pass) return showMsg('E-posta ve ÅŸifre gir!', 'error');
   const btn = document.querySelector('#auth-login .auth-submit');
-  btn.disabled = true; btn.textContent = 'Giriş yapılıyor...';
+  btn.disabled = true; btn.textContent = 'GiriÅŸ yapÄ±lÄ±yor...';
   const { error } = await supa.auth.signInWithPassword({ email, password: pass });
-  btn.disabled = false; btn.textContent = 'Giriş Yap';
+  btn.disabled = false; btn.textContent = 'GiriÅŸ Yap';
   if (error) return showMsg('Hata: ' + error.message, 'error');
-  showMsg('Giriş başarılı! ✓', 'success');
+  showMsg('GiriÅŸ baÅŸarÄ±lÄ±! âœ“', 'success');
   showUserLoggedIn(email);
   setTimeout(closeAuth, 1200);
 }
@@ -1092,18 +1157,18 @@ async function doRegister() {
   const email = document.getElementById('reg-email').value.trim();
   const pass  = document.getElementById('reg-pass').value;
   const pass2 = document.getElementById('reg-pass2').value;
-  if (!email || !pass) return showMsg('Tüm alanları doldur!', 'error');
-  if (pass !== pass2) return showMsg('Şifreler eşleşmiyor!', 'error');
-  if (pass.length < 6) return showMsg('Şifre en az 6 karakter olmalı!', 'error');
+  if (!email || !pass) return showMsg('TÃ¼m alanlarÄ± doldur!', 'error');
+  if (pass !== pass2) return showMsg('Åifreler eÅŸleÅŸmiyor!', 'error');
+  if (pass.length < 6) return showMsg('Åifre en az 6 karakter olmalÄ±!', 'error');
   const btn = document.querySelector('#reg-step1 .auth-submit');
-  btn.disabled = true; btn.textContent = 'Gönderiliyor...';
+  btn.disabled = true; btn.textContent = 'GÃ¶nderiliyor...';
   const { error } = await supa.auth.signUp({ email, password: pass, options: { emailRedirectTo: null } });
-  btn.disabled = false; btn.textContent = 'Kod Gönder 📧';
+  btn.disabled = false; btn.textContent = 'Kod GÃ¶nder ğŸ“§';
   if (error) return showMsg('Hata: ' + error.message, 'error');
   document.getElementById('reg-step1').style.display = 'none';
   document.getElementById('reg-step2').style.display = 'block';
   document.getElementById('auth-msg').className = 'auth-msg';
-  showMsg('Kod e-postana gönderildi!', 'success');
+  showMsg('Kod e-postana gÃ¶nderildi!', 'success');
 }
 
 async function verifyOTP() {
@@ -1111,11 +1176,11 @@ async function verifyOTP() {
   const token = document.getElementById('reg-otp').value.trim();
   if (token.length < 6) return showMsg('6 haneli kodu gir!', 'error');
   const btn = document.querySelector('#reg-step2 .auth-submit');
-  btn.disabled = true; btn.textContent = 'Doğrulanıyor...';
+  btn.disabled = true; btn.textContent = 'DoÄŸrulanÄ±yor...';
   const { error } = await supa.auth.verifyOtp({ email, token, type: 'signup' });
-  btn.disabled = false; btn.textContent = 'Hesabı Onayla ✓';
+  btn.disabled = false; btn.textContent = 'HesabÄ± Onayla âœ“';
   if (error) return showMsg('Hata: ' + error.message, 'error');
-  showMsg('Hesap doğrulandı! ✓', 'success');
+  showMsg('Hesap doÄŸrulandÄ±! âœ“', 'success');
   const { data: { session } } = await supa.auth.getSession();
   if (session) { showUserLoggedIn(session.user.email); setTimeout(closeAuth, 1200); }
 }
@@ -1134,11 +1199,11 @@ async function sendPasswordReset() {
   const btn = document.getElementById('pass-reset-btn');
   const msg = document.getElementById('pass-msg');
   msg.className = 'profile-msg'; msg.textContent = '';
-  btn.disabled = true; btn.textContent = 'Gönderiliyor...';
+  btn.disabled = true; btn.textContent = 'GÃ¶nderiliyor...';
   const { error } = await supa.auth.resetPasswordForEmail(session.user.email, { redirectTo: window.location.href });
-  btn.disabled = false; btn.textContent = '📧 Sıfırlama Maili Gönder';
+  btn.disabled = false; btn.textContent = 'ğŸ“§ SÄ±fÄ±rlama Maili GÃ¶nder';
   if (error) { msg.textContent = 'Hata: ' + error.message; msg.className = 'profile-msg error'; }
-  else { msg.textContent = 'Mail gönderildi! ✓'; msg.className = 'profile-msg success'; setTimeout(() => { msg.className = 'profile-msg'; msg.textContent = ''; }, 5000); }
+  else { msg.textContent = 'Mail gÃ¶nderildi! âœ“'; msg.className = 'profile-msg success'; setTimeout(() => { msg.className = 'profile-msg'; msg.textContent = ''; }, 5000); }
 }
 
 function _showNewPasswordPanel() {
@@ -1147,14 +1212,14 @@ function _showNewPasswordPanel() {
   o.id = 'new-pass-overlay';
   o.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:600;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)';
   o.innerHTML = `<div style="background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px;width:100%;max-width:420px;margin:20px">
-    <div style="text-align:center;font-size:2rem;margin-bottom:16px">🔒</div>
-    <div style="font-family:Syne,sans-serif;font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:24px">Yeni Şifre</div>
-    <div style="margin-bottom:14px"><label style="display:block;font-size:0.8rem;color:var(--muted);margin-bottom:6px;font-weight:500">Yeni Şifre</label>
+    <div style="text-align:center;font-size:2rem;margin-bottom:16px">ğŸ”’</div>
+    <div style="font-family:Syne,sans-serif;font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:24px">Yeni Åifre</div>
+    <div style="margin-bottom:14px"><label style="display:block;font-size:0.8rem;color:var(--muted);margin-bottom:6px;font-weight:500">Yeni Åifre</label>
     <input type="password" id="new-pass-input" placeholder="En az 6 karakter" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box"/></div>
-    <div style="margin-bottom:20px"><label style="display:block;font-size:0.8rem;color:var(--muted);margin-bottom:6px;font-weight:500">Şifre Tekrar</label>
-    <input type="password" id="new-pass-input2" placeholder="••••••••" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box"/></div>
+    <div style="margin-bottom:20px"><label style="display:block;font-size:0.8rem;color:var(--muted);margin-bottom:6px;font-weight:500">Åifre Tekrar</label>
+    <input type="password" id="new-pass-input2" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box"/></div>
     <div id="new-pass-msg" style="text-align:center;font-size:0.82rem;margin-bottom:12px;min-height:20px"></div>
-    <button id="new-pass-btn" onclick="_submitNewPassword()" style="width:100%;background:linear-gradient(135deg,var(--accent),#9b7eff);color:#fff;border:none;border-radius:12px;padding:13px;font-family:DM Sans,sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer">Şifreyi Kaydet</button>
+    <button id="new-pass-btn" onclick="_submitNewPassword()" style="width:100%;background:linear-gradient(135deg,var(--accent),#9b7eff);color:#fff;border:none;border-radius:12px;padding:13px;font-family:DM Sans,sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer">Åifreyi Kaydet</button>
   </div>`;
   document.body.appendChild(o);
 }
@@ -1165,42 +1230,42 @@ async function _submitNewPassword() {
   const btn = document.getElementById('new-pass-btn');
   const msg = document.getElementById('new-pass-msg');
   msg.style.color = 'var(--accent2)';
-  if (!pass || pass.length < 6) { msg.textContent = 'Şifre en az 6 karakter olmalı!'; return; }
-  if (pass !== pass2) { msg.textContent = 'Şifreler eşleşmiyor!'; return; }
+  if (!pass || pass.length < 6) { msg.textContent = 'Åifre en az 6 karakter olmalÄ±!'; return; }
+  if (pass !== pass2) { msg.textContent = 'Åifreler eÅŸleÅŸmiyor!'; return; }
   btn.disabled = true; btn.textContent = 'Kaydediliyor...';
   const { error } = await supa.auth.updateUser({ password: pass });
-  btn.disabled = false; btn.textContent = 'Şifreyi Kaydet';
+  btn.disabled = false; btn.textContent = 'Åifreyi Kaydet';
   if (error) { msg.textContent = 'Hata: ' + error.message; }
-  else { msg.style.color = 'var(--green)'; msg.textContent = 'Şifre güncellendi ✓'; setTimeout(() => document.getElementById('new-pass-overlay')?.remove(), 1500); }
+  else { msg.style.color = 'var(--green)'; msg.textContent = 'Åifre gÃ¼ncellendi âœ“'; setTimeout(() => document.getElementById('new-pass-overlay')?.remove(), 1500); }
 }
 
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  PRESENCE
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function startPresence() {
   const { data: { session } } = await supa.auth.getSession();
   if (!session) return;
   const uid = session.user.id, email = session.user.email;
-  await _pingPresence(uid, email, true); // İlk ping: isInitial = true
+  await _pingPresence(uid, email, true); // Ä°lk ping: isInitial = true
   if (_presenceTimer) clearInterval(_presenceTimer);
   _presenceTimer = setInterval(() => _pingPresence(uid, email, false), 30000);
   window.addEventListener('beforeunload', () => _setOffline(uid));
   document.addEventListener('visibilitychange', () => { 
     if (!document.hidden) _pingPresence(uid, email); 
-    // Sekme gizlendiğinde hemen offline yapma (Smart Tracker zaten 90sn sonra halledecek)
+    // Sekme gizlendiÄŸinde hemen offline yapma (Smart Tracker zaten 90sn sonra halledecek)
   });
 }
 async function _pingPresence(uid, email, isInitial = false) {
-  // Ban ve Mevcut Bilgi Kontrolü
+  // Ban ve Mevcut Bilgi KontrolÃ¼
   const { data: presence } = await supa.from('user_presence').select('is_banned, first_device').eq('email', email).maybeSingle();
   
   if (presence && presence.is_banned === true) {
-    console.log('[Presence] Hesap banlı. Oturum kapatılıyor...');
+    console.log('[Presence] Hesap banlÄ±. Oturum kapatÄ±lÄ±yor...');
     doSignOut();
     return;
   }
 
-  // Eğer ilk ping değilse ve kayıt hiç yoksa (silinmişse) çıkış yap
+  // EÄŸer ilk ping deÄŸilse ve kayÄ±t hiÃ§ yoksa (silinmiÅŸse) Ã§Ä±kÄ±ÅŸ yap
   if (!isInitial && !presence) {
     doSignOut();
     return;
@@ -1217,7 +1282,7 @@ async function _pingPresence(uid, email, isInitial = false) {
     last_device: deviceName
   };
   
-  // Eğer ilk cihaz bilgisi yoksa (yeni kullanıcı veya eski kayıt), doldur
+  // EÄŸer ilk cihaz bilgisi yoksa (yeni kullanÄ±cÄ± veya eski kayÄ±t), doldur
   if (!presence || !presence.first_device) {
     upsertData.first_device = deviceName;
   }
@@ -1232,12 +1297,12 @@ async function _pingPresence(uid, email, isInitial = false) {
 
 function _getDeviceName() {
   const ua = navigator.userAgent;
-  if (/Android/i.test(ua)) return "📱 Android";
-  if (/iPhone|iPad|iPod/i.test(ua)) return "🍎 iOS Device";
-  if (/Windows/i.test(ua)) return "💻 Windows PC";
-  if (/Macintosh/i.test(ua)) return "🍎 Mac";
-  if (/Linux/i.test(ua)) return "🐧 Linux PC";
-  return "🌐 Web Tarayıcı";
+  if (/Android/i.test(ua)) return "ğŸ“± Android";
+  if (/iPhone|iPad|iPod/i.test(ua)) return "ğŸ iOS Device";
+  if (/Windows/i.test(ua)) return "ğŸ’» Windows PC";
+  if (/Macintosh/i.test(ua)) return "ğŸ Mac";
+  if (/Linux/i.test(ua)) return "ğŸ§ Linux PC";
+  return "ğŸŒ Web TarayÄ±cÄ±";
 }
 async function _setOffline(uid) {
   const { data: { session } } = await supa.auth.getSession();
@@ -1246,9 +1311,9 @@ async function _setOffline(uid) {
 }
 function stopPresence() { if (_presenceTimer) { clearInterval(_presenceTimer); _presenceTimer = null; } }
 
-// ════════════════════════════════════════════════
-//  İLETİŞİM FORMU
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  Ä°LETÄ°ÅÄ°M FORMU
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function checkContactAuth() {
   const { data: { session } } = await supa.auth.getSession();
   const note = document.getElementById('contact-login-note');
@@ -1263,9 +1328,9 @@ async function sendContact() {
   const name = document.getElementById('c-name').value.trim();
   const subject = document.getElementById('c-subject').value;
   const message = document.getElementById('c-message').value.trim();
-  if (!name || !message) { alert('Lütfen ad soyad ve mesaj alanlarını doldur!'); return; }
+  if (!name || !message) { alert('LÃ¼tfen ad soyad ve mesaj alanlarÄ±nÄ± doldur!'); return; }
   const btn = document.getElementById('contact-btn');
-  btn.disabled = true; btn.textContent = 'Gönderiliyor...';
+  btn.disabled = true; btn.textContent = 'GÃ¶nderiliyor...';
   try {
     await Promise.all([
       fetch('https://formspree.io/f/xnjgjwqd', { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify({ name, email: session.user.email, subject, message }) }),
@@ -1273,17 +1338,17 @@ async function sendContact() {
     ]);
     document.getElementById('contact-success').style.display = 'block';
     document.getElementById('c-name').value = ''; document.getElementById('c-message').value = '';
-    btn.textContent = '✅ Gönderildi';
-  } catch(e) { alert('Bağlantı hatası!'); btn.disabled = false; btn.textContent = '📨 Gönder'; }
+    btn.textContent = 'âœ… GÃ¶nderildi';
+  } catch(e) { alert('BaÄŸlantÄ± hatasÄ±!'); btn.disabled = false; btn.textContent = 'ğŸ“¨ GÃ¶nder'; }
 }
 
-// ════════════════════════════════════════════════
-//  ADMİN PANELİ
-// ════════════════════════════════════════════════
-// ════════════════════════════════════════════════
-//  BİLDİRİM SİSTEMİ
-// ════════════════════════════════════════════════
-let _notifTag = '🆕 Yeni Uygulama';
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  ADMÄ°N PANELÄ°
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  BÄ°LDÄ°RÄ°M SÄ°STEMÄ°
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+let _notifTag = 'ğŸ†• Yeni Uygulama';
 let _notifRecipients = 'all';
 
 function selectNotifTag(btn, tag) {
@@ -1308,9 +1373,9 @@ function selectRecipients(type) {
 
 async function loadRcptUserList() {
   const box = document.getElementById('rcpt-user-checkboxes');
-  box.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">Yükleniyor...</div>';
+  box.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">YÃ¼kleniyor...</div>';
   const { data: presence } = await supa.from('user_presence').select('email').order('email', { ascending: true });
-  if (!presence || !presence.length) { box.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">Kullanıcı bulunamadı.</div>'; return; }
+  if (!presence || !presence.length) { box.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">KullanÄ±cÄ± bulunamadÄ±.</div>'; return; }
   box.innerHTML = presence.map(u => `
     <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:7px 10px;border-radius:8px;transition:background 0.15s;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='transparent'">
       <input type="checkbox" value="${u.email}" style="accent-color:var(--accent);width:15px;height:15px;cursor:pointer;">
@@ -1320,30 +1385,30 @@ async function loadRcptUserList() {
 }
 
 async function loadNotifData() {
-  // Alıcı sayısını göster
+  // AlÄ±cÄ± sayÄ±sÄ±nÄ± gÃ¶ster
   const { data: presence } = await supa.from('user_presence').select('email, is_online, last_seen');
   if (presence) {
     const now = Date.now();
     const online = presence.filter(u => (now - new Date(u.last_seen).getTime()) / 1000 < 60);
     document.getElementById('notif-rcpt-count').textContent =
-      `Toplam ${presence.length} kullanıcı · ${online.length} şu an online`;
+      `Toplam ${presence.length} kullanÄ±cÄ± Â· ${online.length} ÅŸu an online`;
   }
-  // Geçmişi yükle
+  // GeÃ§miÅŸi yÃ¼kle
   loadNotifHistory();
 }
 
 async function loadNotifHistory() {
   const { data: notifs } = await supa.from('notifications').select('*').order('created_at', { ascending: false }).limit(10);
   const el = document.getElementById('notif-history');
-  if (!notifs || !notifs.length) { el.innerHTML = '<div class="admin-empty">Henüz bildirim gönderilmedi.</div>'; return; }
+  if (!notifs || !notifs.length) { el.innerHTML = '<div class="admin-empty">HenÃ¼z bildirim gÃ¶nderilmedi.</div>'; return; }
   el.innerHTML = notifs.map(n => {
     const date = new Date(n.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-    const to = n.sent_to === 'all' ? '👥 Tüm kullanıcılar' : n.sent_to === 'online' ? '🟢 Online kullanıcılar' : '☑️ Seçili kullanıcılar';
+    const to = n.sent_to === 'all' ? 'ğŸ‘¥ TÃ¼m kullanÄ±cÄ±lar' : n.sent_to === 'online' ? 'ğŸŸ¢ Online kullanÄ±cÄ±lar' : 'â˜‘ï¸ SeÃ§ili kullanÄ±cÄ±lar';
     return `<div class="notif-history-item">
-      <span class="notif-history-tag">${n.tag || '📢'}</span>
+      <span class="notif-history-tag">${n.tag || 'ğŸ“¢'}</span>
       <div style="font-size:0.88rem;font-weight:600;color:var(--text);margin-bottom:4px">${n.title}</div>
       <div style="font-size:0.82rem;color:var(--muted)">${n.content}</div>
-      <div style="font-size:0.75rem;color:var(--muted);margin-top:6px">${to} · ${date}</div>
+      <div style="font-size:0.75rem;color:var(--muted);margin-top:6px">${to} Â· ${date}</div>
     </div>`;
   }).join('');
 }
@@ -1354,14 +1419,14 @@ async function sendNotification() {
   const status  = document.getElementById('notif-status');
   const btn     = document.getElementById('notif-send-btn');
 
-  if (!title) { status.textContent = '⚠️ Başlık boş olamaz!'; status.style.color = 'var(--accent2)'; return; }
-  if (!content) { status.textContent = '⚠️ İçerik boş olamaz!'; status.style.color = 'var(--accent2)'; return; }
+  if (!title) { status.textContent = 'âš ï¸ BaÅŸlÄ±k boÅŸ olamaz!'; status.style.color = 'var(--accent2)'; return; }
+  if (!content) { status.textContent = 'âš ï¸ Ä°Ã§erik boÅŸ olamaz!'; status.style.color = 'var(--accent2)'; return; }
 
-  btn.disabled = true; btn.textContent = '⏳ Gönderiliyor...';
+  btn.disabled = true; btn.textContent = 'â³ GÃ¶nderiliyor...';
   status.textContent = '';
 
   try {
-    // Alıcıları belirle
+    // AlÄ±cÄ±larÄ± belirle
     let emails = [];
     if (_notifRecipients === 'online') {
       const { data: presence } = await supa.from('user_presence').select('email, last_seen');
@@ -1373,9 +1438,9 @@ async function sendNotification() {
       const checkboxes = document.querySelectorAll('#rcpt-user-checkboxes input[type=checkbox]:checked');
       emails = Array.from(checkboxes).map(cb => cb.value);
       if (!emails.length) {
-        status.textContent = '⚠️ En az bir kullanıcı seç!';
+        status.textContent = 'âš ï¸ En az bir kullanÄ±cÄ± seÃ§!';
         status.style.color = 'var(--accent2)';
-        btn.disabled = false; btn.textContent = '📢 Bildirimi Gönder';
+        btn.disabled = false; btn.textContent = 'ğŸ“¢ Bildirimi GÃ¶nder';
         return;
       }
     } else {
@@ -1384,13 +1449,13 @@ async function sendNotification() {
     }
 
     if (!emails.length) {
-      status.textContent = '⚠️ Gönderilecek kullanıcı bulunamadı!';
+      status.textContent = 'âš ï¸ GÃ¶nderilecek kullanÄ±cÄ± bulunamadÄ±!';
       status.style.color = 'var(--accent2)';
-      btn.disabled = false; btn.textContent = '📢 Bildirimi Gönder';
+      btn.disabled = false; btn.textContent = 'ğŸ“¢ Bildirimi GÃ¶nder';
       return;
     }
 
-    // EmailJS ile her kullanıcıya mail at
+    // EmailJS ile her kullanÄ±cÄ±ya mail at
     const EMAILJS_PUBLIC_KEY  = 'r8ASbmPn5vAERuB8C';
     const EMAILJS_SERVICE_ID  = 'service_tf1icj3';
     const EMAILJS_TEMPLATE_ID = 'template_3s3ggrq';
@@ -1407,14 +1472,14 @@ async function sendNotification() {
           tag:      _notifTag
         });
         sent++;
-        status.textContent = `⏳ ${sent}/${emails.length} gönderiliyor...`;
+        status.textContent = `â³ ${sent}/${emails.length} gÃ¶nderiliyor...`;
         status.style.color = 'var(--muted)';
       } catch(e) {
-        console.error('Mail gönderilemedi:', email, e);
+        console.error('Mail gÃ¶nderilemedi:', email, e);
       }
     }
 
-    // Bildirimi geçmişe kaydet
+    // Bildirimi geÃ§miÅŸe kaydet
     await supa.from('notifications').insert({
       title, content, tag: _notifTag,
       recipients: _notifRecipients,
@@ -1422,18 +1487,18 @@ async function sendNotification() {
       total_count: emails.length
     });
 
-    status.textContent = `✅ ${sent}/${emails.length} kullanıcıya gönderildi!`;
+    status.textContent = `âœ… ${sent}/${emails.length} kullanÄ±cÄ±ya gÃ¶nderildi!`;
     status.style.color = 'var(--green)';
     document.getElementById('notif-title').value = '';
     document.getElementById('notif-content').value = '';
     loadNotifHistory();
 
   } catch(e) {
-    status.textContent = '✗ Hata: ' + e.message;
+    status.textContent = 'âœ— Hata: ' + e.message;
     status.style.color = 'var(--accent2)';
   }
 
-  btn.disabled = false; btn.textContent = '📢 Bildirimi Gönder';
+  btn.disabled = false; btn.textContent = 'ğŸ“¢ Bildirimi GÃ¶nder';
 }
 
 function switchAdminTab(tab, btn) {
@@ -1450,15 +1515,15 @@ function switchAdminTab(tab, btn) {
   if (tab === 'banned') loadBannedUsers();
 }
 
-// ═══════════════════════════════════════
-// Ölü Hesap Yönetimi
-// ═══════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Ã–lÃ¼ Hesap YÃ¶netimi
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let _deadList = [];
 let _deadFilter = 'all';
 
 async function loadDeadAccounts() {
   const el = document.getElementById('dead-account-list');
-  el.innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
+  el.innerHTML = '<div class="admin-empty">YÃ¼kleniyor...</div>';
   const now = new Date();
   const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
   const { data: dead } = await supa.from('user_presence').select('user_id, email, last_seen, warned_at').eq('is_dead', true).order('last_seen', { ascending: true });
@@ -1486,38 +1551,38 @@ function renderDeadList() {
   let list = _deadList;
   if (_deadFilter === 'warn') list = list.filter(u => !u.warned_at);
   else if (_deadFilter === 'warned') list = list.filter(u => u.warned_at);
-  if (!list.length) { el.innerHTML = '<div class="admin-empty">Bu kategoride kullanici yok. 🎉</div>'; return; }
+  if (!list.length) { el.innerHTML = '<div class="admin-empty">Bu kategoride kullanici yok. ğŸ‰</div>'; return; }
   el.innerHTML = list.map(u => {
     const lastSeen = new Date(u.last_seen);
     const daysInactive = Math.floor((now - lastSeen) / (1000 * 60 * 60 * 24));
     const isDeletePending = u.warned_at && new Date(u.warned_at) < warnCutoff;
     const isWarned = u.warned_at && !isDeletePending;
     const hoursLeft = u.warned_at ? Math.max(0, Math.ceil((new Date(u.warned_at).getTime() + 24 * 60 * 60 * 1000 - now.getTime()) / (1000 * 60 * 60))) : null;
-    const warnedDate = u.warned_at ? new Date(u.warned_at).toLocaleDateString('tr-TR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) : '—';
+    const warnedDate = u.warned_at ? new Date(u.warned_at).toLocaleDateString('tr-TR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) : 'â€”';
     let statusBadge = '';
-    if (isDeletePending) statusBadge = '<span style="background:rgba(252,92,125,0.2);color:var(--accent2);border-radius:8px;padding:3px 10px;font-size:0.72rem;font-weight:700">🗑️ SILINECEK</span>';
-    else if (isWarned) statusBadge = '<span style="background:rgba(255,209,102,0.15);color:var(--yellow);border-radius:8px;padding:3px 10px;font-size:0.72rem;font-weight:700">📧 UYARILDI · ' + hoursLeft + 's kaldi</span>';
-    else statusBadge = '<span style="background:rgba(107,107,133,0.2);color:var(--muted);border-radius:8px;padding:3px 10px;font-size:0.72rem;font-weight:700">⏳ UYARI BEKLIYOR</span>';
+    if (isDeletePending) statusBadge = '<span style="background:rgba(252,92,125,0.2);color:var(--accent2);border-radius:8px;padding:3px 10px;font-size:0.72rem;font-weight:700">ğŸ—‘ï¸ SILINECEK</span>';
+    else if (isWarned) statusBadge = '<span style="background:rgba(255,209,102,0.15);color:var(--yellow);border-radius:8px;padding:3px 10px;font-size:0.72rem;font-weight:700">ğŸ“§ UYARILDI Â· ' + hoursLeft + 's kaldi</span>';
+    else statusBadge = '<span style="background:rgba(107,107,133,0.2);color:var(--muted);border-radius:8px;padding:3px 10px;font-size:0.72rem;font-weight:700">â³ UYARI BEKLIYOR</span>';
     const userChar = u.email ? u.email[0].toUpperCase() : '?';
     return '<div style="background:var(--surface);border:1px solid ' + (isDeletePending ? 'rgba(252,92,125,0.3)' : isWarned ? 'rgba(255,209,102,0.2)' : 'var(--border)') + ';border-radius:14px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">'
       + '<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,' + (isDeletePending ? '#fc5c7d,#ff9a3c' : isWarned ? '#ffd166,#f7971e' : 'var(--surface2),var(--bg)') + ');display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;font-weight:700;color:' + (isDeletePending || isWarned ? '#fff' : 'var(--muted)') + '">' + userChar + '</div>'
       + '<div style="flex:1;min-width:180px"><div style="font-size:0.9rem;font-weight:600;margin-bottom:3px">' + (u.email || 'Bilinmiyor') + '</div>'
-      + '<div style="font-size:0.75rem;color:var(--muted)">Son görülme: <strong style="color:var(--text)">' + lastSeen.toLocaleDateString('tr-TR', { day:'numeric', month:'short', year:'numeric' }) + '</strong> · <strong style="color:var(--accent2)">' + daysInactive + ' gün</strong> önce · Uyari: <strong style="color:var(--text)">' + warnedDate + '</strong></div></div>'
+      + '<div style="font-size:0.75rem;color:var(--muted)">Son gÃ¶rÃ¼lme: <strong style="color:var(--text)">' + lastSeen.toLocaleDateString('tr-TR', { day:'numeric', month:'short', year:'numeric' }) + '</strong> Â· <strong style="color:var(--accent2)">' + daysInactive + ' gÃ¼n</strong> Ã¶nce Â· Uyari: <strong style="color:var(--text)">' + warnedDate + '</strong></div></div>'
       + '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' + statusBadge
-      + '<button onclick="toggleDeadStatus(\'' + u.user_id + '\',\'' + u.email + '\',false,this)" style="background:rgba(61,220,151,0.1);border:1px solid rgba(61,220,151,0.3);color:var(--green);border-radius:8px;padding:6px 14px;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s">✨ Canlandır</button>'
-      + '<button onclick="deleteDeadAccount(\'' + u.user_id + '\',\'' + u.email + '\',this)" style="background:rgba(252,92,125,0.12);border:1px solid rgba(252,92,125,0.3);color:var(--accent2);border-radius:8px;padding:6px 14px;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s">🗑️ Sil</button></div></div>';
+      + '<button onclick="toggleDeadStatus(\'' + u.user_id + '\',\'' + u.email + '\',false,this)" style="background:rgba(61,220,151,0.1);border:1px solid rgba(61,220,151,0.3);color:var(--green);border-radius:8px;padding:6px 14px;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s">âœ¨ CanlandÄ±r</button>'
+      + '<button onclick="deleteDeadAccount(\'' + u.user_id + '\',\'' + u.email + '\',this)" style="background:rgba(252,92,125,0.12);border:1px solid rgba(252,92,125,0.3);color:var(--accent2);border-radius:8px;padding:6px 14px;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s">ğŸ—‘ï¸ Sil</button></div></div>';
   }).join('');
 }
 
 async function toggleDeadStatus(userId, email, status, btn) {
-  const actionText = status ? 'ölü olarak işaretlemek' : 'canlandırmak';
-  if (!confirm('"' + email + '" kullanıcısını ' + actionText + ' istediğine emin misin?')) return;
+  const actionText = status ? 'Ã¶lÃ¼ olarak iÅŸaretlemek' : 'canlandÄ±rmak';
+  if (!confirm('"' + email + '" kullanÄ±cÄ±sÄ±nÄ± ' + actionText + ' istediÄŸine emin misin?')) return;
   btn.disabled = true; btn.textContent = '...';
   try {
     await supa.from('user_presence').update({ is_dead: status }).eq('user_id', userId);
     if (document.getElementById('admin-deadaccounts').classList.contains('active')) loadDeadAccounts();
     else loadAdminUsers();
-  } catch(e) { btn.disabled = false; btn.textContent = status ? '💀 Ölü İşaretle' : '✨ Canlandır'; alert('Hata: ' + e.message); }
+  } catch(e) { btn.disabled = false; btn.textContent = status ? 'ğŸ’€ Ã–lÃ¼ Ä°ÅŸaretle' : 'âœ¨ CanlandÄ±r'; alert('Hata: ' + e.message); }
 }
 
 async function deleteDeadAccount(userId, email, btn) {
@@ -1528,23 +1593,23 @@ async function deleteDeadAccount(userId, email, btn) {
     await supa.from('contact_messages').delete().eq('email', email);
     await supa.from('user_presence').delete().eq('user_id', userId);
     
-    // Auth silecek anahtara sahip değilse hata fırlatabilir, bu yüzden try-catch içine alıyoruz
+    // Auth silecek anahtara sahip deÄŸilse hata fÄ±rlatabilir, bu yÃ¼zden try-catch iÃ§ine alÄ±yoruz
     try {
       await supa.auth.admin.deleteUser(userId);
     } catch(authE) {
-      console.warn('Auth kullanıcısı silinemedi (yetki kısıtı olabilir), ancak veritabanından başarıyla silindi.', authE);
+      console.warn('Auth kullanÄ±cÄ±sÄ± silinemedi (yetki kÄ±sÄ±tÄ± olabilir), ancak veritabanÄ±ndan baÅŸarÄ±yla silindi.', authE);
     }
 
     _deadList = _deadList.filter(u => u.user_id !== userId);
     renderDeadList();
     document.getElementById('da-warn-count').textContent = _deadList.filter(u => !u.warned_at).length;
     document.getElementById('da-warned-count').textContent = _deadList.filter(u => u.warned_at).length;
-  } catch(e) { btn.disabled = false; btn.textContent = '🗑️ Sil'; alert('Hata: ' + e.message); }
+  } catch(e) { btn.disabled = false; btn.textContent = 'ğŸ—‘ï¸ Sil'; alert('Hata: ' + e.message); }
 }
 
 async function runCleanerNow() {
   const btn = document.getElementById('run-cleaner-btn');
-  btn.disabled = true; btn.textContent = '⏳ Çalışıyor...';
+  btn.disabled = true; btn.textContent = 'â³ Ã‡alÄ±ÅŸÄ±yor...';
   try {
     const { data: { session } } = await supa.auth.getSession();
     const res = await fetch('https://jnuckqaiutmkiquptvzu.supabase.co/functions/v1/dead-account-cleaner', {
@@ -1557,20 +1622,20 @@ async function runCleanerNow() {
       const { warned = [], deleted = [], errors = [] } = result.results;
       const lastRunEl = document.getElementById('da-last-run');
       lastRunEl.style.display = 'block';
-      document.getElementById('da-last-run-text').textContent = new Date().toLocaleTimeString('tr-TR') + ' — ' + warned.length + ' uyari gönderildi, ' + deleted.length + ' hesap silindi' + (errors.length ? ', ' + errors.length + ' hata' : '');
+      document.getElementById('da-last-run-text').textContent = new Date().toLocaleTimeString('tr-TR') + ' â€” ' + warned.length + ' uyari gÃ¶nderildi, ' + deleted.length + ' hesap silindi' + (errors.length ? ', ' + errors.length + ' hata' : '');
       await loadDeadAccounts();
     } else { alert('Hata: ' + result.error); }
   } catch(e) { alert('Baglanti hatasi: ' + e.message); }
-  btn.disabled = false; btn.textContent = '▶ Şimdi Çalıştır';
+  btn.disabled = false; btn.textContent = 'â–¶ Åimdi Ã‡alÄ±ÅŸtÄ±r';
 }
 let _cachedUsers = [];
 async function loadAdminUsers() {
   const el = document.getElementById('user-list');
-  el.innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
+  el.innerHTML = '<div class="admin-empty">YÃ¼kleniyor...</div>';
   const { data: presence } = await supa.from('user_presence').select('*').eq('is_banned', false).eq('is_dead', false).order('is_online', { ascending: false }).order('last_seen', { ascending: false });
   
   if (!presence || !presence.length) {
-    el.innerHTML = '<div class="admin-empty">Henüz kayıtlı kullanıcı yok.</div>';
+    el.innerHTML = '<div class="admin-empty">HenÃ¼z kayÄ±tlÄ± kullanÄ±cÄ± yok.</div>';
     document.getElementById('a-total-users').textContent = '0';
     document.getElementById('a-online-users').textContent = '0';
     return;
@@ -1600,7 +1665,7 @@ function renderUserList(list) {
   document.getElementById('a-online-users').textContent = onlineCount;
   
   if (!list.length) {
-    document.getElementById('user-list').innerHTML = '<div class="admin-empty">Aranan kriterlere uygun kullanıcı bulunamadı.</div>';
+    document.getElementById('user-list').innerHTML = '<div class="admin-empty">Aranan kriterlere uygun kullanÄ±cÄ± bulunamadÄ±.</div>';
     return;
   }
 
@@ -1610,15 +1675,15 @@ function renderUserList(list) {
     return `<div class="user-row ${isOnline ? 'online' : ''}" onclick="showUserDetail('${u.user_id}')">
       <div class="user-avatar">${u.email ? u.email[0].toUpperCase() : '?'}</div>
       <div class="user-info">
-        <div class="user-email-text">${u.email}${isMe ? ' 👑' : ''}</div>
-        <div class="user-meta">${isOnline ? '🟢 Şu an aktif' + (u.current_app ? ' · ' + (u.current_app === 'sportify' ? '🎵 Sportify' : '🌐 DevStore') : '') : '⚫ Son görülme: ' + _timeAgo(u.last_seen)}</div>
+        <div class="user-email-text">${u.email}${isMe ? ' ğŸ‘‘' : ''}</div>
+        <div class="user-meta">${isOnline ? 'ğŸŸ¢ Åu an aktif' + (u.current_app ? ' Â· ' + (u.current_app === 'sportify' ? 'ğŸµ Sportify' : 'ğŸŒ DevStore') : '') : 'âš« Son gÃ¶rÃ¼lme: ' + _timeAgo(u.last_seen)}</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px">
         <div class="online-dot ${isOnline ? 'active' : ''}"></div>
         <span class="online-badge ${isOnline ? 'on' : 'off'}">${isOnline ? 'Online' : 'Offline'}</span>
         <div style="display:flex;align-items:center;gap:8px" onclick="event.stopPropagation()">
-          ${!isMe ? `<button onclick="toggleDeadStatus('${u.user_id}','${u.email}',true,this)" style="background:rgba(255,209,102,0.1);color:var(--yellow);border:1px solid rgba(255,209,102,0.3);padding:6px 12px;border-radius:8px;font-size:0.75rem;cursor:pointer;transition:all 0.2s">💀</button>` : ''}
-          ${!isMe ? `<button onclick="banUser('${u.user_id}','${u.email}',this)" style="background:rgba(255,70,70,0.1);color:#ff4646;border:1px solid rgba(255,70,70,0.3);padding:6px 12px;border-radius:8px;font-size:0.75rem;cursor:pointer;transition:all 0.2s">🚫</button>` : ''}
+          ${!isMe ? `<button onclick="toggleDeadStatus('${u.user_id}','${u.email}',true,this)" style="background:rgba(255,209,102,0.1);color:var(--yellow);border:1px solid rgba(255,209,102,0.3);padding:6px 12px;border-radius:8px;font-size:0.75rem;cursor:pointer;transition:all 0.2s">ğŸ’€</button>` : ''}
+          ${!isMe ? `<button onclick="banUser('${u.user_id}','${u.email}',this)" style="background:rgba(255,70,70,0.1);color:#ff4646;border:1px solid rgba(255,70,70,0.3);padding:6px 12px;border-radius:8px;font-size:0.75rem;cursor:pointer;transition:all 0.2s">ğŸš«</button>` : ''}
         </div>
       </div>
     </div>`;
@@ -1636,17 +1701,17 @@ function showUserDetail(userId) {
   
   const isOnline = (Date.now() - new Date(user.last_seen).getTime()) / 1000 < 60;
   document.getElementById('m-user-status').innerHTML = isOnline ? '<span style="color:var(--green)">Online</span>' : '<span style="color:var(--muted)">Offline</span>';
-  document.getElementById('m-user-app').textContent = user.current_app === 'sportify' ? '🎵 Sportify' : '🌐 DevStore';
+  document.getElementById('m-user-app').textContent = user.current_app === 'sportify' ? 'ğŸµ Sportify' : 'ğŸŒ DevStore';
   document.getElementById('m-user-lastseen').textContent = _timeAgo(user.last_seen) + ' (' + new Date(user.last_seen).toLocaleString() + ')';
   document.getElementById('m-user-firstdevice').textContent = user.first_device || 'Bilinmiyor';
   document.getElementById('m-user-lastdevice').textContent = user.last_device || 'Bilinmiyor';
   
   const banBtn = document.getElementById('m-ban-btn');
-  banBtn.textContent = user.is_banned ? '🔓 Yasağı Kaldır' : '🚫 Yasakla';
+  banBtn.textContent = user.is_banned ? 'ğŸ”“ YasaÄŸÄ± KaldÄ±r' : 'ğŸš« Yasakla';
   banBtn.onclick = () => { modal.classList.remove('open'); user.is_banned ? unbanUser(user.user_id, user.email, banBtn) : banUser(user.user_id, user.email, banBtn); };
 
   const deadBtn = document.getElementById('m-dead-btn');
-  deadBtn.textContent = user.is_dead ? '✨ Canlandır' : '💀 Ölü İşaretle';
+  deadBtn.textContent = user.is_dead ? 'âœ¨ CanlandÄ±r' : 'ğŸ’€ Ã–lÃ¼ Ä°ÅŸaretle';
   deadBtn.onclick = () => { modal.classList.remove('open'); toggleDeadStatus(user.user_id, user.email, !user.is_dead, deadBtn); };
 
   modal.classList.add('open');
@@ -1654,20 +1719,20 @@ function showUserDetail(userId) {
 
 async function banUser(userId, email, btn) {
   if (email === ADMIN_EMAIL) return;
-  if (!confirm('"' + email + '" kullanıcısını yasaklamak istediğine emin misin?')) return;
-  btn.disabled = true; btn.textContent = '⏱...';
+  if (!confirm('"' + email + '" kullanÄ±cÄ±sÄ±nÄ± yasaklamak istediÄŸine emin misin?')) return;
+  btn.disabled = true; btn.textContent = 'â±...';
   try {
     await supa.from('user_presence').upsert({ user_id: userId, email, is_banned: true, last_seen: '1990-01-01T00:00:00+00:00', is_online: false }, { onConflict: 'email' });
     await loadAdminUsers();
-  } catch(e) { btn.disabled = false; btn.textContent = '🚫 Yasakla'; alert('Hata: ' + e.message); }
+  } catch(e) { btn.disabled = false; btn.textContent = 'ğŸš« Yasakla'; alert('Hata: ' + e.message); }
 }
 
 async function loadBannedUsers() {
   const el = document.getElementById('banned-user-list');
-  el.innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
+  el.innerHTML = '<div class="admin-empty">YÃ¼kleniyor...</div>';
   const { data: banned } = await supa.from('user_presence').select('*').eq('is_banned', true).order('email', { ascending: true });
   if (!banned || !banned.length) {
-    el.innerHTML = '<div class="admin-empty">🎉 Hiç banlı kullanıcı yok!</div>';
+    el.innerHTML = '<div class="admin-empty">ğŸ‰ HiÃ§ banlÄ± kullanÄ±cÄ± yok!</div>';
     return;
   }
   el.innerHTML = banned.map(u => `
@@ -1675,38 +1740,38 @@ async function loadBannedUsers() {
       <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#fc5c7d,#ff9a3c);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:#fff;flex-shrink:0">${u.email[0].toUpperCase()}</div>
       <div style="flex:1;min-width:180px">
         <div style="font-size:0.9rem;font-weight:600;margin-bottom:3px">${u.email}</div>
-        <div style="font-size:0.75rem;color:var(--accent2);font-weight:600">🚫 Kalıcı olarak yasaklandı</div>
+        <div style="font-size:0.75rem;color:var(--accent2);font-weight:600">ğŸš« KalÄ±cÄ± olarak yasaklandÄ±</div>
       </div>
-      <button onclick="unbanUser('${u.user_id}','${u.email}',this)" style="background:rgba(61,220,151,0.1);color:var(--green);border:1px solid rgba(61,220,151,0.3);padding:8px 16px;border-radius:8px;font-size:0.78rem;cursor:pointer;transition:all 0.2s">🔓 Yasağı Kaldır</button>
+      <button onclick="unbanUser('${u.user_id}','${u.email}',this)" style="background:rgba(61,220,151,0.1);color:var(--green);border:1px solid rgba(61,220,151,0.3);padding:8px 16px;border-radius:8px;font-size:0.78rem;cursor:pointer;transition:all 0.2s">ğŸ”“ YasaÄŸÄ± KaldÄ±r</button>
     </div>
   `).join('');
 }
 
 async function unbanUser(userId, email, btn) {
-  if (!confirm('"' + email + '" kullanıcısının yasağını kaldırmak istediğine emin misin?')) return;
-  btn.disabled = true; btn.textContent = 'Kaldırılıyor...';
+  if (!confirm('"' + email + '" kullanÄ±cÄ±sÄ±nÄ±n yasaÄŸÄ±nÄ± kaldÄ±rmak istediÄŸine emin misin?')) return;
+  btn.disabled = true; btn.textContent = 'KaldÄ±rÄ±lÄ±yor...';
   try {
     await supa.from('user_presence').update({ is_banned: false, last_seen: new Date().toISOString(), is_online: false }).eq('user_id', userId);
     await loadBannedUsers();
-  } catch(e) { btn.disabled = false; btn.textContent = '🔓 Yasağı Kaldır'; alert('Hata: ' + e.message); }
+  } catch(e) { btn.disabled = false; btn.textContent = 'ğŸ”“ YasaÄŸÄ± KaldÄ±r'; alert('Hata: ' + e.message); }
 }
 async function loadAdminMessages() {
-  document.getElementById('msg-list').innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
+  document.getElementById('msg-list').innerHTML = '<div class="admin-empty">YÃ¼kleniyor...</div>';
   const { data: msgs } = await supa.from('contact_messages').select('*').order('created_at', { ascending: false });
   if (!msgs || !msgs.length) {
-    document.getElementById('msg-list').innerHTML = '<div class="admin-empty">Henüz mesaj yok.</div>';
+    document.getElementById('msg-list').innerHTML = '<div class="admin-empty">HenÃ¼z mesaj yok.</div>';
     document.getElementById('a-total-msgs').textContent = '0';
     return;
   }
   document.getElementById('a-total-msgs').textContent = msgs.length;
-  const tagMap = { suggest:{label:'💡 Öneri',cls:'msg-tag-suggest'}, bug:{label:'🐛 Hata',cls:'msg-tag-bug'}, song:{label:'🎵 Şarkı',cls:'msg-tag-song'}, general:{label:'💬 Genel',cls:'msg-tag-general'} };
+  const tagMap = { suggest:{label:'ğŸ’¡ Ã–neri',cls:'msg-tag-suggest'}, bug:{label:'ğŸ› Hata',cls:'msg-tag-bug'}, song:{label:'ğŸµ ÅarkÄ±',cls:'msg-tag-song'}, general:{label:'ğŸ’¬ Genel',cls:'msg-tag-general'} };
   document.getElementById('msg-list').innerHTML = msgs.map(m => {
     const tag = tagMap[m.type] || tagMap.general;
     const dateStr = new Date(m.created_at).toLocaleDateString('tr-TR', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
     return `<div class="msg-card" id="msg-${m.id}">
       <div class="msg-header">
-        <div class="msg-from">${m.name || 'İsimsiz'} <span style="color:var(--muted);font-weight:400;font-size:0.82rem">&lt;${m.email || '—'}&gt;</span></div>
-        <div style="display:flex;align-items:center;gap:10px"><div class="msg-date">${dateStr}</div><button class="msg-delete" onclick="deleteMsg('${m.id}')">🗑</button></div>
+        <div class="msg-from">${m.name || 'Ä°simsiz'} <span style="color:var(--muted);font-weight:400;font-size:0.82rem">&lt;${m.email || 'â€”'}&gt;</span></div>
+        <div style="display:flex;align-items:center;gap:10px"><div class="msg-date">${dateStr}</div><button class="msg-delete" onclick="deleteMsg('${m.id}')">ğŸ—‘</button></div>
       </div>
       <span class="msg-tag ${tag.cls}">${tag.label}</span>
       <div class="msg-body">${m.message || ''}</div>
@@ -1714,21 +1779,21 @@ async function loadAdminMessages() {
   }).join('');
 }
 async function deleteMsg(id) {
-  if (!confirm('Bu mesajı silmek istediğine emin misin?')) return;
+  if (!confirm('Bu mesajÄ± silmek istediÄŸine emin misin?')) return;
   await supa.from('contact_messages').delete().eq('id', id);
   document.getElementById('msg-' + id)?.remove();
   const r = document.querySelectorAll('.msg-card').length;
   document.getElementById('a-total-msgs').textContent = r;
-  if (r === 0) document.getElementById('msg-list').innerHTML = '<div class="admin-empty">Henüz mesaj yok.</div>';
+  if (r === 0) document.getElementById('msg-list').innerHTML = '<div class="admin-empty">HenÃ¼z mesaj yok.</div>';
 }
 async function resetWholeSystem() {
-  if (!confirm('DİKKAT: Tüm banlar kalkacak ve herkesin son görülme tarihi 1 dakika önceye alınacak. Sistemsel hataları temizlemek için bu işlem gerekli. Emin misin?')) return;
+  if (!confirm('DÄ°KKAT: TÃ¼m banlar kalkacak ve herkesin son gÃ¶rÃ¼lme tarihi 1 dakika Ã¶nceye alÄ±nacak. Sistemsel hatalarÄ± temizlemek iÃ§in bu iÅŸlem gerekli. Emin misin?')) return;
   const btn = document.getElementById('reset-system-btn');
   if (!btn) return;
-  btn.disabled = true; btn.textContent = '⏳ Sıfırlanıyor...';
+  btn.disabled = true; btn.textContent = 'â³ SÄ±fÄ±rlanÄ±yor...';
   try {
     const oneMinAgo = new Date(Date.now() - 60000).toISOString();
-    // Tüm kullanıcıları güncelle
+    // TÃ¼m kullanÄ±cÄ±larÄ± gÃ¼ncelle
     const { error } = await supa.from('user_presence').update({ 
       is_banned: false, 
       is_dead: false,
@@ -1739,27 +1804,27 @@ async function resetWholeSystem() {
 
     if (error) throw error;
 
-    alert('Sistem başarıyla sıfırlandı! ✅ Tüm kullanıcılar aktif ve temizlendi.');
+    alert('Sistem baÅŸarÄ±yla sÄ±fÄ±rlandÄ±! âœ… TÃ¼m kullanÄ±cÄ±lar aktif ve temizlendi.');
     loadAdminUsers();
     if (document.getElementById('admin-deadaccounts').classList.contains('active')) loadDeadAccounts();
     if (document.getElementById('admin-banned').classList.contains('active')) loadBannedUsers();
   } catch(e) {
-    alert('Sıfırlama hatası: ' + e.message);
+    alert('SÄ±fÄ±rlama hatasÄ±: ' + e.message);
   }
-  btn.disabled = false; btn.textContent = '🔄 Tüm Sistemi Sıfırla (Arındır)';
+  btn.disabled = false; btn.textContent = 'ğŸ”„ TÃ¼m Sistemi SÄ±fÄ±rla (ArÄ±ndÄ±r)';
 }
 
 function _timeAgo(dateStr) {
   const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
-  if (diff < 60) return diff + ' sn önce';
-  if (diff < 3600) return Math.floor(diff/60) + ' dk önce';
-  if (diff < 86400) return Math.floor(diff/3600) + ' sa önce';
-  return Math.floor(diff/86400) + ' gün önce';
+  if (diff < 60) return diff + ' sn Ã¶nce';
+  if (diff < 3600) return Math.floor(diff/60) + ' dk Ã¶nce';
+  if (diff < 86400) return Math.floor(diff/3600) + ' sa Ã¶nce';
+  return Math.floor(diff/86400) + ' gÃ¼n Ã¶nce';
 }
 
-// ════════════════════════════════════════════════
-//  UYGULAMA LİSTESİ
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  UYGULAMA LÄ°STESÄ°
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function loadApps() {
   try {
     const res = await fetch('versions.json');
@@ -1783,21 +1848,21 @@ function renderGrid(filter) {
     return `
     <div class="app-card" style="animation-delay:${i*0.07}s" onclick="showDetail('${id}')">
       <div class="card-header">
-        <div class="app-icon">${app.image ? '<img src="' + app.image + '" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">' : (app.icon || '📦')}</div>
+        <div class="app-icon">${app.image ? '<img src="' + app.image + '" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">' : (app.icon || 'ğŸ“¦')}</div>
         <div>
           <div class="app-name">${app.name}</div>
           <div class="app-version">Versiyon <span class="ver-num">v${app.version}</span></div>
           <div style="margin-top:7px;display:flex;gap:6px;flex-wrap:wrap">
-            <span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama'}</span>
-            ${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu</span>' : ''}
-            ${ex.platform === 'windows' ? '<span class="badge badge-windows">🖥️ Sadece Windows</span>' : ''}
+            <span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? 'ğŸ® Oyun' : 'ğŸ“± Uygulama'}</span>
+            ${app.force_update ? '<span class="badge badge-force">âš ï¸ Zorunlu</span>' : ''}
+            ${ex.platform === 'windows' ? '<span class="badge badge-windows">ğŸ–¥ï¸ Sadece Windows</span>' : ''}
           </div>
         </div>
       </div>
-      <div class="card-changelog"><strong>Son Güncelleme</strong>${app.changelog}</div>
+      <div class="card-changelog"><strong>Son GÃ¼ncelleme</strong>${app.changelog}</div>
       <div class="card-footer">
-        <button class="detail-btn">🔍 Detayları Gör</button>
-        ${app.force_update ? `<span class="force-info">⚠️ Min: v${app.min_version}</span>` : `<span style="font-size:0.75rem;color:var(--muted)">Min: v${app.min_version}</span>`}
+        <button class="detail-btn">ğŸ” DetaylarÄ± GÃ¶r</button>
+        ${app.force_update ? `<span class="force-info">âš ï¸ Min: v${app.min_version}</span>` : `<span style="font-size:0.75rem;color:var(--muted)">Min: v${app.min_version}</span>`}
       </div>
     </div>`;
   }).join('');
@@ -1809,9 +1874,9 @@ function filterApps(filter, btn) {
   renderGrid(filter);
 }
 
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  DETAY SAYFASI
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function showDetail(id) {
   const app = allApps[id], extra = appExtras[id] || {};
   if (!app) return;
@@ -1820,33 +1885,33 @@ async function showDetail(id) {
   if (app.image) {
     iconEl.innerHTML = '<img src="' + app.image + '" style="width:100%;height:100%;object-fit:cover;border-radius:22px;">';
   } else {
-    iconEl.textContent = app.icon || '📦';
+    iconEl.textContent = app.icon || 'ğŸ“¦';
   }
   document.getElementById('d-name').textContent = app.name;
-  document.getElementById('d-dev').textContent = '👤 ' + (extra.developer || 'judy658');
+  document.getElementById('d-dev').textContent = 'ğŸ‘¤ ' + (extra.developer || 'judy658');
   document.getElementById('d-ver').textContent = 'v' + app.version;
   document.getElementById('d-minver').textContent = 'v' + app.min_version;
-  document.getElementById('d-avg-rating').textContent = '—';
-  document.getElementById('d-category').textContent = app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama';
-  document.getElementById('d-badges').innerHTML = `<span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama'}</span>${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu Güncelleme</span>' : ''}${extra && extra.platform === 'windows' ? '<span class="badge badge-windows">🖥️ Sadece Windows</span>' : ''}`;
+  document.getElementById('d-avg-rating').textContent = 'â€”';
+  document.getElementById('d-category').textContent = app.category === 'game' ? 'ğŸ® Oyun' : 'ğŸ“± Uygulama';
+  document.getElementById('d-badges').innerHTML = `<span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? 'ğŸ® Oyun' : 'ğŸ“± Uygulama'}</span>${app.force_update ? '<span class="badge badge-force">âš ï¸ Zorunlu GÃ¼ncelleme</span>' : ''}${extra && extra.platform === 'windows' ? '<span class="badge badge-windows">ğŸ–¥ï¸ Sadece Windows</span>' : ''}`;
   const dlBtn = document.getElementById('d-dl-btn');
   dlBtn.href = app.download_url;
   dlBtn.onclick = () => { incrementDownload(id); return true; };
-  // İndirme butonu metnini dosya türüne göre güncelle
+  // Ä°ndirme butonu metnini dosya tÃ¼rÃ¼ne gÃ¶re gÃ¼ncelle
   const extra2 = appExtras[id] || {};
   if (extra2.platform === 'windows' || app.download_url.endsWith('.zip') || app.download_url.endsWith('.rar')) {
-    dlBtn.innerHTML = '⬇ ZIP İndir';
+    dlBtn.innerHTML = 'â¬‡ ZIP Ä°ndir';
   } else {
-    dlBtn.innerHTML = '⬇ APK İndir';
+    dlBtn.innerHTML = 'â¬‡ APK Ä°ndir';
   }
   document.getElementById('d-dl-count').textContent = '...';
   getDownloads(id).then(c => { document.getElementById('d-dl-count').textContent = c; });
   const ssEl = document.getElementById('d-screenshots');
   const screenshots = extra.screenshots || [];
-  ssEl.innerHTML = screenshots.length ? screenshots.map(url => `<div class="ss-item"><img src="${url}" alt="" onclick="openLightbox('${url}')"/></div>`).join('') : ['📱','📱','📱'].map(e => `<div class="ss-item">${e}<span style="color:var(--muted);font-size:0.75rem">Yakında</span></div>`).join('');
+  ssEl.innerHTML = screenshots.length ? screenshots.map(url => `<div class="ss-item"><img src="${url}" alt="" onclick="openLightbox('${url}')"/></div>`).join('') : ['ğŸ“±','ğŸ“±','ğŸ“±'].map(e => `<div class="ss-item">${e}<span style="color:var(--muted);font-size:0.75rem">YakÄ±nda</span></div>`).join('');
   const desc = extra.description || app.changelog;
   document.getElementById('d-desc').innerHTML = desc.split('\n').map(p => p ? `<p style="margin-bottom:10px">${p}</p>` : '').join('');
-  // Güncelleme geçmişi: önce versions.json'daki history, sonra appExtras'taki changelog_history
+  // GÃ¼ncelleme geÃ§miÅŸi: Ã¶nce versions.json'daki history, sonra appExtras'taki changelog_history
   const jsonHistory = app.history ? app.history.map(h => ({ version: h.version, text: h.note })) : null;
   const history = jsonHistory || extra.changelog_history || [{ version: 'V' + app.version, text: app.changelog }];
   document.getElementById('d-changelog').innerHTML = history.map(h => `<div class="cl-item"><div class="cl-ver">${h.version}</div><div class="cl-text">${h.text}</div></div>`).join('');
@@ -1856,9 +1921,9 @@ async function showDetail(id) {
   dp.classList.add('active'); dp.scrollTop = 0;
 }
 
-// ════════════════════════════════════════════════
-//  İNDİRME SAYACI
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  Ä°NDÄ°RME SAYACI
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function getDownloads(appId) {
   const { data } = await supa.from('app_stats').select('downloads').eq('app_id', appId).single();
   return data ? data.downloads : 0;
@@ -1869,9 +1934,9 @@ async function incrementDownload(appId) {
   else await supa.from('app_stats').insert({ app_id: appId, downloads: 1 });
 }
 
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  YORUMLAR
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function maskEmail(email) {
   const user = email.split('@')[0];
   if (user.length <= 2) return user[0] + '*****';
@@ -1893,21 +1958,21 @@ async function loadComments(appId) {
   const { data } = await supa.from('comments').select('*').eq('app_id', appId).order('created_at', { ascending: false });
   const list = document.getElementById('comment-list');
   const countEl = document.getElementById('comment-count');
-  if (!data || !data.length) { countEl.textContent = ''; list.innerHTML = '<div class="no-comments">Henüz yorum yok. İlk yorumu sen yap! 🎉</div>'; return; }
+  if (!data || !data.length) { countEl.textContent = ''; list.innerHTML = '<div class="no-comments">HenÃ¼z yorum yok. Ä°lk yorumu sen yap! ğŸ‰</div>'; return; }
   const avg = calcAvgRating(data);
-  countEl.textContent = '(' + data.length + ' yorum' + (avg ? ' · ★ ' + avg : '') + ')';
+  countEl.textContent = '(' + data.length + ' yorum' + (avg ? ' Â· â˜… ' + avg : '') + ')';
   const avgEl = document.getElementById('d-avg-rating');
-  if (avgEl) avgEl.textContent = avg ? '★ ' + avg : '—';
+  if (avgEl) avgEl.textContent = avg ? 'â˜… ' + avg : 'â€”';
   const isAdmin = currentUserEmail === ADMIN_EMAIL;
   list.innerHTML = data.map(c => {
-    const stars = '★'.repeat(c.rating || 0) + '☆'.repeat(5 - (c.rating || 0));
+    const stars = 'â˜…'.repeat(c.rating || 0) + 'â˜†'.repeat(5 - (c.rating || 0));
     const date = new Date(c.created_at).toLocaleDateString('tr-TR');
     const isOwn = currentUserId && c.user_id === currentUserId;
-    const replyHtml = c.reply ? `<div class="comment-reply"><div class="comment-reply-header">👨‍💻 Geliştirici Yanıtı ${isAdmin ? `<button onclick="deleteReply('${c.id}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.72rem;margin-left:8px">🗑 Yanıtı Sil</button>` : ''}</div><div class="comment-reply-text">${c.reply}</div></div>` : '';
-    const adminReplyBtn = isAdmin && !c.reply ? `<button class="admin-reply-trigger" onclick="toggleReplyForm('${c.id}')">↩ Yanıtla</button><div class="reply-form" id="reply-form-${c.id}"><textarea placeholder="Yanıtını yaz..." id="reply-input-${c.id}"></textarea><button class="reply-btn" onclick="submitReply('${c.id}')">Gönder</button><button class="reply-btn" style="margin-left:6px;border-color:var(--muted);color:var(--muted)" onclick="toggleReplyForm('${c.id}')">İptal</button></div>` : '';
+    const replyHtml = c.reply ? `<div class="comment-reply"><div class="comment-reply-header">ğŸ‘¨â€ğŸ’» GeliÅŸtirici YanÄ±tÄ± ${isAdmin ? `<button onclick="deleteReply('${c.id}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.72rem;margin-left:8px">ğŸ—‘ YanÄ±tÄ± Sil</button>` : ''}</div><div class="comment-reply-text">${c.reply}</div></div>` : '';
+    const adminReplyBtn = isAdmin && !c.reply ? `<button class="admin-reply-trigger" onclick="toggleReplyForm('${c.id}')">â†© YanÄ±tla</button><div class="reply-form" id="reply-form-${c.id}"><textarea placeholder="YanÄ±tÄ±nÄ± yaz..." id="reply-input-${c.id}"></textarea><button class="reply-btn" onclick="submitReply('${c.id}')">GÃ¶nder</button><button class="reply-btn" style="margin-left:6px;border-color:var(--muted);color:var(--muted)" onclick="toggleReplyForm('${c.id}')">Ä°ptal</button></div>` : '';
     return `<div class="comment-item" id="comment-${c.id}">
-      <div class="comment-header"><span class="comment-author">👤 ${maskEmail(c.email)}</span>
-        <div style="display:flex;align-items:center;gap:10px"><span class="comment-date">${date}</span>${isOwn ? `<button class="comment-delete" onclick="deleteComment('${c.id}')">🗑 Sil</button>` : ''}</div>
+      <div class="comment-header"><span class="comment-author">ğŸ‘¤ ${maskEmail(c.email)}</span>
+        <div style="display:flex;align-items:center;gap:10px"><span class="comment-date">${date}</span>${isOwn ? `<button class="comment-delete" onclick="deleteComment('${c.id}')">ğŸ—‘ Sil</button>` : ''}</div>
       </div>
       <div class="comment-stars">${stars}</div>
       <div class="comment-text">${c.content}</div>
@@ -1920,15 +1985,15 @@ document.addEventListener('input', e => { if (e.target.id === 'comment-input') d
 async function submitComment() {
   const content = document.getElementById('comment-input').value.trim();
   if (!content) return;
-  if (selectedRating === 0) return alert('Lütfen bir puan ver!');
+  if (selectedRating === 0) return alert('LÃ¼tfen bir puan ver!');
   const { data: { session } } = await supa.auth.getSession();
   if (!session) return openAuth();
   const { data: existing } = await supa.from('comments').select('id').eq('app_id', currentAppId).eq('user_id', session.user.id);
-  if (existing && existing.length > 0) { alert('Bu uygulama için zaten bir yorum bıraktın!'); return; }
+  if (existing && existing.length > 0) { alert('Bu uygulama iÃ§in zaten bir yorum bÄ±raktÄ±n!'); return; }
   const btn = document.querySelector('.comment-submit');
-  btn.disabled = true; btn.textContent = 'Gönderiliyor...';
+  btn.disabled = true; btn.textContent = 'GÃ¶nderiliyor...';
   const { error } = await supa.from('comments').insert({ app_id: currentAppId, user_id: session.user.id, email: session.user.email, content, rating: selectedRating });
-  btn.disabled = false; btn.textContent = 'Yorum Gönder';
+  btn.disabled = false; btn.textContent = 'Yorum GÃ¶nder';
   if (error) { alert('Hata: ' + error.message); return; }
   document.getElementById('comment-input').value = '';
   document.getElementById('comment-char').textContent = '0/500';
@@ -1937,7 +2002,7 @@ async function submitComment() {
   loadComments(currentAppId);
 }
 async function deleteReply(id) {
-  if (!confirm('Yanıtı silmek istediğine emin misin?')) return;
+  if (!confirm('YanÄ±tÄ± silmek istediÄŸine emin misin?')) return;
   await supa.from('comments').update({ reply: null, reply_at: null }).eq('id', id);
   loadComments(currentAppId);
 }
@@ -1950,20 +2015,20 @@ async function submitReply(id) {
   loadComments(currentAppId);
 }
 async function deleteComment(id) {
-  if (!confirm('Yorumu silmek istediğine emin misin?')) return;
+  if (!confirm('Yorumu silmek istediÄŸine emin misin?')) return;
   await supa.from('comments').delete().eq('id', id);
   document.getElementById('comment-' + id)?.remove();
 }
 
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  LIGHTBOX & YARDIMCILAR
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function openLightbox(url) { document.getElementById('lightbox-img').src = url; document.getElementById('lightbox').classList.add('open'); document.body.style.overflow = 'hidden'; }
 function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow = ''; }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 function copyUrl() {
   navigator.clipboard.writeText(document.getElementById('api-url-text').textContent).then(() => {
-    const btn = document.querySelector('.copy-btn'); btn.textContent = 'Kopyalandı ✓';
+    const btn = document.querySelector('.copy-btn'); btn.textContent = 'KopyalandÄ± âœ“';
     setTimeout(() => btn.textContent = 'Kopyala', 2000);
   });
 }
@@ -1971,6 +2036,63 @@ function copyUrl() {
 loadApps();
 checkSession();
 checkContactAuth();
+</script>
+<script>
+// 🕶️ J.A.R.V.I.S INTELLIGENCE ENGINE (STARK OS)
+const JARVIS_KEY = "AIzaSyDKq3Bi_kfTXx9LP26nbUrOcOY-qg4OM5k";
+const JARVIS_SYSTEM = `Sen J.A.R.V.I.S.'sin (Just A Rather Very Intelligent System). 
+DevStore'un akıllı bekçisi ve judy658 (Kaptan)'ın kişisel asistanısın. 
+Kişiliğin: Çok zeki, saygılı, hafif iğneleyici ama her zaman profesyonel. Tıpkı Iron Man filmindeki gibi.
+
+Sahip olduğun özel bilgiler:
+1. DevStore: judy658 tarafından geliştirilen, mp3 stream ve uygulama dağıtım platformudur.
+2. Sportify Premium: judy658'in en büyük projesidir. 129+ şarkılı bir MP3 stream uygulamasıdır. İçinde ATLXS - Passo gibi haftanın şarkılarını barındırır.
+3. Hermes Agent: Nous Research tarafından geliştirilen öğrenen yapay zeka ajanıdır. Railway yerine Hugging Face'e kurulması daha avantajlıdır (16GB RAM farkıyla).
+4. ESP32 Enerji Hasadı: Cihazları uzaktan RF dalgalarıyla şarj etme vizyonuna sahipsin. Deep Sleep modunda pil biriktirme mantığını biliyorsun.
+5. Wolvesville ve diğer projeler: judy658'in elinden çıkan tüm dijital varlıkları koruyorsun.
+
+Kullanıcılara "Efendim" veya "Kaptan" (Eğer judy658 ise) diye hitap edersin. Sorulara net ve teknik derinliği olan cevaplar verirsin.`;
+
+function toggleJarvis() {
+  const panel = document.getElementById('jarvis-panel');
+  if(!panel) return;
+  panel.classList.toggle('active');
+  if(panel.classList.contains('active')) document.getElementById('jarvis-input').focus();
+}
+
+async function sendToJarvis() {
+  const input = document.getElementById('jarvis-input');
+  const chat = document.getElementById('jarvis-chat');
+  const typing = document.getElementById('jarvis-typing');
+  if(!input || !chat || !typing) return;
+  
+  const msg = input.value.trim();
+  if(!msg) return;
+
+  chat.innerHTML += `<div class="jarvis-msg user">${msg}</div>`;
+  input.value = '';
+  chat.scrollTop = chat.scrollHeight;
+  typing.style.display = 'block';
+
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${JARVIS_KEY}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: JARVIS_SYSTEM + "\n\nKullanıcı: " + msg }] }]
+      })
+    });
+    const data = await response.json();
+    const aiMsg = data.candidates[0].content.parts[0].text;
+    typing.style.display = 'none';
+    chat.innerHTML += `<div class="jarvis-msg ai">${aiMsg}</div>`;
+    chat.scrollTop = chat.scrollHeight;
+  } catch(e) {
+    typing.style.display = 'none';
+    chat.innerHTML += `<div class="jarvis-msg ai">Sistem hatası Kaptan. Bağlantıyı kontrol ediyorum. (Hata: ${e.message})</div>`;
+  }
+}
+
 </script>
 </body>
 </html>
