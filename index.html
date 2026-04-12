@@ -2034,7 +2034,15 @@ checkContactAuth();
     <div class="jarvis-msg ai">Sisteme hos geldiniz Kaptan. Ben J.A.R.V.I.S. Size nasil yardimci olabilirim?</div>
   </div>
   <div id="jarvis-typing" class="jarvis-status" style="display:none">Dusunuluyor...</div>
+  
+  <div id="jarvis-attachment-preview" style="display:none; padding:10px 20px; background:rgba(0,0,0,0.4); justify-content:space-between; align-items:flex-end;">
+    <img id="jarvis-preview-img" style="max-height:60px; border-radius:6px; border:1px solid rgba(0,210,255,0.4);">
+    <button onclick="clearJarvisAttachment()" style="background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.9rem;">Temizle ✖</button>
+  </div>
+
   <div class="jarvis-input-area">
+    <input type="file" id="jarvis-file-upload" accept="image/*" style="display:none" onchange="handleJarvisFileSelect(event)">
+    <button class="jarvis-attach-btn" onclick="document.getElementById('jarvis-file-upload').click()" style="background:none; border:none; color:#00d2ff; font-size:1.6rem; cursor:pointer; padding:0 5px; transition:0.2s;" title="Gorsel Ekle">+</button>
     <input type="text" id="jarvis-input" class="jarvis-input" placeholder="Sisteme bir komut ver..." onkeypress="if(event.key==='Enter') sendToJarvis()">
     <button class="jarvis-send" onclick="sendToJarvis()">&#x27A4;</button>
   </div>
@@ -2068,10 +2076,46 @@ function toggleJarvis() {
   if (panel.classList.contains('active')) document.getElementById('jarvis-input').focus();
 }
 
+let _jarvisPendingImage = null; // { mimeType, data (base64) }
+
+function handleJarvisFileSelect(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  processJarvisFile(file);
+}
+
+function processJarvisFile(file) {
+  if (!file.type.startsWith('image/')) { alert('Lutfen gecerli bir gorsel secin.'); return; }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const rawData = e.target.result;
+    document.getElementById('jarvis-preview-img').src = rawData;
+    document.getElementById('jarvis-attachment-preview').style.display = 'flex';
+    const base64Data = rawData.split(',')[1];
+    _jarvisPendingImage = { mimeType: file.type, data: base64Data, rawUrl: rawData };
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearJarvisAttachment() {
+  _jarvisPendingImage = null;
+  document.getElementById('jarvis-file-upload').value = '';
+  document.getElementById('jarvis-attachment-preview').style.display = 'none';
+}
+
 // JARVIS Surukleme (Drag) Mantigi
 document.addEventListener('DOMContentLoaded', () => {
   const panel = document.getElementById('jarvis-panel');
   const header = document.querySelector('.jarvis-header');
+  
+  // Resim Surukle-Birak Mantigi (Hazirlik)
+  panel.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); panel.style.borderColor = '#00d2ff'; });
+  panel.addEventListener('dragleave', (e) => { e.preventDefault(); e.stopPropagation(); panel.style.borderColor = 'rgba(0, 210, 255, 0.3)'; });
+  panel.addEventListener('drop', (e) => {
+    e.preventDefault(); e.stopPropagation();
+    panel.style.borderColor = 'rgba(0, 210, 255, 0.3)';
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) processJarvisFile(e.dataTransfer.files[0]);
+  });
   let isDrag = false, startX, startY, initX, initY;
   header.addEventListener('mousedown', (e) => {
     isDrag = true; startX = e.clientX; startY = e.clientY;
@@ -2095,14 +2139,24 @@ async function sendToJarvis() {
   if (!input || !chat || !typing) return;
 
   const msg = input.value.trim();
-  if (!msg) return;
+  if (!msg && !_jarvisPendingImage) return;
 
-  chat.innerHTML += '<div class="jarvis-msg user">' + msg + '</div>';
+  let userHtml = msg;
+  let userParts = [];
+  if (msg) userParts.push({ text: msg });
+  
+  if (_jarvisPendingImage) {
+    userHtml = `<img src="${_jarvisPendingImage.rawUrl}" style="max-width:100%; border-radius:8px; margin-bottom:8px; display:block;" onclick="openLightbox(this.src)">` + userHtml;
+    userParts.push({ inlineData: { mimeType: _jarvisPendingImage.mimeType, data: _jarvisPendingImage.data } });
+    clearJarvisAttachment();
+  }
+
+  chat.innerHTML += '<div class="jarvis-msg user">' + userHtml + '</div>';
   input.value = '';
   chat.scrollTop = chat.scrollHeight;
   typing.style.display = 'block';
 
-  _jarvisHistory.push({ role: 'user', parts: [{ text: msg }] });
+  _jarvisHistory.push({ role: 'user', parts: userParts });
 
   const startTime = Date.now();
   let retries = 3;
