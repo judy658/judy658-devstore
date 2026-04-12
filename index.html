@@ -2054,10 +2054,7 @@ Sahip oldugun ozel bilgiler:
 
 Kullanicilara Efendim veya Kaptan (Eger judy658 ise) diye hitap edersin. Sorulara net ve teknik derinligi olan cevaplar verirsin.`;
 
-let _jarvisHistory = [
-  { role: 'user', parts: [{ text: "Sistem Talimati (Gizli): " + JARVIS_SYSTEM + "\n\nBu andan itibaren sadece J.A.R.V.I.S olarak cevap ver." }] },
-  { role: 'model', parts: [{ text: "Anlasildi Kaptan. Sistem talimatlarini basariyla yukledim. Artik tamamen J.A.R.V.I.S. protokolu altindayim." }] }
-];
+let _jarvisHistory = [];
 
 function toggleJarvis() {
   const panel = document.getElementById('jarvis-panel');
@@ -2084,11 +2081,12 @@ async function sendToJarvis() {
 
   try {
     const response = await fetch(
-      'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=' + JARVIS_KEY,
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + JARVIS_KEY,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          system_instruction: { parts: [{ text: JARVIS_SYSTEM }] },
           contents: _jarvisHistory
         })
       }
