@@ -1078,6 +1078,7 @@ function showUserLoggedIn(email) {
   }
   startPresence();
   checkContactAuth();
+  if (typeof initJarvisMemory === 'function') initJarvisMemory(email, false);
 }
 
 function showUserLoggedOut() {
@@ -1087,6 +1088,7 @@ function showUserLoggedOut() {
   document.getElementById('admin-nav-btn')?.remove();
   stopPresence();
   checkContactAuth();
+  if (typeof initJarvisMemory === 'function') initJarvisMemory(null, true);
 }
 
 async function checkSession() {
@@ -2069,25 +2071,39 @@ Sahip oldugun Ozel Bilgiler ve Misyonun:
 
 let _jarvisHistory = [];
 
-async function initJarvisMemory() {
-  const { data: sessionData } = await supa.auth.getSession();
-  const user = sessionData?.session?.user;
-  const isAdmin = user?.email === 'geceninhakimistudio@gmail.com';
+async function initJarvisMemory(forcedEmail = null, isSignOut = false) {
+  let isAdmin = false;
+
+  if (forcedEmail) {
+    isAdmin = (forcedEmail === 'geceninhakimistudio@gmail.com');
+  } else if (!isSignOut) {
+    const { data: sessionData } = await supa.auth.getSession();
+    const user = sessionData?.session?.user;
+    isAdmin = user?.email === 'geceninhakimistudio@gmail.com';
+  }
   
-  if (isAdmin) {
+  const chatArea = document.getElementById('jarvis-chat');
+
+  if (isAdmin && !isSignOut) {
     const saved = localStorage.getItem('jarvisMem');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
         _jarvisHistory = parsed.history || [];
-        if (parsed.chatHtml) {
-          const chatArea = document.getElementById('jarvis-chat');
-          if (chatArea) chatArea.innerHTML = parsed.chatHtml;
+        if (parsed.chatHtml && chatArea) {
+          chatArea.innerHTML = parsed.chatHtml;
         }
       } catch(e) {}
     }
   } else {
-    localStorage.removeItem('jarvisMem');
+    // Normal uye ise eski cihazdaki admin datasini sil. Ancak CIKIS YAPILDIYSA localstorage'a dokunma! (Kaptan verisini koru)
+    if (!isSignOut && !isAdmin) {
+      localStorage.removeItem('jarvisMem');
+    }
+    _jarvisHistory = [];
+    if (chatArea) {
+      chatArea.innerHTML = '<div class="jarvis-msg ai">Sisteme hos geldiniz. Ben J.A.R.V.I.S. Size nasil yardimci olabilirim?</div>';
+    }
   }
 }
 document.addEventListener('DOMContentLoaded', initJarvisMemory);
