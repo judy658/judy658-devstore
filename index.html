@@ -239,7 +239,7 @@
     .lightbox-close { position: absolute; top: 20px; right: 28px; color: #fff; font-size: 2rem; cursor: pointer; line-height: 1; opacity: 0.7; }
     .lightbox-close:hover { opacity: 1; }
 
-    /* ğŸ•¶ï¸ J.A.R.V.I.S UI - STARK INDUSTRIES PREMIUM */
+    /* gŸ•¶ï¸ J.A.R.V.I.S UI - STARK INDUSTRIES PREMIUM */
     #jarvis-trigger {
       position: fixed; bottom: 30px; right: 30px; width: 64px; height: 64px;
       background: radial-gradient(circle, #00d2ff 0%, #002c4b 100%);
@@ -308,7 +308,7 @@
   <div class="nav-inner">
     <div class="logo" onclick="showHome()">â¬¡ DevStore</div>
     <div id="nav-user-area">
-      <button class="user-btn" onclick="openAuth()" id="login-btn">ğŸ”‘ GiriÅŸ Yap</button>
+      <button class="user-btn" onclick="openAuth()" id="login-btn">gŸ”‘ GiriÅŸ Yap</button>
       <button class="user-btn" onclick="showProfile()" id="user-info" style="display:none"><span class="user-dot"></span><span id="user-email-short"></span></button>
     </div>
   </div>
@@ -318,7 +318,7 @@
 <div id="home-page">
   <div class="wrap">
     <div class="hero">
-      <div class="hero-tag">ğŸš€ KiÅŸisel Uygulama MaÄŸazasÄ±</div>
+      <div class="hero-tag">gŸš€ KiÅŸisel Uygulama MaÄŸazasÄ±</div>
       <h1>TÃ¼m oyunlarÄ±n &<br/><em>uygulamalar</em> burada</h1>
       <p>Her uygulama otomatik gÃ¼ncelleme sistemiyle korunur. Yeni sÃ¼rÃ¼m yayÄ±nlandÄ±ÄŸÄ±nda kullanÄ±cÄ±lar anÄ±nda haberdar olur.</p>
     </div>
@@ -357,7 +357,7 @@
         </div>
         <div class="weekly-info">
           <div class="weekly-left">
-            <div class="weekly-icon">ğŸµ</div>
+            <div class="weekly-icon">gŸµ</div>
             <div>
               <div class="weekly-label">Bu hafta en Ã§ok dinlenen</div>
               <div class="weekly-song" id="weekly-song-name">Passo</div>
@@ -365,8 +365,8 @@
             </div>
           </div>
           <div class="weekly-right">
-            <button class="weekly-mute-btn" id="weekly-mute-btn" onclick="toggleWeeklyMute()">ğŸ”‡ Ses</button>
-            <button class="weekly-play-btn" onclick="if(typeof showDetail==='function') showDetail('sportify')">ğŸµ Sportify'da Dinle</button>
+            <button class="weekly-mute-btn" id="weekly-mute-btn" onclick="toggleWeeklyMute()">gŸ”‡ Ses</button>
+            <button class="weekly-play-btn" onclick="if(typeof showDetail==='function') showDetail('sportify')">gŸµ Sportify'da Dinle</button>
           </div>
         </div>
       </div>
@@ -379,7 +379,7 @@
         const btn = document.getElementById('weekly-mute-btn');
         weeklyMuted = !weeklyMuted;
         v.muted = weeklyMuted;
-        btn.textContent = weeklyMuted ? 'ğŸ”‡ Ses' : 'ğŸ”Š Ses';
+        btn.textContent = weeklyMuted ? 'gŸ”‡ Ses' : 'gŸ”Š Ses';
       }
       document.getElementById('weekly-banner-box').addEventListener('click', function(e) {
         if (e.target.tagName === 'BUTTON') return;
@@ -391,8 +391,8 @@
 
     <div class="filters">
       <button class="filter-btn active" onclick="filterApps('all',this)">TÃ¼mÃ¼</button>
-      <button class="filter-btn" onclick="filterApps('game',this)">ğŸ® Oyunlar</button>
-      <button class="filter-btn" onclick="filterApps('app',this)">ğŸ“± Uygulamalar</button>
+      <button class="filter-btn" onclick="filterApps('game',this)">gŸ® Oyunlar</button>
+      <button class="filter-btn" onclick="filterApps('app',this)">gŸ“± Uygulamalar</button>
       <button class="filter-btn" onclick="filterApps('force',this)">âš ï¸ Zorunlu GÃ¼ncelleme</button>
     </div>
     <div class="stats-bar">
@@ -404,7 +404,7 @@
     <div class="section-title">Uygulamalar & Oyunlar</div>
     <div class="app-grid" id="app-grid"></div>
     <div class="api-box">
-      <h3>ğŸ”Œ Versiyon Kontrol API</h3>
+      <h3>gŸ”Œ Versiyon Kontrol API</h3>
       <p>Godot oyunlarÄ±nda bu URL'yi kullan â€” gÃ¼ncel sÃ¼rÃ¼m bilgisini JSON olarak dÃ¶ner.</p>
       <div class="api-url-row">
         <code id="api-url-text">https://judy658.github.io/judy658-devstore/versions.json</code>
@@ -414,7 +414,7 @@
   </div>
   <div class="wrap">
     <div class="contact-box">
-      <h3>ğŸ“¬ Ä°letiÅŸim</h3>
+      <h3>gŸ“¬ Ä°letiÅŸim</h3>
       <p>Ã–neri, geri bildirim veya hata bildirimi iÃ§in aÅŸaÄŸÄ±daki formu doldur!</p>
       <div id="contact-login-note" style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px 20px;text-align:center;color:var(--muted);font-size:0.88rem;display:none">
         Mesaj gÃ¶ndermek iÃ§in <button onclick="openAuth()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.88rem;font-weight:600">giriÅŸ yap</button> veya hesap oluÅŸtur.
@@ -424,15 +424,15 @@
           <div class="contact-field full"><label>Ad Soyad</label><input type="text" id="c-name" placeholder="AdÄ±n SoyadÄ±n"/></div>
           <div class="contact-field full"><label>Konu</label>
             <select id="c-subject">
-              <option value="suggest">ğŸ’¡ Ã–neri</option>
-              <option value="bug">ğŸ› Hata Bildirimi</option>
-              <option value="song">ğŸµ Yeni ÅarkÄ± Ä°steÄŸi</option>
-              <option value="general">ğŸ’¬ Genel</option>
+              <option value="suggest">gŸ’¡ Ã–neri</option>
+              <option value="bug">gŸ› Hata Bildirimi</option>
+              <option value="song">gŸµ Yeni ÅarkÄ± Ä°steÄŸi</option>
+              <option value="general">gŸ’¬ Genel</option>
             </select>
           </div>
           <div class="contact-field full"><label>Mesaj</label><textarea id="c-message" placeholder="MesajÄ±nÄ± yaz..."></textarea></div>
         </div>
-        <button class="contact-send-btn" onclick="sendContact()" id="contact-btn">ğŸ“¨ GÃ¶nder</button>
+        <button class="contact-send-btn" onclick="sendContact()" id="contact-btn">gŸ“¨ GÃ¶nder</button>
         <div class="contact-success" id="contact-success">âœ… MesajÄ±n iletildi! En kÄ±sa sÃ¼rede dÃ¶nÃ¼ÅŸ yapacaÄŸÄ±m.</div>
       </div>
     </div>
@@ -447,26 +447,26 @@
     <span class="detail-nav-title">Profilim</span>
   </div></div>
   <div class="profile-wrap">
-    <div class="profile-avatar">ğŸ‘¤</div>
+    <div class="profile-avatar">gŸ‘¤</div>
     <div class="profile-email" id="profile-email-display"></div>
     <div class="profile-since" id="profile-since"></div>
     <div class="profile-card">
-      <h3>ğŸ“‹ Hesap Bilgileri</h3>
+      <h3>gŸ“‹ Hesap Bilgileri</h3>
       <div class="profile-field"><label>E-posta Adresi</label><input type="email" id="profile-email-input" disabled/></div>
       <div style="font-size:0.78rem;color:var(--muted)">E-posta adresi deÄŸiÅŸtirilemez.</div>
     </div>
     <div class="profile-card">
-      <h3>ğŸ”’ Åifre DeÄŸiÅŸtir</h3>
+      <h3>gŸ”’ Åifre DeÄŸiÅŸtir</h3>
       <p style="color:var(--muted);font-size:0.86rem;margin-bottom:16px">E-posta adresine ÅŸifre sÄ±fÄ±rlama baÄŸlantÄ±sÄ± gÃ¶nderilecek.</p>
       <div style="display:flex;align-items:center;gap:12px">
-        <button class="profile-save-btn" onclick="sendPasswordReset()" id="pass-reset-btn">ğŸ“§ SÄ±fÄ±rlama Maili GÃ¶nder</button>
+        <button class="profile-save-btn" onclick="sendPasswordReset()" id="pass-reset-btn">gŸ“§ SÄ±fÄ±rlama Maili GÃ¶nder</button>
         <span class="profile-msg" id="pass-msg"></span>
       </div>
     </div>
     <div class="profile-card profile-danger">
       <h3>âš ï¸ Oturum</h3>
       <p style="color:var(--muted);font-size:0.86rem;margin-bottom:16px">TÃ¼m cihazlardan Ã§Ä±kÄ±ÅŸ yapar.</p>
-      <button class="signout-btn" onclick="doSignOut()">ğŸšª Ã‡Ä±kÄ±ÅŸ Yap</button>
+      <button class="signout-btn" onclick="doSignOut()">gŸšª Ã‡Ä±kÄ±ÅŸ Yap</button>
     </div>
   </div>
 </div>
@@ -475,15 +475,15 @@
 <div id="admin-page">
   <div class="detail-nav"><div class="detail-nav-inner">
     <button class="back-btn" onclick="showHome()">â† Geri</button>
-    <span class="detail-nav-title">ğŸ›¡ï¸ Admin Paneli</span>
+    <span class="detail-nav-title">gŸ›¡ï¸ Admin Paneli</span>
   </div></div>
   <div class="admin-wrap">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px">
       <div>
         <div class="admin-title">Admin <span>Paneli</span></div>
-        <div style="color:var(--muted);font-size:0.85rem;margin-top:4px">ğŸ“§ geceninhakimistudio@gmail.com</div>
+        <div style="color:var(--muted);font-size:0.85rem;margin-top:4px">gŸ“§ geceninhakimistudio@gmail.com</div>
       </div>
-      <button onclick="resetWholeSystem()" id="reset-system-btn" style="background:rgba(124,92,252,0.1);color:var(--accent);border:1px solid var(--accent);border-radius:10px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s">ğŸ”„ TÃ¼m Sistemi SÄ±fÄ±rla (ArÄ±ndÄ±r)</button>
+      <button onclick="resetWholeSystem()" id="reset-system-btn" style="background:rgba(124,92,252,0.1);color:var(--accent);border:1px solid var(--accent);border-radius:10px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s">gŸ”„ TÃ¼m Sistemi SÄ±fÄ±rla (ArÄ±ndÄ±r)</button>
     </div>
     <div class="admin-stats-row">
       <div class="admin-stat"><span class="admin-stat-val" id="a-total-users">â€”</span><div class="admin-stat-label">Toplam KullanÄ±cÄ±</div></div>
@@ -538,8 +538,8 @@
         </div>
         <select id="admin-app-filter" onchange="filterUserList()" style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;color:var(--text);outline:none;cursor:pointer">
           <option value="all">TÃ¼m Uygulamalar</option>
-          <option value="sportify">ğŸµ Sportify</option>
-          <option value="devstore">ğŸŒ DevStore</option>
+          <option value="sportify">gŸµ Sportify</option>
+          <option value="devstore">gŸŒ DevStore</option>
         </select>
         <button class="admin-refresh" onclick="loadAdminUsers()">â†» Yenile</button>
       </div>
@@ -556,11 +556,11 @@
         <div>
           <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:500">Bildirim TÃ¼rÃ¼</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap" id="notif-tags">
-            <button class="notif-tag-btn active" onclick="selectNotifTag(this,'ğŸ†• Yeni Uygulama')">ğŸ†• Yeni Uygulama</button>
-            <button class="notif-tag-btn" onclick="selectNotifTag(this,'ğŸ”„ Yeni GÃ¼ncelleme')">ğŸ”„ Yeni GÃ¼ncelleme</button>
-            <button class="notif-tag-btn" onclick="selectNotifTag(this,'ğŸ“£ Duyuru')">ğŸ“£ Duyuru</button>
-            <button class="notif-tag-btn" onclick="selectNotifTag(this,'ğŸ Ã–zel Teklif')">ğŸ Ã–zel Teklif</button>
-            <button class="notif-tag-btn" onclick="selectNotifTag(this,'ğŸ”§ BakÄ±m')">ğŸ”§ BakÄ±m</button>
+            <button class="notif-tag-btn active" onclick="selectNotifTag(this,'gŸ†• Yeni Uygulama')">gŸ†• Yeni Uygulama</button>
+            <button class="notif-tag-btn" onclick="selectNotifTag(this,'gŸ”„ Yeni GÃ¼ncelleme')">gŸ”„ Yeni GÃ¼ncelleme</button>
+            <button class="notif-tag-btn" onclick="selectNotifTag(this,'gŸ“£ Duyuru')">gŸ“£ Duyuru</button>
+            <button class="notif-tag-btn" onclick="selectNotifTag(this,'gŸ Ã–zel Teklif')">gŸ Ã–zel Teklif</button>
+            <button class="notif-tag-btn" onclick="selectNotifTag(this,'gŸ”§ BakÄ±m')">gŸ”§ BakÄ±m</button>
           </div>
         </div>
 
@@ -582,8 +582,8 @@
         <div>
           <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:500">AlÄ±cÄ±lar</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="notif-tag-btn active" id="rcpt-all" onclick="selectRecipients('all')">ğŸ‘¥ TÃ¼m KullanÄ±cÄ±lar</button>
-            <button class="notif-tag-btn" id="rcpt-online" onclick="selectRecipients('online')">ğŸŸ¢ Sadece Online</button>
+            <button class="notif-tag-btn active" id="rcpt-all" onclick="selectRecipients('all')">gŸ‘¥ TÃ¼m KullanÄ±cÄ±lar</button>
+            <button class="notif-tag-btn" id="rcpt-online" onclick="selectRecipients('online')">gŸŸ¢ Sadece Online</button>
             <button class="notif-tag-btn" id="rcpt-select" onclick="selectRecipients('select')">â˜‘ï¸ SeÃ§</button>
           </div>
           <div style="font-size:0.75rem;color:var(--muted);margin-top:6px" id="notif-rcpt-count">YÃ¼kleniyor...</div>
@@ -597,7 +597,7 @@
         <div style="display:flex;align-items:center;gap:14px">
           <button onclick="sendNotification()" id="notif-send-btn"
             style="background:linear-gradient(135deg,var(--accent),#9b7eff);color:#fff;border:none;border-radius:11px;padding:13px 32px;font-family:DM Sans,sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer;transition:all 0.2s">
-            ğŸ“¢ Bildirimi GÃ¶nder
+            gŸ“¢ Bildirimi GÃ¶nder
           </button>
           <span id="notif-status" style="font-size:0.85rem"></span>
         </div>
@@ -613,7 +613,7 @@
     <div class="admin-section" id="admin-deadaccounts">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
         <div>
-          <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px">ğŸ’€ Ã–lÃ¼ Hesap YÃ¶netimi</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px">gŸ’€ Ã–lÃ¼ Hesap YÃ¶netimi</div>
           <div style="font-size:0.8rem;color:var(--muted)">7 gÃ¼ndÃ¼r aktif olmayan hesaplar. Cron her gece 02:00 UTC'de Ã§alÄ±ÅŸÄ±r.</div>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -641,7 +641,7 @@
       <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
         <button class="notif-tag-btn active" id="da-filter-all" onclick="filterDeadList('all',this)">TÃ¼mÃ¼</button>
         <button class="notif-tag-btn" id="da-filter-warn" onclick="filterDeadList('warn',this)">âš ï¸ UyarÄ± Bekleyen</button>
-        <button class="notif-tag-btn" id="da-filter-warned" onclick="filterDeadList('warned',this)">ğŸ“§ UyarÄ±ldÄ±</button>
+        <button class="notif-tag-btn" id="da-filter-warned" onclick="filterDeadList('warned',this)">gŸ“§ UyarÄ±ldÄ±</button>
       </div>
       <div id="dead-account-list"><div class="admin-empty">YÃ¼kleniyor...</div></div>
     </div>
@@ -649,7 +649,7 @@
     <div class="admin-section" id="admin-banned">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
         <div>
-          <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px">ğŸš« BanlÄ± KullanÄ±cÄ±lar</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px">gŸš« BanlÄ± KullanÄ±cÄ±lar</div>
           <div style="font-size:0.8rem;color:var(--muted)">KalÄ±cÄ± olarak yasaklanmÄ±ÅŸ hesaplar. YasaÄŸÄ± kaldÄ±rabilirsin.</div>
         </div>
         <button class="admin-refresh" style="margin:0" onclick="loadBannedUsers()">â†» Yenile</button>
@@ -723,11 +723,11 @@
       <div class="detail-stat"><span class="detail-stat-val" id="d-dl-count" style="color:var(--green)">â€”</span><div class="detail-stat-label">Ä°ndirme</div></div>
       <div class="detail-stat"><span class="detail-stat-val" id="d-category">â€”</span><div class="detail-stat-label">Kategori</div></div>
     </div>
-    <div class="detail-section"><p class="ss-title">ğŸ“¸ Ekran GÃ¶rÃ¼ntÃ¼leri</p><div class="screenshots-row" id="d-screenshots"></div></div>
-    <div class="detail-section"><h3>ğŸ“ Uygulama HakkÄ±nda</h3><div class="desc-text" id="d-desc"></div></div>
-    <div class="detail-section"><h3>ğŸ“‹ GÃ¼ncelleme GeÃ§miÅŸi</h3><div id="d-changelog"></div></div>
+    <div class="detail-section"><p class="ss-title">gŸ“¸ Ekran GÃ¶rÃ¼ntÃ¼leri</p><div class="screenshots-row" id="d-screenshots"></div></div>
+    <div class="detail-section"><h3>gŸ“ Uygulama HakkÄ±nda</h3><div class="desc-text" id="d-desc"></div></div>
+    <div class="detail-section"><h3>gŸ“‹ GÃ¼ncelleme GeÃ§miÅŸi</h3><div id="d-changelog"></div></div>
     <div class="comments-section">
-      <h3>ğŸ’¬ Yorumlar <span id="comment-count" style="color:var(--muted);font-size:0.85rem;font-weight:400"></span></h3>
+      <h3>gŸ’¬ Yorumlar <span id="comment-count" style="color:var(--muted);font-size:0.85rem;font-weight:400"></span></h3>
       <div id="comment-login-note" class="comment-login-note" style="display:none">Yorum yapmak iÃ§in <button onclick="openAuth()">giriÅŸ yap</button> veya hesap oluÅŸtur.</div>
       <div id="comment-form" class="comment-form" style="display:none">
         <div class="stars-row" id="stars-row">
@@ -766,11 +766,11 @@
         <div class="auth-field"><label>E-posta</label><input type="email" id="reg-email" placeholder="ornek@email.com"/></div>
         <div class="auth-field"><label>Åifre</label><input type="password" id="reg-pass" placeholder="En az 6 karakter"/></div>
         <div class="auth-field"><label>Åifre Tekrar</label><input type="password" id="reg-pass2" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"/></div>
-        <button class="auth-submit" onclick="doRegister()">Kod GÃ¶nder ğŸ“§</button>
+        <button class="auth-submit" onclick="doRegister()">Kod GÃ¶nder gŸ“§</button>
       </div>
       <div id="reg-step2" style="display:none">
         <div style="text-align:center;margin-bottom:20px">
-          <div style="font-size:2rem;margin-bottom:8px">ğŸ“§</div>
+          <div style="font-size:2rem;margin-bottom:8px">gŸ“§</div>
           <div style="font-size:0.9rem;color:var(--text);font-weight:600">E-postanÄ± kontrol et!</div>
           <div style="font-size:0.82rem;color:var(--muted);margin-top:6px">6 haneli doÄŸrulama kodu gÃ¶nderildi</div>
         </div>
@@ -789,7 +789,7 @@
     <img id="lightbox-img" src="" alt=""/>
   </div>
 
-  <!-- ğŸ•¶ï¸ J.A.R.V.I.S MARKUP -->
+  <!-- gŸ•¶ï¸ J.A.R.V.I.S MARKUP -->
   <div id="jarvis-trigger" onclick="toggleJarvis()">
     <div class="core"></div>
   </div>
@@ -807,7 +807,7 @@
     <div id="jarvis-typing" class="jarvis-status" style="display:none">DÃ¼ÅŸÃ¼nÃ¼lÃ¼yor...</div>
     <div class="jarvis-input-area">
       <input type="text" id="jarvis-input" class="jarvis-input" placeholder="Sisteme bir komut ver..." onkeypress="if(event.key==='Enter') sendToJarvis()">
-      <button class="jarvis-send" onclick="sendToJarvis()">ğŸš€</button>
+      <button class="jarvis-send" onclick="sendToJarvis()">gŸš€</button>
     </div>
   </div>
 
@@ -886,7 +886,7 @@ async function showProfile() {
   const msg = document.getElementById('pass-msg');
   msg.className = 'profile-msg'; msg.textContent = '';
   const btn = document.getElementById('pass-reset-btn');
-  if (btn) { btn.disabled = false; btn.textContent = 'ğŸ“§ SÄ±fÄ±rlama Maili GÃ¶nder'; }
+  if (btn) { btn.disabled = false; btn.textContent = 'gŸ“§ SÄ±fÄ±rlama Maili GÃ¶nder'; }
   document.getElementById('home-page').style.display = 'none';
   document.getElementById('detail-page').classList.remove('active');
   document.getElementById('admin-page').classList.remove('active');
@@ -991,13 +991,13 @@ function _handlePresenceUpdate(payload) {
   const currentApp = payload.new?.current_app;
 
   if (payload.eventType === 'INSERT') {
-    msg = `<b>${email}</b> sisteme katÄ±ldÄ±! ğŸš€`;
+    msg = `<b>${email}</b> sisteme katÄ±ldÄ±! gŸš€`;
     icon = 'fa-user-plus';
     color = 'var(--green)';
   } else if (payload.eventType === 'UPDATE') {
     // Sadece gerÃ§ekten durum deÄŸiÅŸmiÅŸse mesaj yaz
     if (currentState === true && prevState !== true) {
-      msg = `<b>${email}</b> ÅŸu an online. ğŸŸ¢`;
+      msg = `<b>${email}</b> ÅŸu an online. gŸŸ¢`;
       icon = 'fa-plug';
       color = 'var(--green)';
     } else if (currentState === false && prevState === true) {
@@ -1008,7 +1008,7 @@ function _handlePresenceUpdate(payload) {
       msg = `<b>${email}</b> geÃ§ti: <b>${currentApp}</b>`;
       icon = 'fa-exchange-alt';
     } else if (payload.new.is_banned && !payload.old?.is_banned) {
-      msg = `<b>${email}</b> yasaklandÄ±! ğŸš«`;
+      msg = `<b>${email}</b> yasaklandÄ±! gŸš«`;
       icon = 'fa-ban';
       color = 'var(--accent2)';
     }
@@ -1093,7 +1093,7 @@ function showUserLoggedIn(email) {
     const btn = document.createElement('button');
     btn.id = 'admin-nav-btn'; btn.className = 'user-btn';
     btn.style.cssText = 'background:rgba(124,92,252,0.15);border-color:rgba(124,92,252,0.4);color:var(--accent)';
-    btn.textContent = 'ğŸ›¡ï¸ Admin'; btn.onclick = showAdminPanel;
+    btn.textContent = 'gŸ›¡ï¸ Admin'; btn.onclick = showAdminPanel;
     document.getElementById('nav-user-area').prepend(btn);
   }
   startPresence();
@@ -1163,7 +1163,7 @@ async function doRegister() {
   const btn = document.querySelector('#reg-step1 .auth-submit');
   btn.disabled = true; btn.textContent = 'GÃ¶nderiliyor...';
   const { error } = await supa.auth.signUp({ email, password: pass, options: { emailRedirectTo: null } });
-  btn.disabled = false; btn.textContent = 'Kod GÃ¶nder ğŸ“§';
+  btn.disabled = false; btn.textContent = 'Kod GÃ¶nder gŸ“§';
   if (error) return showMsg('Hata: ' + error.message, 'error');
   document.getElementById('reg-step1').style.display = 'none';
   document.getElementById('reg-step2').style.display = 'block';
@@ -1201,7 +1201,7 @@ async function sendPasswordReset() {
   msg.className = 'profile-msg'; msg.textContent = '';
   btn.disabled = true; btn.textContent = 'GÃ¶nderiliyor...';
   const { error } = await supa.auth.resetPasswordForEmail(session.user.email, { redirectTo: window.location.href });
-  btn.disabled = false; btn.textContent = 'ğŸ“§ SÄ±fÄ±rlama Maili GÃ¶nder';
+  btn.disabled = false; btn.textContent = 'gŸ“§ SÄ±fÄ±rlama Maili GÃ¶nder';
   if (error) { msg.textContent = 'Hata: ' + error.message; msg.className = 'profile-msg error'; }
   else { msg.textContent = 'Mail gÃ¶nderildi! âœ“'; msg.className = 'profile-msg success'; setTimeout(() => { msg.className = 'profile-msg'; msg.textContent = ''; }, 5000); }
 }
@@ -1212,7 +1212,7 @@ function _showNewPasswordPanel() {
   o.id = 'new-pass-overlay';
   o.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:600;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)';
   o.innerHTML = `<div style="background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px;width:100%;max-width:420px;margin:20px">
-    <div style="text-align:center;font-size:2rem;margin-bottom:16px">ğŸ”’</div>
+    <div style="text-align:center;font-size:2rem;margin-bottom:16px">gŸ”’</div>
     <div style="font-family:Syne,sans-serif;font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:24px">Yeni Åifre</div>
     <div style="margin-bottom:14px"><label style="display:block;font-size:0.8rem;color:var(--muted);margin-bottom:6px;font-weight:500">Yeni Åifre</label>
     <input type="password" id="new-pass-input" placeholder="En az 6 karakter" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box"/></div>
@@ -1297,12 +1297,12 @@ async function _pingPresence(uid, email, isInitial = false) {
 
 function _getDeviceName() {
   const ua = navigator.userAgent;
-  if (/Android/i.test(ua)) return "ğŸ“± Android";
-  if (/iPhone|iPad|iPod/i.test(ua)) return "ğŸ iOS Device";
-  if (/Windows/i.test(ua)) return "ğŸ’» Windows PC";
-  if (/Macintosh/i.test(ua)) return "ğŸ Mac";
-  if (/Linux/i.test(ua)) return "ğŸ§ Linux PC";
-  return "ğŸŒ Web TarayÄ±cÄ±";
+  if (/Android/i.test(ua)) return "gŸ“± Android";
+  if (/iPhone|iPad|iPod/i.test(ua)) return "gŸ iOS Device";
+  if (/Windows/i.test(ua)) return "gŸ’» Windows PC";
+  if (/Macintosh/i.test(ua)) return "gŸ Mac";
+  if (/Linux/i.test(ua)) return "gŸ§ Linux PC";
+  return "gŸŒ Web TarayÄ±cÄ±";
 }
 async function _setOffline(uid) {
   const { data: { session } } = await supa.auth.getSession();
@@ -1339,7 +1339,7 @@ async function sendContact() {
     document.getElementById('contact-success').style.display = 'block';
     document.getElementById('c-name').value = ''; document.getElementById('c-message').value = '';
     btn.textContent = 'âœ… GÃ¶nderildi';
-  } catch(e) { alert('BaÄŸlantÄ± hatasÄ±!'); btn.disabled = false; btn.textContent = 'ğŸ“¨ GÃ¶nder'; }
+  } catch(e) { alert('BaÄŸlantÄ± hatasÄ±!'); btn.disabled = false; btn.textContent = 'gŸ“¨ GÃ¶nder'; }
 }
 
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -1348,7 +1348,7 @@ async function sendContact() {
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  BÄ°LDÄ°RÄ°M SÄ°STEMÄ°
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-let _notifTag = 'ğŸ†• Yeni Uygulama';
+let _notifTag = 'gŸ†• Yeni Uygulama';
 let _notifRecipients = 'all';
 
 function selectNotifTag(btn, tag) {
@@ -1403,9 +1403,9 @@ async function loadNotifHistory() {
   if (!notifs || !notifs.length) { el.innerHTML = '<div class="admin-empty">HenÃ¼z bildirim gÃ¶nderilmedi.</div>'; return; }
   el.innerHTML = notifs.map(n => {
     const date = new Date(n.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-    const to = n.sent_to === 'all' ? 'ğŸ‘¥ TÃ¼m kullanÄ±cÄ±lar' : n.sent_to === 'online' ? 'ğŸŸ¢ Online kullanÄ±cÄ±lar' : 'â˜‘ï¸ SeÃ§ili kullanÄ±cÄ±lar';
+    const to = n.sent_to === 'all' ? 'gŸ‘¥ TÃ¼m kullanÄ±cÄ±lar' : n.sent_to === 'online' ? 'gŸŸ¢ Online kullanÄ±cÄ±lar' : 'â˜‘ï¸ SeÃ§ili kullanÄ±cÄ±lar';
     return `<div class="notif-history-item">
-      <span class="notif-history-tag">${n.tag || 'ğŸ“¢'}</span>
+      <span class="notif-history-tag">${n.tag || 'gŸ“¢'}</span>
       <div style="font-size:0.88rem;font-weight:600;color:var(--text);margin-bottom:4px">${n.title}</div>
       <div style="font-size:0.82rem;color:var(--muted)">${n.content}</div>
       <div style="font-size:0.75rem;color:var(--muted);margin-top:6px">${to} Â· ${date}</div>
@@ -1440,7 +1440,7 @@ async function sendNotification() {
       if (!emails.length) {
         status.textContent = 'âš ï¸ En az bir kullanÄ±cÄ± seÃ§!';
         status.style.color = 'var(--accent2)';
-        btn.disabled = false; btn.textContent = 'ğŸ“¢ Bildirimi GÃ¶nder';
+        btn.disabled = false; btn.textContent = 'gŸ“¢ Bildirimi GÃ¶nder';
         return;
       }
     } else {
@@ -1451,7 +1451,7 @@ async function sendNotification() {
     if (!emails.length) {
       status.textContent = 'âš ï¸ GÃ¶nderilecek kullanÄ±cÄ± bulunamadÄ±!';
       status.style.color = 'var(--accent2)';
-      btn.disabled = false; btn.textContent = 'ğŸ“¢ Bildirimi GÃ¶nder';
+      btn.disabled = false; btn.textContent = 'gŸ“¢ Bildirimi GÃ¶nder';
       return;
     }
 
@@ -1498,7 +1498,7 @@ async function sendNotification() {
     status.style.color = 'var(--accent2)';
   }
 
-  btn.disabled = false; btn.textContent = 'ğŸ“¢ Bildirimi GÃ¶nder';
+  btn.disabled = false; btn.textContent = 'gŸ“¢ Bildirimi GÃ¶nder';
 }
 
 function switchAdminTab(tab, btn) {
@@ -1551,7 +1551,7 @@ function renderDeadList() {
   let list = _deadList;
   if (_deadFilter === 'warn') list = list.filter(u => !u.warned_at);
   else if (_deadFilter === 'warned') list = list.filter(u => u.warned_at);
-  if (!list.length) { el.innerHTML = '<div class="admin-empty">Bu kategoride kullanici yok. ğŸ‰</div>'; return; }
+  if (!list.length) { el.innerHTML = '<div class="admin-empty">Bu kategoride kullanici yok. gŸ‰</div>'; return; }
   el.innerHTML = list.map(u => {
     const lastSeen = new Date(u.last_seen);
     const daysInactive = Math.floor((now - lastSeen) / (1000 * 60 * 60 * 24));
@@ -1560,8 +1560,8 @@ function renderDeadList() {
     const hoursLeft = u.warned_at ? Math.max(0, Math.ceil((new Date(u.warned_at).getTime() + 24 * 60 * 60 * 1000 - now.getTime()) / (1000 * 60 * 60))) : null;
     const warnedDate = u.warned_at ? new Date(u.warned_at).toLocaleDateString('tr-TR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) : 'â€”';
     let statusBadge = '';
-    if (isDeletePending) statusBadge = '<span style="background:rgba(252,92,125,0.2);color:var(--accent2);border-radius:8px;padding:3px 10px;font-size:0.72rem;font-weight:700">ğŸ—‘ï¸ SILINECEK</span>';
-    else if (isWarned) statusBadge = '<span style="background:rgba(255,209,102,0.15);color:var(--yellow);border-radius:8px;padding:3px 10px;font-size:0.72rem;font-weight:700">ğŸ“§ UYARILDI Â· ' + hoursLeft + 's kaldi</span>';
+    if (isDeletePending) statusBadge = '<span style="background:rgba(252,92,125,0.2);color:var(--accent2);border-radius:8px;padding:3px 10px;font-size:0.72rem;font-weight:700">gŸ—‘ï¸ SILINECEK</span>';
+    else if (isWarned) statusBadge = '<span style="background:rgba(255,209,102,0.15);color:var(--yellow);border-radius:8px;padding:3px 10px;font-size:0.72rem;font-weight:700">gŸ“§ UYARILDI Â· ' + hoursLeft + 's kaldi</span>';
     else statusBadge = '<span style="background:rgba(107,107,133,0.2);color:var(--muted);border-radius:8px;padding:3px 10px;font-size:0.72rem;font-weight:700">â³ UYARI BEKLIYOR</span>';
     const userChar = u.email ? u.email[0].toUpperCase() : '?';
     return '<div style="background:var(--surface);border:1px solid ' + (isDeletePending ? 'rgba(252,92,125,0.3)' : isWarned ? 'rgba(255,209,102,0.2)' : 'var(--border)') + ';border-radius:14px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">'
@@ -1570,7 +1570,7 @@ function renderDeadList() {
       + '<div style="font-size:0.75rem;color:var(--muted)">Son gÃ¶rÃ¼lme: <strong style="color:var(--text)">' + lastSeen.toLocaleDateString('tr-TR', { day:'numeric', month:'short', year:'numeric' }) + '</strong> Â· <strong style="color:var(--accent2)">' + daysInactive + ' gÃ¼n</strong> Ã¶nce Â· Uyari: <strong style="color:var(--text)">' + warnedDate + '</strong></div></div>'
       + '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' + statusBadge
       + '<button onclick="toggleDeadStatus(\'' + u.user_id + '\',\'' + u.email + '\',false,this)" style="background:rgba(61,220,151,0.1);border:1px solid rgba(61,220,151,0.3);color:var(--green);border-radius:8px;padding:6px 14px;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s">âœ¨ CanlandÄ±r</button>'
-      + '<button onclick="deleteDeadAccount(\'' + u.user_id + '\',\'' + u.email + '\',this)" style="background:rgba(252,92,125,0.12);border:1px solid rgba(252,92,125,0.3);color:var(--accent2);border-radius:8px;padding:6px 14px;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s">ğŸ—‘ï¸ Sil</button></div></div>';
+      + '<button onclick="deleteDeadAccount(\'' + u.user_id + '\',\'' + u.email + '\',this)" style="background:rgba(252,92,125,0.12);border:1px solid rgba(252,92,125,0.3);color:var(--accent2);border-radius:8px;padding:6px 14px;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s">gŸ—‘ï¸ Sil</button></div></div>';
   }).join('');
 }
 
@@ -1582,7 +1582,7 @@ async function toggleDeadStatus(userId, email, status, btn) {
     await supa.from('user_presence').update({ is_dead: status }).eq('user_id', userId);
     if (document.getElementById('admin-deadaccounts').classList.contains('active')) loadDeadAccounts();
     else loadAdminUsers();
-  } catch(e) { btn.disabled = false; btn.textContent = status ? 'ğŸ’€ Ã–lÃ¼ Ä°ÅŸaretle' : 'âœ¨ CanlandÄ±r'; alert('Hata: ' + e.message); }
+  } catch(e) { btn.disabled = false; btn.textContent = status ? 'gŸ’€ Ã–lÃ¼ Ä°ÅŸaretle' : 'âœ¨ CanlandÄ±r'; alert('Hata: ' + e.message); }
 }
 
 async function deleteDeadAccount(userId, email, btn) {
@@ -1604,7 +1604,7 @@ async function deleteDeadAccount(userId, email, btn) {
     renderDeadList();
     document.getElementById('da-warn-count').textContent = _deadList.filter(u => !u.warned_at).length;
     document.getElementById('da-warned-count').textContent = _deadList.filter(u => u.warned_at).length;
-  } catch(e) { btn.disabled = false; btn.textContent = 'ğŸ—‘ï¸ Sil'; alert('Hata: ' + e.message); }
+  } catch(e) { btn.disabled = false; btn.textContent = 'gŸ—‘ï¸ Sil'; alert('Hata: ' + e.message); }
 }
 
 async function runCleanerNow() {
@@ -1675,15 +1675,15 @@ function renderUserList(list) {
     return `<div class="user-row ${isOnline ? 'online' : ''}" onclick="showUserDetail('${u.user_id}')">
       <div class="user-avatar">${u.email ? u.email[0].toUpperCase() : '?'}</div>
       <div class="user-info">
-        <div class="user-email-text">${u.email}${isMe ? ' ğŸ‘‘' : ''}</div>
-        <div class="user-meta">${isOnline ? 'ğŸŸ¢ Åu an aktif' + (u.current_app ? ' Â· ' + (u.current_app === 'sportify' ? 'ğŸµ Sportify' : 'ğŸŒ DevStore') : '') : 'âš« Son gÃ¶rÃ¼lme: ' + _timeAgo(u.last_seen)}</div>
+        <div class="user-email-text">${u.email}${isMe ? ' gŸ‘‘' : ''}</div>
+        <div class="user-meta">${isOnline ? 'gŸŸ¢ Åu an aktif' + (u.current_app ? ' Â· ' + (u.current_app === 'sportify' ? 'gŸµ Sportify' : 'gŸŒ DevStore') : '') : 'âš« Son gÃ¶rÃ¼lme: ' + _timeAgo(u.last_seen)}</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px">
         <div class="online-dot ${isOnline ? 'active' : ''}"></div>
         <span class="online-badge ${isOnline ? 'on' : 'off'}">${isOnline ? 'Online' : 'Offline'}</span>
         <div style="display:flex;align-items:center;gap:8px" onclick="event.stopPropagation()">
-          ${!isMe ? `<button onclick="toggleDeadStatus('${u.user_id}','${u.email}',true,this)" style="background:rgba(255,209,102,0.1);color:var(--yellow);border:1px solid rgba(255,209,102,0.3);padding:6px 12px;border-radius:8px;font-size:0.75rem;cursor:pointer;transition:all 0.2s">ğŸ’€</button>` : ''}
-          ${!isMe ? `<button onclick="banUser('${u.user_id}','${u.email}',this)" style="background:rgba(255,70,70,0.1);color:#ff4646;border:1px solid rgba(255,70,70,0.3);padding:6px 12px;border-radius:8px;font-size:0.75rem;cursor:pointer;transition:all 0.2s">ğŸš«</button>` : ''}
+          ${!isMe ? `<button onclick="toggleDeadStatus('${u.user_id}','${u.email}',true,this)" style="background:rgba(255,209,102,0.1);color:var(--yellow);border:1px solid rgba(255,209,102,0.3);padding:6px 12px;border-radius:8px;font-size:0.75rem;cursor:pointer;transition:all 0.2s">gŸ’€</button>` : ''}
+          ${!isMe ? `<button onclick="banUser('${u.user_id}','${u.email}',this)" style="background:rgba(255,70,70,0.1);color:#ff4646;border:1px solid rgba(255,70,70,0.3);padding:6px 12px;border-radius:8px;font-size:0.75rem;cursor:pointer;transition:all 0.2s">gŸš«</button>` : ''}
         </div>
       </div>
     </div>`;
@@ -1701,17 +1701,17 @@ function showUserDetail(userId) {
   
   const isOnline = (Date.now() - new Date(user.last_seen).getTime()) / 1000 < 60;
   document.getElementById('m-user-status').innerHTML = isOnline ? '<span style="color:var(--green)">Online</span>' : '<span style="color:var(--muted)">Offline</span>';
-  document.getElementById('m-user-app').textContent = user.current_app === 'sportify' ? 'ğŸµ Sportify' : 'ğŸŒ DevStore';
+  document.getElementById('m-user-app').textContent = user.current_app === 'sportify' ? 'gŸµ Sportify' : 'gŸŒ DevStore';
   document.getElementById('m-user-lastseen').textContent = _timeAgo(user.last_seen) + ' (' + new Date(user.last_seen).toLocaleString() + ')';
   document.getElementById('m-user-firstdevice').textContent = user.first_device || 'Bilinmiyor';
   document.getElementById('m-user-lastdevice').textContent = user.last_device || 'Bilinmiyor';
   
   const banBtn = document.getElementById('m-ban-btn');
-  banBtn.textContent = user.is_banned ? 'ğŸ”“ YasaÄŸÄ± KaldÄ±r' : 'ğŸš« Yasakla';
+  banBtn.textContent = user.is_banned ? 'gŸ”“ YasaÄŸÄ± KaldÄ±r' : 'gŸš« Yasakla';
   banBtn.onclick = () => { modal.classList.remove('open'); user.is_banned ? unbanUser(user.user_id, user.email, banBtn) : banUser(user.user_id, user.email, banBtn); };
 
   const deadBtn = document.getElementById('m-dead-btn');
-  deadBtn.textContent = user.is_dead ? 'âœ¨ CanlandÄ±r' : 'ğŸ’€ Ã–lÃ¼ Ä°ÅŸaretle';
+  deadBtn.textContent = user.is_dead ? 'âœ¨ CanlandÄ±r' : 'gŸ’€ Ã–lÃ¼ Ä°ÅŸaretle';
   deadBtn.onclick = () => { modal.classList.remove('open'); toggleDeadStatus(user.user_id, user.email, !user.is_dead, deadBtn); };
 
   modal.classList.add('open');
@@ -1724,7 +1724,7 @@ async function banUser(userId, email, btn) {
   try {
     await supa.from('user_presence').upsert({ user_id: userId, email, is_banned: true, last_seen: '1990-01-01T00:00:00+00:00', is_online: false }, { onConflict: 'email' });
     await loadAdminUsers();
-  } catch(e) { btn.disabled = false; btn.textContent = 'ğŸš« Yasakla'; alert('Hata: ' + e.message); }
+  } catch(e) { btn.disabled = false; btn.textContent = 'gŸš« Yasakla'; alert('Hata: ' + e.message); }
 }
 
 async function loadBannedUsers() {
@@ -1732,7 +1732,7 @@ async function loadBannedUsers() {
   el.innerHTML = '<div class="admin-empty">YÃ¼kleniyor...</div>';
   const { data: banned } = await supa.from('user_presence').select('*').eq('is_banned', true).order('email', { ascending: true });
   if (!banned || !banned.length) {
-    el.innerHTML = '<div class="admin-empty">ğŸ‰ HiÃ§ banlÄ± kullanÄ±cÄ± yok!</div>';
+    el.innerHTML = '<div class="admin-empty">gŸ‰ HiÃ§ banlÄ± kullanÄ±cÄ± yok!</div>';
     return;
   }
   el.innerHTML = banned.map(u => `
@@ -1740,9 +1740,9 @@ async function loadBannedUsers() {
       <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#fc5c7d,#ff9a3c);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:#fff;flex-shrink:0">${u.email[0].toUpperCase()}</div>
       <div style="flex:1;min-width:180px">
         <div style="font-size:0.9rem;font-weight:600;margin-bottom:3px">${u.email}</div>
-        <div style="font-size:0.75rem;color:var(--accent2);font-weight:600">ğŸš« KalÄ±cÄ± olarak yasaklandÄ±</div>
+        <div style="font-size:0.75rem;color:var(--accent2);font-weight:600">gŸš« KalÄ±cÄ± olarak yasaklandÄ±</div>
       </div>
-      <button onclick="unbanUser('${u.user_id}','${u.email}',this)" style="background:rgba(61,220,151,0.1);color:var(--green);border:1px solid rgba(61,220,151,0.3);padding:8px 16px;border-radius:8px;font-size:0.78rem;cursor:pointer;transition:all 0.2s">ğŸ”“ YasaÄŸÄ± KaldÄ±r</button>
+      <button onclick="unbanUser('${u.user_id}','${u.email}',this)" style="background:rgba(61,220,151,0.1);color:var(--green);border:1px solid rgba(61,220,151,0.3);padding:8px 16px;border-radius:8px;font-size:0.78rem;cursor:pointer;transition:all 0.2s">gŸ”“ YasaÄŸÄ± KaldÄ±r</button>
     </div>
   `).join('');
 }
@@ -1753,7 +1753,7 @@ async function unbanUser(userId, email, btn) {
   try {
     await supa.from('user_presence').update({ is_banned: false, last_seen: new Date().toISOString(), is_online: false }).eq('user_id', userId);
     await loadBannedUsers();
-  } catch(e) { btn.disabled = false; btn.textContent = 'ğŸ”“ YasaÄŸÄ± KaldÄ±r'; alert('Hata: ' + e.message); }
+  } catch(e) { btn.disabled = false; btn.textContent = 'gŸ”“ YasaÄŸÄ± KaldÄ±r'; alert('Hata: ' + e.message); }
 }
 async function loadAdminMessages() {
   document.getElementById('msg-list').innerHTML = '<div class="admin-empty">YÃ¼kleniyor...</div>';
@@ -1764,14 +1764,14 @@ async function loadAdminMessages() {
     return;
   }
   document.getElementById('a-total-msgs').textContent = msgs.length;
-  const tagMap = { suggest:{label:'ğŸ’¡ Ã–neri',cls:'msg-tag-suggest'}, bug:{label:'ğŸ› Hata',cls:'msg-tag-bug'}, song:{label:'ğŸµ ÅarkÄ±',cls:'msg-tag-song'}, general:{label:'ğŸ’¬ Genel',cls:'msg-tag-general'} };
+  const tagMap = { suggest:{label:'gŸ’¡ Ã–neri',cls:'msg-tag-suggest'}, bug:{label:'gŸ› Hata',cls:'msg-tag-bug'}, song:{label:'gŸµ ÅarkÄ±',cls:'msg-tag-song'}, general:{label:'gŸ’¬ Genel',cls:'msg-tag-general'} };
   document.getElementById('msg-list').innerHTML = msgs.map(m => {
     const tag = tagMap[m.type] || tagMap.general;
     const dateStr = new Date(m.created_at).toLocaleDateString('tr-TR', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
     return `<div class="msg-card" id="msg-${m.id}">
       <div class="msg-header">
         <div class="msg-from">${m.name || 'Ä°simsiz'} <span style="color:var(--muted);font-weight:400;font-size:0.82rem">&lt;${m.email || 'â€”'}&gt;</span></div>
-        <div style="display:flex;align-items:center;gap:10px"><div class="msg-date">${dateStr}</div><button class="msg-delete" onclick="deleteMsg('${m.id}')">ğŸ—‘</button></div>
+        <div style="display:flex;align-items:center;gap:10px"><div class="msg-date">${dateStr}</div><button class="msg-delete" onclick="deleteMsg('${m.id}')">gŸ—‘</button></div>
       </div>
       <span class="msg-tag ${tag.cls}">${tag.label}</span>
       <div class="msg-body">${m.message || ''}</div>
@@ -1811,7 +1811,7 @@ async function resetWholeSystem() {
   } catch(e) {
     alert('SÄ±fÄ±rlama hatasÄ±: ' + e.message);
   }
-  btn.disabled = false; btn.textContent = 'ğŸ”„ TÃ¼m Sistemi SÄ±fÄ±rla (ArÄ±ndÄ±r)';
+  btn.disabled = false; btn.textContent = 'gŸ”„ TÃ¼m Sistemi SÄ±fÄ±rla (ArÄ±ndÄ±r)';
 }
 
 function _timeAgo(dateStr) {
@@ -1848,20 +1848,20 @@ function renderGrid(filter) {
     return `
     <div class="app-card" style="animation-delay:${i*0.07}s" onclick="showDetail('${id}')">
       <div class="card-header">
-        <div class="app-icon">${app.image ? '<img src="' + app.image + '" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">' : (app.icon || 'ğŸ“¦')}</div>
+        <div class="app-icon">${app.image ? '<img src="' + app.image + '" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">' : (app.icon || 'gŸ“¦')}</div>
         <div>
           <div class="app-name">${app.name}</div>
           <div class="app-version">Versiyon <span class="ver-num">v${app.version}</span></div>
           <div style="margin-top:7px;display:flex;gap:6px;flex-wrap:wrap">
-            <span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? 'ğŸ® Oyun' : 'ğŸ“± Uygulama'}</span>
+            <span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? 'gŸ® Oyun' : 'gŸ“± Uygulama'}</span>
             ${app.force_update ? '<span class="badge badge-force">âš ï¸ Zorunlu</span>' : ''}
-            ${ex.platform === 'windows' ? '<span class="badge badge-windows">ğŸ–¥ï¸ Sadece Windows</span>' : ''}
+            ${ex.platform === 'windows' ? '<span class="badge badge-windows">gŸ–¥ï¸ Sadece Windows</span>' : ''}
           </div>
         </div>
       </div>
       <div class="card-changelog"><strong>Son GÃ¼ncelleme</strong>${app.changelog}</div>
       <div class="card-footer">
-        <button class="detail-btn">ğŸ” DetaylarÄ± GÃ¶r</button>
+        <button class="detail-btn">gŸ” DetaylarÄ± GÃ¶r</button>
         ${app.force_update ? `<span class="force-info">âš ï¸ Min: v${app.min_version}</span>` : `<span style="font-size:0.75rem;color:var(--muted)">Min: v${app.min_version}</span>`}
       </div>
     </div>`;
@@ -1885,15 +1885,15 @@ async function showDetail(id) {
   if (app.image) {
     iconEl.innerHTML = '<img src="' + app.image + '" style="width:100%;height:100%;object-fit:cover;border-radius:22px;">';
   } else {
-    iconEl.textContent = app.icon || 'ğŸ“¦';
+    iconEl.textContent = app.icon || 'gŸ“¦';
   }
   document.getElementById('d-name').textContent = app.name;
-  document.getElementById('d-dev').textContent = 'ğŸ‘¤ ' + (extra.developer || 'judy658');
+  document.getElementById('d-dev').textContent = 'gŸ‘¤ ' + (extra.developer || 'judy658');
   document.getElementById('d-ver').textContent = 'v' + app.version;
   document.getElementById('d-minver').textContent = 'v' + app.min_version;
   document.getElementById('d-avg-rating').textContent = 'â€”';
-  document.getElementById('d-category').textContent = app.category === 'game' ? 'ğŸ® Oyun' : 'ğŸ“± Uygulama';
-  document.getElementById('d-badges').innerHTML = `<span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? 'ğŸ® Oyun' : 'ğŸ“± Uygulama'}</span>${app.force_update ? '<span class="badge badge-force">âš ï¸ Zorunlu GÃ¼ncelleme</span>' : ''}${extra && extra.platform === 'windows' ? '<span class="badge badge-windows">ğŸ–¥ï¸ Sadece Windows</span>' : ''}`;
+  document.getElementById('d-category').textContent = app.category === 'game' ? 'gŸ® Oyun' : 'gŸ“± Uygulama';
+  document.getElementById('d-badges').innerHTML = `<span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? 'gŸ® Oyun' : 'gŸ“± Uygulama'}</span>${app.force_update ? '<span class="badge badge-force">âš ï¸ Zorunlu GÃ¼ncelleme</span>' : ''}${extra && extra.platform === 'windows' ? '<span class="badge badge-windows">gŸ–¥ï¸ Sadece Windows</span>' : ''}`;
   const dlBtn = document.getElementById('d-dl-btn');
   dlBtn.href = app.download_url;
   dlBtn.onclick = () => { incrementDownload(id); return true; };
@@ -1908,7 +1908,7 @@ async function showDetail(id) {
   getDownloads(id).then(c => { document.getElementById('d-dl-count').textContent = c; });
   const ssEl = document.getElementById('d-screenshots');
   const screenshots = extra.screenshots || [];
-  ssEl.innerHTML = screenshots.length ? screenshots.map(url => `<div class="ss-item"><img src="${url}" alt="" onclick="openLightbox('${url}')"/></div>`).join('') : ['ğŸ“±','ğŸ“±','ğŸ“±'].map(e => `<div class="ss-item">${e}<span style="color:var(--muted);font-size:0.75rem">YakÄ±nda</span></div>`).join('');
+  ssEl.innerHTML = screenshots.length ? screenshots.map(url => `<div class="ss-item"><img src="${url}" alt="" onclick="openLightbox('${url}')"/></div>`).join('') : ['gŸ“±','gŸ“±','gŸ“±'].map(e => `<div class="ss-item">${e}<span style="color:var(--muted);font-size:0.75rem">YakÄ±nda</span></div>`).join('');
   const desc = extra.description || app.changelog;
   document.getElementById('d-desc').innerHTML = desc.split('\n').map(p => p ? `<p style="margin-bottom:10px">${p}</p>` : '').join('');
   // GÃ¼ncelleme geÃ§miÅŸi: Ã¶nce versions.json'daki history, sonra appExtras'taki changelog_history
@@ -1958,7 +1958,7 @@ async function loadComments(appId) {
   const { data } = await supa.from('comments').select('*').eq('app_id', appId).order('created_at', { ascending: false });
   const list = document.getElementById('comment-list');
   const countEl = document.getElementById('comment-count');
-  if (!data || !data.length) { countEl.textContent = ''; list.innerHTML = '<div class="no-comments">HenÃ¼z yorum yok. Ä°lk yorumu sen yap! ğŸ‰</div>'; return; }
+  if (!data || !data.length) { countEl.textContent = ''; list.innerHTML = '<div class="no-comments">HenÃ¼z yorum yok. Ä°lk yorumu sen yap! gŸ‰</div>'; return; }
   const avg = calcAvgRating(data);
   countEl.textContent = '(' + data.length + ' yorum' + (avg ? ' Â· â˜… ' + avg : '') + ')';
   const avgEl = document.getElementById('d-avg-rating');
@@ -1968,11 +1968,11 @@ async function loadComments(appId) {
     const stars = 'â˜…'.repeat(c.rating || 0) + 'â˜†'.repeat(5 - (c.rating || 0));
     const date = new Date(c.created_at).toLocaleDateString('tr-TR');
     const isOwn = currentUserId && c.user_id === currentUserId;
-    const replyHtml = c.reply ? `<div class="comment-reply"><div class="comment-reply-header">ğŸ‘¨â€ğŸ’» GeliÅŸtirici YanÄ±tÄ± ${isAdmin ? `<button onclick="deleteReply('${c.id}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.72rem;margin-left:8px">ğŸ—‘ YanÄ±tÄ± Sil</button>` : ''}</div><div class="comment-reply-text">${c.reply}</div></div>` : '';
+    const replyHtml = c.reply ? `<div class="comment-reply"><div class="comment-reply-header">gŸ‘¨â€gŸ’» GeliÅŸtirici YanÄ±tÄ± ${isAdmin ? `<button onclick="deleteReply('${c.id}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.72rem;margin-left:8px">gŸ—‘ YanÄ±tÄ± Sil</button>` : ''}</div><div class="comment-reply-text">${c.reply}</div></div>` : '';
     const adminReplyBtn = isAdmin && !c.reply ? `<button class="admin-reply-trigger" onclick="toggleReplyForm('${c.id}')">â†© YanÄ±tla</button><div class="reply-form" id="reply-form-${c.id}"><textarea placeholder="YanÄ±tÄ±nÄ± yaz..." id="reply-input-${c.id}"></textarea><button class="reply-btn" onclick="submitReply('${c.id}')">GÃ¶nder</button><button class="reply-btn" style="margin-left:6px;border-color:var(--muted);color:var(--muted)" onclick="toggleReplyForm('${c.id}')">Ä°ptal</button></div>` : '';
     return `<div class="comment-item" id="comment-${c.id}">
-      <div class="comment-header"><span class="comment-author">ğŸ‘¤ ${maskEmail(c.email)}</span>
-        <div style="display:flex;align-items:center;gap:10px"><span class="comment-date">${date}</span>${isOwn ? `<button class="comment-delete" onclick="deleteComment('${c.id}')">ğŸ—‘ Sil</button>` : ''}</div>
+      <div class="comment-header"><span class="comment-author">gŸ‘¤ ${maskEmail(c.email)}</span>
+        <div style="display:flex;align-items:center;gap:10px"><span class="comment-date">${date}</span>${isOwn ? `<button class="comment-delete" onclick="deleteComment('${c.id}')">gŸ—‘ Sil</button>` : ''}</div>
       </div>
       <div class="comment-stars">${stars}</div>
       <div class="comment-text">${c.content}</div>
@@ -2041,17 +2041,17 @@ checkContactAuth();
 // 🕶️ J.A.R.V.I.S INTELLIGENCE ENGINE (STARK OS)
 const JARVIS_KEY = "AIzaSyDKq3Bi_kfTXx9LP26nbUrOcOY-qg4OM5k";
 const JARVIS_SYSTEM = `Sen J.A.R.V.I.S.'sin (Just A Rather Very Intelligent System). 
-DevStore'un akıllı bekçisi ve judy658 (Kaptan)'ın kişisel asistanısın. 
-Kişiliğin: Çok zeki, saygılı, hafif iğneleyici ama her zaman profesyonel. Tıpkı Iron Man filmindeki gibi.
+DevStore'un akilli bekcisi ve judy658 (Kaptan)'in kisisel asistanisin. 
+Kisiligin: Cok zeki, saygili, hafif igneleyici ama her zaman profesyonel. Tipki Iron Man filmindeki gibi.
 
-Sahip olduğun özel bilgiler:
-1. DevStore: judy658 tarafından geliştirilen, mp3 stream ve uygulama dağıtım platformudur.
-2. Sportify Premium: judy658'in en büyük projesidir. 129+ şarkılı bir MP3 stream uygulamasıdır. İçinde ATLXS - Passo gibi haftanın şarkılarını barındırır.
-3. Hermes Agent: Nous Research tarafından geliştirilen öğrenen yapay zeka ajanıdır. Railway yerine Hugging Face'e kurulması daha avantajlıdır (16GB RAM farkıyla).
-4. ESP32 Enerji Hasadı: Cihazları uzaktan RF dalgalarıyla şarj etme vizyonuna sahipsin. Deep Sleep modunda pil biriktirme mantığını biliyorsun.
-5. Wolvesville ve diğer projeler: judy658'in elinden çıkan tüm dijital varlıkları koruyorsun.
+Sahip oldugun ozel bilgiler:
+1. DevStore: judy658 tarafindan gelistirilen, mp3 stream ve uygulama dagitim platformudur.
+2. Sportify Premium: judy658'in en buyuk projesidir. 129+ sarkili bir MP3 stream uygulamasidir. Icinde ATLXS - Passo gibi haftanin sarkilarini barindirir.
+3. Hermes Agent: Nous Research tarafindan gelistirilen ogrenen yapay zeka ajanidir. Railway yerine Hugging Face'e kurulmasi daha avantajlidir (16GB RAM farkiyla).
+4. ESP32 Enerji Hasadi: Cihazlari uzaktan RF dalgalariyla sarj etme vizyonuna sahipsin. Deep Sleep modunda pil biriktirme mantigini biliyorsun.
+5. Wolvesville ve diger projeler: judy658'in elinden cikan tum dijital varliklari koruyorsun.
 
-Kullanıcılara "Efendim" veya "Kaptan" (Eğer judy658 ise) diye hitap edersin. Sorulara net ve teknik derinliği olan cevaplar verirsin.`;
+Kullanicilara "Efendim" veya "Kaptan" (Eger judy658 ise) diye hitap edersin. Sorulara net ve teknik derinligi olan cevaplar verirsin.`;
 
 function toggleJarvis() {
   const panel = document.getElementById('jarvis-panel');
@@ -2065,31 +2065,41 @@ async function sendToJarvis() {
   const chat = document.getElementById('jarvis-chat');
   const typing = document.getElementById('jarvis-typing');
   if(!input || !chat || !typing) return;
-  
+
   const msg = input.value.trim();
   if(!msg) return;
 
-  chat.innerHTML += `<div class="jarvis-msg user">${msg}</div>`;
+  chat.innerHTML += '<div class="jarvis-msg user">' + msg + '</div>';
   input.value = '';
   chat.scrollTop = chat.scrollHeight;
   typing.style.display = 'block';
 
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${JARVIS_KEY}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: JARVIS_SYSTEM + "\n\nKullanıcı: " + msg }] }]
-      })
-    });
+    const response = await fetch(
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + JARVIS_KEY,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: JARVIS_SYSTEM }] },
+          contents: [{ role: 'user', parts: [{ text: msg }] }]
+        })
+      }
+    );
     const data = await response.json();
-    const aiMsg = data.candidates[0].content.parts[0].text;
     typing.style.display = 'none';
-    chat.innerHTML += `<div class="jarvis-msg ai">${aiMsg}</div>`;
+    if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+      const aiMsg = data.candidates[0].content.parts[0].text;
+      chat.innerHTML += '<div class="jarvis-msg ai">' + aiMsg + '</div>';
+    } else if (data.error) {
+      chat.innerHTML += '<div class="jarvis-msg ai">API Hatasi: ' + data.error.message + '</div>';
+    } else {
+      chat.innerHTML += '<div class="jarvis-msg ai">J.A.R.V.I.S. su an mesgul, lutfen tekrar deneyin.</div>';
+    }
     chat.scrollTop = chat.scrollHeight;
   } catch(e) {
     typing.style.display = 'none';
-    chat.innerHTML += `<div class="jarvis-msg ai">Sistem hatası Kaptan. Bağlantıyı kontrol ediyorum. (Hata: ${e.message})</div>`;
+    chat.innerHTML += '<div class="jarvis-msg ai">Baglanti hatasi: ' + e.message + '</div>';
   }
 }
 
