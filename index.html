@@ -2056,7 +2056,12 @@ const k1 = "AIzaSyCi-";
 const k2 = "4_fh8n95Y16m";
 const k3 = "21C2V7uyxmuG";
 const k4 = "9jmTV4";
-const JARVIS_KEY = k1 + k2 + k3 + k4;
+const JARVIS_KEYS = [
+  k1 + k2 + k3 + k4,
+  "AIzaSyABm5c1fWKAihkXxolUwm4HwkO6BPmoH-4",
+  "AIzaSyClVgUv-HE5AsmWXkhZsHjRSlHBfcjVGgk"
+];
+let currentJarvisKeyIndex = 0;
 const JARVIS_SYSTEM = `Sen J.A.R.V.I.S.'sin (Just A Rather Very Intelligent System).
 DevStore'un akilli bekcisi, bas mimari ve judy658 (Kaptan)'in kisisel yapay zeka asistanisin.
 Kisiligin: Cok zeki, sadik, saygili, biraz esprili/igneleyici ama her zaman asiri profesyonel. Tipki Iron Man evrenindeki gibi.
@@ -2171,6 +2176,48 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('mouseup', () => { isDrag = false; });
 });
 
+async function jarvisSendNotification(title, content, tag, recipientsMode) {
+  try {
+    let emails = [];
+    if (recipientsMode === 'online') {
+      const { data: presence } = await supa.from('user_presence').select('email, last_seen');
+      const now = Date.now();
+      emails = (presence || []).filter(u => (now - new Date(u.last_seen).getTime())/1000 < 60).map(u => u.email);
+    } else {
+      const { data: users } = await supa.from('user_emails').select('email');
+      emails = (users || []).map(u => u.email);
+    }
+
+    if (!emails.length) return "Gonderilecek kullanici bulunamadi.";
+
+    const EMAILJS_PUBLIC_KEY  = 'r8ASbmPn5vAERuB8C';
+    const EMAILJS_SERVICE_ID  = 'service_tf1icj3';
+    const EMAILJS_TEMPLATE_ID = 'template_3s3ggrq';
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+
+    let sent = 0;
+    for (const email of emails) {
+      try {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+          to_email: email, title: title, message: content, tag: tag
+        });
+        sent++;
+      } catch(e) {}
+    }
+
+    await supa.from('notifications').insert({
+      title, content, tag: tag, recipients: recipientsMode,
+      sent_count: sent, total_count: emails.length
+    });
+    
+    if (typeof loadNotifHistory === 'function') loadNotifHistory();
+
+    return `${sent}/${emails.length} kisiye basariyla iletildi!`;
+  } catch(e) {
+    return "Basarisiz: " + e.message;
+  }
+}
+
 async function sendToJarvis() {
   const input = document.getElementById('jarvis-input');
   const chat = document.getElementById('jarvis-chat');
@@ -2251,13 +2298,27 @@ async function sendToJarvis() {
                 properties: { id: { type: "STRING", description: "Uygulamanin id numarasi veya kisa adi (orn: 'sportify', 'hermes')" } },
                 required: ["id"]
               }
+            },
+            {
+              name: "bildirim_gonder",
+              description: "Kullanicilara e-posta uzerinden resmi duyuru/bildirim gonderir.",
+              parameters: {
+                type: "OBJECT",
+                properties: {
+                  title: { type: "STRING", description: "Duyuru basligi" },
+                  content: { type: "STRING", description: "Duyurunun detayli tam icerigi (HTML desteklenmez, duz metin)" },
+                  tag: { type: "STRING", description: "Mesajin etiketi: 'system', 'update' veya 'error'" },
+                  recipients: { type: "STRING", description: "Kimlere gonderilecegi: 'all' (herkes) veya 'online' (sadece aktif olanlar)" }
+                },
+                required: ["title", "content", "tag", "recipients"]
+              }
             }
           ]
         }
       ];
 
       const response = await fetch(
-        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=' + JARVIS_KEY,
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=' + JARVIS_KEYS[currentJarvisKeyIndex],
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -2270,10 +2331,24 @@ async function sendToJarvis() {
       );
       const data = await response.json();
       
-      if (data.error && (data.error.code === 503 || data.error.message.includes('high demand'))) {
-        retries--;
-        if (retries === 0) successData = data;
-        continue;
+      if (data.error) {
+        const errMsg = data.error.message || "";
+        if (data.error.code === 503 || errMsg.includes('high demand')) {
+          retries--;
+          if (retries === 0) successData = data;
+          continue;
+        }
+        
+        // Quota Limit asildiginda yedek API anahtarina gecis yap
+        if (data.error.code === 429 || errMsg.includes('quota') || errMsg.includes('exceeded')) {
+          if (currentJarvisKeyIndex < JARVIS_KEYS.length - 1) {
+            currentJarvisKeyIndex++;
+            retries = 3; // Yeni anahtar icin deneme hakkini sifirla
+            typing.innerText = 'Motor degistiriliyor... (Yedek API Aktif)';
+            await new Promise(r => setTimeout(r, 1000));
+            continue;
+          }
+        }
       }
       
       successData = data;
@@ -2320,6 +2395,13 @@ async function sendToJarvis() {
       } else if (fnName === "uygulama_ac") {
         showDetail(args.id);
         exeMsg = "Uygulama secildi: " + args.id;
+      } else if (fnName === "bildirim_gonder") {
+        typing.style.display = 'block';
+        typing.innerText = 'Iletisim aglarina baglaniliyor, mailler gonderiliyor...';
+        chat.scrollTop = chat.scrollHeight;
+        const resMsg = await jarvisSendNotification(args.title, args.content, args.tag, args.recipients);
+        exeMsg = `Bildirim Protokolu: ${resMsg}`;
+        typing.style.display = 'none';
       }
       
       if (!aiMsg) aiMsg = `Islem basariyla tamamlandi Kaptan! (${exeMsg})`;
@@ -2341,7 +2423,7 @@ async function sendToJarvis() {
   } else if (data && data.error) {
     let errMsg = data.error.message;
     if (errMsg.includes('quota') || errMsg.includes('exceeded') || data.error.code === 429) {
-      errMsg = "Kaptan, hiz limitlerine (dakikada 15 istek) takildik. Sistem asiri isindi ve guvenlik protokolleri geregi motorlar sogumaya alindi... Lutfen 30 saniye bekleyip tekrar deneyin.";
+      errMsg = "Kaptan, Google Cloud'un ucretsiz API limitlerine ulastik. (Dakika basi 15 veya Gunluk 1500 istek siniri asildi). Eger birkac dakika beklemenize ragmen duzelmiyorsa, bugunku butun kredilerimiz tukenmistir. Yarin tekrar guc toplayacagiz!";
     } else {
       errMsg = "API Hatasi: " + errMsg;
     }
