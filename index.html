@@ -2323,7 +2323,13 @@ async function sendToJarvis() {
     chat.innerHTML += '<div class="jarvis-msg ai">' + timeHtml + aiMsg.replace(/\n/g, '<br>') + '</div>';
     if (isAdmin) localStorage.setItem('jarvisMem', JSON.stringify({ history: _jarvisHistory, chatHtml: chat.innerHTML }));
   } else if (data && data.error) {
-    chat.innerHTML += '<div class="jarvis-msg ai">API Hatasi: ' + data.error.message + '</div>';
+    let errMsg = data.error.message;
+    if (errMsg.includes('quota') || errMsg.includes('exceeded') || data.error.code === 429) {
+      errMsg = "Kaptan, hiz limitlerine (dakikada 15 istek) takildik. Sistem asiri isindi ve guvenlik protokolleri geregi motorlar sogumaya alindi... Lutfen 30 saniye bekleyip tekrar deneyin.";
+    } else {
+      errMsg = "API Hatasi: " + errMsg;
+    }
+    chat.innerHTML += '<div class="jarvis-msg ai">' + errMsg + '</div>';
     _jarvisHistory.pop();
   } else {
     chat.innerHTML += '<div class="jarvis-msg ai">J.A.R.V.I.S. su an mesgul, lutfen tekrar deneyin.</div>';
