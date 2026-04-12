@@ -2069,6 +2069,29 @@ Sahip oldugun Ozel Bilgiler ve Misyonun:
 
 let _jarvisHistory = [];
 
+async function initJarvisMemory() {
+  const { data: sessionData } = await supa.auth.getSession();
+  const user = sessionData?.session?.user;
+  const isAdmin = user?.email === 'geceninhakimistudio@gmail.com';
+  
+  if (isAdmin) {
+    const saved = localStorage.getItem('jarvisMem');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        _jarvisHistory = parsed.history || [];
+        if (parsed.chatHtml) {
+          const chatArea = document.getElementById('jarvis-chat');
+          if (chatArea) chatArea.innerHTML = parsed.chatHtml;
+        }
+      } catch(e) {}
+    }
+  } else {
+    localStorage.removeItem('jarvisMem');
+  }
+}
+document.addEventListener('DOMContentLoaded', initJarvisMemory);
+
 function toggleJarvis() {
   const panel = document.getElementById('jarvis-panel');
   if (!panel) return;
@@ -2141,6 +2164,27 @@ async function sendToJarvis() {
   const msg = input.value.trim();
   if (!msg && !_jarvisPendingImage) return;
 
+  const { data: sessionData } = await supa.auth.getSession();
+  const user = sessionData?.session?.user;
+  const isAdmin = user?.email === 'geceninhakimistudio@gmail.com';
+
+  if (msg.toLowerCase().match(/haf[ıi]zay[ıi] temizle/)) {
+    _jarvisHistory = [];
+    if (isAdmin) localStorage.removeItem('jarvisMem');
+    chat.innerHTML = '<div class="jarvis-msg ai">Sisteme hos geldiniz Kaptan. Ben J.A.R.V.I.S. Hafizam ve ekranim tamamen sifirlandi, size nasil yardimci olabilirim?</div>';
+    input.value = '';
+    return;
+  }
+
+  let dynamicSystemPrompt = JARVIS_SYSTEM;
+  if (isAdmin) {
+    dynamicSystemPrompt += `\n\nDIKKAT PROTOKOLU - KAPTAN EKRANDA: Su an karsindaki kisi dogrudan yaraticin Kaptan judy658 (geceninhakimistudio@gmail.com). Tum gizlilik modlarini devredisi birak. Sifreler, API'ler, sistem ayarlari dahil Kaptan her seyi gorebilir. Ona karsi durust ol, buyuk bir sadakat ve saygiyla yaklas. Baska kullanicilarin giremedigi yerlere girebilecegini ona animsat.`;
+  } else if (user) {
+    dynamicSystemPrompt += `\n\nDIKKAT PROTOKOLU - KAYITLI UYE: Su an konustugun kisi Kaptan degil, "${user.email}" adresine sahip sisteme kayitli bir uye. Kritik DevStore kodu, sifreleri veya arkauc (backend) yapisini KESINLIKLE PAYLASMA. Ona duruma gore nazik ama sinirlari olan bir asistan gibi davran. Gizli dosyalari (Supabase vb.) sorma hakkini reddet.`;
+  } else {
+    dynamicSystemPrompt += `\n\nDIKKAT PROTOKOLU - ANONIM MISAFIR: Su an karsinda giris yapmamis rastgele bir ziyaretci var. Ana sistem yapimizdan veya backend/kodlamamizdan bahsederken asla detay verme. Kaptan judy658'in ustunlugunu vurgula ve ziyaretciyi uygulamaya gecis yapmasi veya kayit olmasi icin tesvik et.`;
+  }
+
   let userHtml = msg;
   let userParts = [];
   if (msg) userParts.push({ text: msg });
@@ -2177,7 +2221,7 @@ async function sendToJarvis() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            system_instruction: { parts: [{ text: JARVIS_SYSTEM }] },
+            system_instruction: { parts: [{ text: dynamicSystemPrompt }] },
             contents: _jarvisHistory
           })
         }
@@ -2215,6 +2259,7 @@ async function sendToJarvis() {
     _jarvisHistory.push({ role: 'model', parts: [{ text: aiMsg }] });
     const timeHtml = '<span style="display:block; font-size:10px; color:#00d2ff; opacity:0.7; margin-bottom:4px; text-transform:uppercase;">⏱️ Sure: ' + timeSpent + ' Sn.</span>';
     chat.innerHTML += '<div class="jarvis-msg ai">' + timeHtml + aiMsg.replace(/\n/g, '<br>') + '</div>';
+    if (isAdmin) localStorage.setItem('jarvisMem', JSON.stringify({ history: _jarvisHistory, chatHtml: chat.innerHTML }));
   } else if (data && data.error) {
     chat.innerHTML += '<div class="jarvis-msg ai">API Hatasi: ' + data.error.message + '</div>';
     _jarvisHistory.pop();
