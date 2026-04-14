@@ -2584,81 +2584,60 @@ function closeJarvisPlayer() {
 let jarvisRecognition = null;
 let isJarvisListening = false;
 
-let jarvisLock = false;
 
-function startJarvisVoice() {
-  if (jarvisLock) return; // Cift tetiklenmeyi engelle
-  jarvisLock = true;
-  setTimeout(() => { jarvisLock = false; }, 500); // 500ms kilit
-
+(function() {
   const micBtn = document.getElementById('jarvis-mic-btn');
   const inputEl = document.getElementById('jarvis-input');
-  const SpeechRec = window.webkitSpeechRecognition || window.SpeechRecognition;
   
-  console.log("J.A.R.V.I.S: Komut merkezi tetiklendi.");
+  if (!micBtn) return;
 
-  if (!SpeechRec) {
-    alert("Kaptan, tarayiciniz ses tanimayi desteklemiyor. Lutfen Chrome kullanin.");
-    return;
-  }
+  micBtn.addEventListener('click', function() {
+    console.log("J.A.R.V.I.S: Buton tiklandi.");
 
-  // Eger zaten dinliyorsak durdur
-  if (isJarvisListening && jarvisRecognition) {
-    console.log("J.A.R.V.I.S: Durdurma komutu alindi.");
-    try { jarvisRecognition.stop(); } catch(e) {}
-    return;
-  }
+    // Simple toggle logic
+    if (window.isJarvisListening) {
+      if (window.jarvisRecognition) window.jarvisRecognition.stop();
+      return;
+    }
 
-  function stopJarvisMicUI() {
-    isJarvisListening = false;
-    if (micBtn) { micBtn.style.animation = "none"; micBtn.innerHTML = "🎤"; }
-    if (inputEl) inputEl.placeholder = "Sisteme bir komut ver...";
-  }
+    const SpeechRec = window.webkitSpeechRecognition || window.SpeechRecognition;
+    if (!SpeechRec) {
+      alert("Desteklenmiyor.");
+      return;
+    }
 
-  // Temizlik: Varsa eski motoru tamamen oldur
-  if (jarvisRecognition) {
-    try { jarvisRecognition.abort(); } catch(e) {}
-  }
+    window.jarvisRecognition = new SpeechRec();
+    window.jarvisRecognition.lang = 'tr-TR';
 
-  console.log("J.A.R.V.I.S: Iron-Clad Motor hazirlaniyor...");
-  jarvisRecognition = new SpeechRec();
-  jarvisRecognition.lang = "tr-TR";
-  jarvisRecognition.continuous = true; // Kendi kendine kapanmasini engeller
-  jarvisRecognition.interimResults = true;
+    window.jarvisRecognition.onstart = () => {
+      console.log("J.A.R.V.I.S: !!! DINLEME BASLADI !!!");
+      window.isJarvisListening = true;
+      micBtn.style.animation = 'pulseJarvisMic 0.8s infinite alternate';
+      micBtn.innerHTML = '🎙️';
+    };
 
-  jarvisRecognition.onstart = () => {
-    console.log("J.A.R.V.I.S: >>> SISTEM CEVAP VERDI: DINLIYORUM 🎙️ <<<");
-    isJarvisListening = true;
-    if (micBtn) { micBtn.style.animation = "pulseJarvisMic 0.8s infinite alternate"; micBtn.innerHTML = "🎙️"; }
-    if (inputEl) inputEl.placeholder = "Dinliyorum Kaptan...";
-  };
+    window.jarvisRecognition.onend = () => {
+      console.log("J.A.R.V.I.S: !!! DINLEME BITTI !!!");
+      window.isJarvisListening = false;
+      micBtn.style.animation = 'none';
+      micBtn.innerHTML = '🎤';
+    };
 
-  jarvisRecognition.onresult = (event) => {
-    const transcript = event.results[event.results.length - 1][0].transcript;
-    if (inputEl) { inputEl.value = transcript; }
-    console.log("J.A.R.V.I.S: Algilanan ->", transcript);
-  };
+    window.jarvisRecognition.onresult = (e) => {
+      const text = e.results[0][0].transcript;
+      console.log("J.A.R.V.I.S: Algilandi ->", text);
+      if (inputEl) inputEl.value = text;
+    };
 
-  jarvisRecognition.onerror = (event) => {
-    console.error("J.A.R.V.I.S: MOTOR HATASI ->", event.error);
-    if (event.error === "network") alert("Kaptan, bağlantı hatası! Ses tanıma için internet gerekiyor.");
-    stopJarvisMicUI();
-  };
+    window.jarvisRecognition.onerror = (e) => {
+      console.error("J.A.R.V.I.S: HATA ->", e.error);
+    };
 
-  jarvisRecognition.onend = () => {
-    console.log("J.A.R.V.I.S: Oturum kapandi.");
-    stopJarvisMicUI();
-  };
+    console.log("J.A.R.V.I.S: .start() cagriliyor...");
+    window.jarvisRecognition.start();
+  });
+})();
 
-  console.log("J.A.R.V.I.S: Aktivasyon sinyali gonderiliyor...");
-  try {
-    jarvisRecognition.start();
-  } catch(e) {
-    console.error("J.A.R.V.I.S: Baslatma hatasi ->", e.message);
-    isJarvisListening = false;
-    jarvisLock = false;
-  }
-}
 </script>
 
 </body>
