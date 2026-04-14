@@ -2581,34 +2581,15 @@ function closeJarvisPlayer() {
 // ════════════════════════════════════════════════
 //  J.A.R.V.I.S VOICE ENGINE (SUPERSTARK REBOOT)
 // ════════════════════════════════════════════════
+
 let jarvisRecognition = null;
 let isJarvisListening = false;
+let jarvisStartupTime = 0;
 
-
-
-
-function startJarvisVoice() {
-  const micBtn = document.getElementById('jarvis-mic-btn');
-  const inputEl = document.getElementById('jarvis-input');
-  
-  console.log("J.A.R.V.I.S: Buton tetiklendi.");
-
-  if (isJarvisListening) {
-    console.log("J.A.R.V.I.S: Manuel durdurma...");
-    if (jarvisRecognition) try { jarvisRecognition.stop(); } catch(e) {}
-    return;
-  }
-
+function initJarvisEngine() {
+  if (jarvisRecognition) return;
   const SpeechRec = window.webkitSpeechRecognition || window.SpeechRecognition;
-  if (!SpeechRec) {
-    alert("Kaptan, bu tarayici ses tanimayi desteklemiyor.");
-    return;
-  }
-
-  // Her zaman temiz bir motor lutfen
-  if (jarvisRecognition) {
-    try { jarvisRecognition.abort(); } catch(e) {}
-  }
+  if (!SpeechRec) return;
 
   jarvisRecognition = new SpeechRec();
   jarvisRecognition.lang = 'tr-TR';
@@ -2616,56 +2597,84 @@ function startJarvisVoice() {
   jarvisRecognition.interimResults = false;
 
   jarvisRecognition.onstart = () => {
-    console.log("J.A.R.V.I.S: --- DINLEME BASLADI 🎙️ ---");
+    console.log("J.A.R.V.I.S: Dinleme basariyla aktifleşti.");
+    jarvisStartupTime = Date.now();
     isJarvisListening = true;
-    if (micBtn) {
-      micBtn.style.animation = 'pulseJarvisMic 0.8s infinite alternate';
-      micBtn.innerHTML = '🎙️';
-    }
-    if (inputEl) inputEl.placeholder = 'Dinliyorum...';
+    updateJarvisMicUI(true);
   };
 
   jarvisRecognition.onresult = (e) => {
     const text = e.results[0][0].transcript;
     console.log("J.A.R.V.I.S: Algilanan ->", text);
+    const inputEl = document.getElementById('jarvis-input');
     if (inputEl) inputEl.value = text;
   };
 
   jarvisRecognition.onerror = (e) => {
-    console.error("J.A.R.V.I.S: HATA ->", e.error);
-    stopJarvisMicUI();
+    console.error("J.A.R.V.I.S: KRITIK HATA ->", e.error);
+    if (e.error === 'not-allowed') {
+      alert("Kaptan, mikrofon izni reddedildi. Lutfen URL barindaki kilit simgesinden izin verin.");
+    }
   };
 
   jarvisRecognition.onend = () => {
-    console.log("J.A.R.V.I.S: --- DINLEME BITTI ---");
-    stopJarvisMicUI();
-  };
-
-  function stopJarvisMicUI() {
+    const sessionDoc = Date.now() - jarvisStartupTime;
+    console.log("J.A.R.V.I.S: Oturum kapandi. Sure:", sessionDoc, "ms");
     isJarvisListening = false;
-    if (micBtn) {
-      micBtn.style.animation = 'none';
-      micBtn.innerHTML = '🎤';
+    updateJarvisMicUI(false);
+    
+    // Eger cok hizli kapandiysa (1sn altinda) ve hata yoksa, tarayici engellemis olabilir
+    if (sessionDoc < 1000 && sessionDoc > 0) {
+      console.warn("J.A.R.V.I.S: Oturum anormal kisa surdu. Eklentiler veya gizlilik ayarlari engelliyor olabilir.");
     }
-    if (inputEl) inputEl.placeholder = 'Komut ver...';
-  }
+  };
+}
 
-  console.log("J.A.R.V.I.S: Motor calistiriliyor...");
-  try {
-    jarvisRecognition.start();
-  } catch(e) {
-    console.error("J.A.R.V.I.S: Kritik hata:", e.message);
+function updateJarvisMicUI(active) {
+  const micBtn = document.getElementById('jarvis-mic-btn');
+  const inputEl = document.getElementById('jarvis-input');
+  if (!micBtn) return;
+
+  if (active) {
+    micBtn.style.animation = 'pulseJarvisMic 0.8s infinite alternate';
+    micBtn.innerHTML = '🎙️';
+    if (inputEl) inputEl.placeholder = 'Dinliyorum...';
+  } else {
+    micBtn.style.animation = 'none';
+    micBtn.innerHTML = '🎤';
+    if (inputEl) inputEl.placeholder = 'Komut ver...';
   }
 }
 
-// Olay dinleyiciyi el ile bagla (HTML onclick yerine)
-setTimeout(() => {
-  const btn = document.getElementById('jarvis-mic-btn');
-  if (btn) {
-    btn.onclick = startJarvisVoice;
-    console.log("J.A.R.V.I.S: Ses olay dinleyicisi basariyla baglandi.");
+function startJarvisVoice() {
+  if (!jarvisRecognition) initJarvisEngine();
+  if (!jarvisRecognition) {
+    alert("Desteklenmeyen tarayici.");
+    return;
   }
-}, 1000);
+
+  if (isJarvisListening) {
+    jarvisRecognition.stop();
+    return;
+  }
+
+  console.log("J.A.R.V.I.S: Motor tetikleniyor...");
+  try {
+    jarvisRecognition.start();
+  } catch(e) {
+    console.log("J.A.R.V.I.S: Resetleniyor...");
+    jarvisRecognition.abort();
+    setTimeout(() => jarvisRecognition.start(), 200);
+  }
+}
+
+// Olaylari bagla
+setTimeout(() => {
+  initJarvisEngine();
+  const btn = document.getElementById('jarvis-mic-btn');
+  if (btn) btn.onclick = startJarvisVoice;
+  console.log("J.A.R.V.I.S: Sistem her seyiyle hazir.");
+}, 500);
 
 </script>
 
