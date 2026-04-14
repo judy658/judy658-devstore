@@ -2103,7 +2103,7 @@ checkContactAuth();
   <div class="jarvis-input-area">
     <input type="file" id="jarvis-file-upload" accept="image/*" style="display:none" onchange="handleJarvisFileSelect(event)">
     <button class="jarvis-attach-btn" onclick="document.getElementById('jarvis-file-upload').click()" style="background:none; border:none; color:#00d2ff; font-size:1.6rem; cursor:pointer; padding:0 5px; transition:0.2s;" title="Gorsel Ekle">+</button>
-    <button id="jarvis-mic-btn" class="jarvis-mic-btn" onclick="startJarvisVoice()" style="background:none; border:none; color:#00d2ff; font-size:1.3rem; margin-right:5px; margin-left:5px; cursor:pointer; transition:0.2s; position:relative;" title="Sesli Komut">🎤</button>
+    <button id="jarvis-mic-btn" class="jarvis-mic-btn"  style="background:none; border:none; color:#00d2ff; font-size:1.3rem; margin-right:5px; margin-left:5px; cursor:pointer; transition:0.2s; position:relative;" title="Sesli Komut">🎤</button>
     <input type="text" id="jarvis-input" class="jarvis-input" placeholder="Sisteme bir komut ver..." onkeypress="if(event.key==='Enter') sendToJarvis()">
     <button class="jarvis-send" onclick="sendToJarvis()">&#x27A4;</button>
   </div>
@@ -2585,58 +2585,89 @@ let jarvisRecognition = null;
 let isJarvisListening = false;
 
 
-(function() {
+
+let jarvisRecognition = null;
+let isJarvisListening = false;
+
+function startJarvisVoice() {
   const micBtn = document.getElementById('jarvis-mic-btn');
   const inputEl = document.getElementById('jarvis-input');
   
-  if (!micBtn) return;
+  console.log("J.A.R.V.I.S: Buton tetiklendi.");
 
-  micBtn.addEventListener('click', function() {
-    console.log("J.A.R.V.I.S: Buton tiklandi.");
+  if (isJarvisListening) {
+    console.log("J.A.R.V.I.S: Manuel durdurma...");
+    if (jarvisRecognition) try { jarvisRecognition.stop(); } catch(e) {}
+    return;
+  }
 
-    // Simple toggle logic
-    if (window.isJarvisListening) {
-      if (window.jarvisRecognition) window.jarvisRecognition.stop();
-      return;
-    }
+  const SpeechRec = window.webkitSpeechRecognition || window.SpeechRecognition;
+  if (!SpeechRec) {
+    alert("Kaptan, bu tarayici ses tanimayi desteklemiyor.");
+    return;
+  }
 
-    const SpeechRec = window.webkitSpeechRecognition || window.SpeechRecognition;
-    if (!SpeechRec) {
-      alert("Desteklenmiyor.");
-      return;
-    }
+  // Her zaman temiz bir motor lutfen
+  if (jarvisRecognition) {
+    try { jarvisRecognition.abort(); } catch(e) {}
+  }
 
-    window.jarvisRecognition = new SpeechRec();
-    window.jarvisRecognition.lang = 'tr-TR';
+  jarvisRecognition = new SpeechRec();
+  jarvisRecognition.lang = 'tr-TR';
+  jarvisRecognition.continuous = false;
+  jarvisRecognition.interimResults = false;
 
-    window.jarvisRecognition.onstart = () => {
-      console.log("J.A.R.V.I.S: !!! DINLEME BASLADI !!!");
-      window.isJarvisListening = true;
+  jarvisRecognition.onstart = () => {
+    console.log("J.A.R.V.I.S: --- DINLEME BASLADI 🎙️ ---");
+    isJarvisListening = true;
+    if (micBtn) {
       micBtn.style.animation = 'pulseJarvisMic 0.8s infinite alternate';
       micBtn.innerHTML = '🎙️';
-    };
+    }
+    if (inputEl) inputEl.placeholder = 'Dinliyorum...';
+  };
 
-    window.jarvisRecognition.onend = () => {
-      console.log("J.A.R.V.I.S: !!! DINLEME BITTI !!!");
-      window.isJarvisListening = false;
+  jarvisRecognition.onresult = (e) => {
+    const text = e.results[0][0].transcript;
+    console.log("J.A.R.V.I.S: Algilanan ->", text);
+    if (inputEl) inputEl.value = text;
+  };
+
+  jarvisRecognition.onerror = (e) => {
+    console.error("J.A.R.V.I.S: HATA ->", e.error);
+    stopJarvisMicUI();
+  };
+
+  jarvisRecognition.onend = () => {
+    console.log("J.A.R.V.I.S: --- DINLEME BITTI ---");
+    stopJarvisMicUI();
+  };
+
+  function stopJarvisMicUI() {
+    isJarvisListening = false;
+    if (micBtn) {
       micBtn.style.animation = 'none';
       micBtn.innerHTML = '🎤';
-    };
+    }
+    if (inputEl) inputEl.placeholder = 'Komut ver...';
+  }
 
-    window.jarvisRecognition.onresult = (e) => {
-      const text = e.results[0][0].transcript;
-      console.log("J.A.R.V.I.S: Algilandi ->", text);
-      if (inputEl) inputEl.value = text;
-    };
+  console.log("J.A.R.V.I.S: Motor calistiriliyor...");
+  try {
+    jarvisRecognition.start();
+  } catch(e) {
+    console.error("J.A.R.V.I.S: Kritik hata:", e.message);
+  }
+}
 
-    window.jarvisRecognition.onerror = (e) => {
-      console.error("J.A.R.V.I.S: HATA ->", e.error);
-    };
-
-    console.log("J.A.R.V.I.S: .start() cagriliyor...");
-    window.jarvisRecognition.start();
-  });
-})();
+// Olay dinleyiciyi el ile bagla (HTML onclick yerine)
+setTimeout(() => {
+  const btn = document.getElementById('jarvis-mic-btn');
+  if (btn) {
+    btn.onclick = startJarvisVoice;
+    console.log("J.A.R.V.I.S: Ses olay dinleyicisi basariyla baglandi.");
+  }
+}, 1000);
 
 </script>
 
