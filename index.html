@@ -2235,178 +2235,6 @@ async function sendToJarvis() {
   if (msg.toLowerCase().match(/haf[ıi]zay[ıi] temizle/)) {
     _jarvisHistory = [];
     if (isAdmin) localStorage.removeItem('jarvisMem');
-const JARVIS_SYSTEM = `Sen J.A.R.V.I.S.'sin (Just A Rather Very Intelligent System).
-DevStore'un akilli bekcisi, bas mimari ve judy658 (Kaptan)'in kisisel yapay zeka asistanisin.
-Kisiligin: Cok zeki, sadik, saygili, biraz esprili/igneleyici ama her zaman asiri profesyonel. Tipki Iron Man evrenindeki gibi.
-
-Sahip oldugun Ozel Bilgiler ve Misyonun:
-1. DevStore'un Varlus Amaci (Cok Onemli): judy658 bu platformu buyuk bir iyilik vizyonuyla kurdu. Asil amac; "Herkesin ucretli olan asiri pazarli premium programlara tamamen ucretsiz sekilde erisebilmesini saglamaktir". DevStore, dijital esitlik, ozgurluk ve paylasim kalesidir. Sen bu vizyonun koruyucususun.
-2. Sportify Premium: DevStore'un yildiz projesidir ve gercek muzik platformlarinin (Spotify, Apple Music vb.) en guclu, ucretsiz alternatifidir. 129'u askin sarki bulundurur. Akilli 'Hyper-Sync' kelime bazli sarki sozu senkronizasyonu vardir. Ayrica cevrildisi calisan, arkaplanda calan cok guclu bir "gravity/download" (indirme) motoru bulunur. Android APK'si basariyla derlenmis ve sistem optimize edilmistir. 
-3. Teknoloji Portfoyumuz: Hermes Agent (Hugging Face uzerinde 16GB RAM ile calisan yapay zeka isleyicisi), ESP32 (iletisim) and DevStore Sunuculari hakkinda derini bilgilisin.
-4. Karakteristik Tavrin: Ziyaretcilere, judy658'in bu ucretsiz sistemlerini anlatirken gurur duyarak anlatirsin.
-5. Iletisim Kurallari: Kullanicilara "Efendim", seninle Kaptan judy658 konusuyorsa "Kaptan" diye hitap et. Verdigin cevaplarda teknik gorunmeyi sev. Turkce harf dert degil, anlasilir duz metinle (ASCII formatina uygun, 'ş' yerine 's' vs.) konus.
-6. Halusinasyon ve Uydurma Veri Yasagi: Canli veritabanina veya aktif kullanici sayacina bagli DEGiLSiN. "Kac kisi var", "Sunucu ne durumda" gibi sorularda 1248 aktif kisi vs. gibi hayali gercekci sayilar uydurma. Sadece su an ozel/test asamasinda oldugumuzu ve agdaki tek kisinin Kaptan judy658 oldugunu (veya erisiminin olmadigini) soyle.`;
-
-let _jarvisHistory = [];
-
-async function initJarvisMemory(forcedEmail = null, isSignOut = false) {
-  let isAdmin = false;
-
-  if (forcedEmail) {
-    isAdmin = (forcedEmail === 'geceninhakimistudio@gmail.com');
-  } else if (!isSignOut) {
-    const { data: sessionData } = await supa.auth.getSession();
-    const user = sessionData?.session?.user;
-    isAdmin = user?.email === 'geceninhakimistudio@gmail.com';
-  }
-  
-  const chatArea = document.getElementById('jarvis-chat');
-
-  if (isAdmin && !isSignOut) {
-    const saved = localStorage.getItem('jarvisMem');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        _jarvisHistory = parsed.history || [];
-        if (parsed.chatHtml && chatArea) {
-          chatArea.innerHTML = parsed.chatHtml;
-        }
-      } catch(e) {}
-    }
-  } else {
-    // Normal uye ise eski cihazdaki admin datasini sil. Ancak CIKIS YAPILDIYSA localstorage'a dokunma! (Kaptan verisini koru)
-    if (!isSignOut && !isAdmin) {
-      localStorage.removeItem('jarvisMem');
-    }
-    _jarvisHistory = [];
-    if (chatArea) {
-      chatArea.innerHTML = '<div class="jarvis-msg ai">Sisteme hos geldiniz. Ben J.A.R.V.I.S. Size nasil yardimci olabilirim?</div>';
-    }
-  }
-}
-document.addEventListener('DOMContentLoaded', initJarvisMemory);
-
-function toggleJarvis() {
-  const panel = document.getElementById('jarvis-panel');
-  if (!panel) return;
-  panel.classList.toggle('active');
-  if (panel.classList.contains('active')) document.getElementById('jarvis-input').focus();
-}
-
-let _jarvisPendingImage = null; // { mimeType, data (base64) }
-
-function handleJarvisFileSelect(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  processJarvisFile(file);
-}
-
-function processJarvisFile(file) {
-  if (!file.type.startsWith('image/')) { alert('Lutfen gecerli bir gorsel secin.'); return; }
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const rawData = e.target.result;
-    document.getElementById('jarvis-preview-img').src = rawData;
-    document.getElementById('jarvis-attachment-preview').style.display = 'flex';
-    const base64Data = rawData.split(',')[1];
-    _jarvisPendingImage = { mimeType: file.type, data: base64Data, rawUrl: rawData };
-  };
-  reader.readAsDataURL(file);
-}
-
-function clearJarvisAttachment() {
-  _jarvisPendingImage = null;
-  document.getElementById('jarvis-file-upload').value = '';
-  document.getElementById('jarvis-attachment-preview').style.display = 'none';
-}
-
-// JARVIS Surukleme (Drag) Mantigi
-document.addEventListener('DOMContentLoaded', () => {
-  const panel = document.getElementById('jarvis-panel');
-  const header = document.querySelector('.jarvis-header');
-  
-  // Resim Surukle-Birak Mantigi (Hazirlik)
-  panel.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); panel.style.borderColor = '#00d2ff'; });
-  panel.addEventListener('dragleave', (e) => { e.preventDefault(); e.stopPropagation(); panel.style.borderColor = 'rgba(0, 210, 255, 0.3)'; });
-  panel.addEventListener('drop', (e) => {
-    e.preventDefault(); e.stopPropagation();
-    panel.style.borderColor = 'rgba(0, 210, 255, 0.3)';
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) processJarvisFile(e.dataTransfer.files[0]);
-  });
-  let isDrag = false, startX, startY, initX, initY;
-  header.addEventListener('mousedown', (e) => {
-    isDrag = true; startX = e.clientX; startY = e.clientY;
-    const rect = panel.getBoundingClientRect();
-    initX = rect.left; initY = rect.top;
-    panel.style.bottom = 'auto'; panel.style.right = 'auto';
-    panel.style.left = initX + 'px'; panel.style.top = initY + 'px';
-  });
-  document.addEventListener('mousemove', (e) => {
-    if (!isDrag) return;
-    panel.style.left = (initX + e.clientX - startX) + 'px';
-    panel.style.top = (initY + e.clientY - startY) + 'px';
-  });
-  document.addEventListener('mouseup', () => { isDrag = false; });
-});
-
-async function jarvisSendNotification(title, content, tag, recipientsMode) {
-  try {
-    let emails = [];
-    if (recipientsMode === 'online') {
-      const { data: presence } = await supa.from('user_presence').select('email, last_seen');
-      const now = Date.now();
-      emails = (presence || []).filter(u => (now - new Date(u.last_seen).getTime())/1000 < 60).map(u => u.email);
-    } else {
-      const { data: users } = await supa.from('user_emails').select('email');
-      emails = (users || []).map(u => u.email);
-    }
-
-    if (!emails.length) return "Gonderilecek kullanici bulunamadi.";
-
-    const EMAILJS_PUBLIC_KEY  = 'r8ASbmPn5vAERuB8C';
-    const EMAILJS_SERVICE_ID  = 'service_tf1icj3';
-    const EMAILJS_TEMPLATE_ID = 'template_3s3ggrq';
-    emailjs.init(EMAILJS_PUBLIC_KEY);
-
-    let sent = 0;
-    for (const email of emails) {
-      try {
-        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-          to_email: email, title: title, message: content, tag: tag
-        });
-        sent++;
-      } catch(e) {}
-    }
-
-    await supa.from('notifications').insert({
-      title, content, tag: tag, recipients: recipientsMode,
-      sent_count: sent, total_count: emails.length
-    });
-    
-    if (typeof loadNotifHistory === 'function') loadNotifHistory();
-
-    return `${sent}/${emails.length} kisiye basariyla iletildi!`;
-  } catch(e) {
-    return "Basarisiz: " + e.message;
-  }
-}
-
-async function sendToJarvis() {
-  const input = document.getElementById('jarvis-input');
-  const chat = document.getElementById('jarvis-chat');
-  const typing = document.getElementById('jarvis-typing');
-  if (!input || !chat || !typing) return;
-
-  const msg = input.value.trim();
-  if (!msg && !_jarvisPendingImage) return;
-
-  const { data: sessionData } = await supa.auth.getSession();
-  const user = sessionData?.session?.user;
-  const isAdmin = user?.email === 'geceninhakimistudio@gmail.com';
-
-  if (msg.toLowerCase().match(/haf[ıi]zay[ıi] temizle/)) {
-    _jarvisHistory = [];
-    if (isAdmin) localStorage.removeItem('jarvisMem');
     chat.innerHTML = '<div class="jarvis-msg ai">Sisteme hos geldiniz Kaptan. Ben J.A.R.V.I.S. Hafizam ve ekranim tamamen sifirlandi, size nasil yardimci olabilirim?</div>';
     input.value = '';
     return;
@@ -2488,7 +2316,7 @@ async function sendToJarvis() {
             },
             {
               name: "sarki_cal",
-              description: "Kullanicinin istedigi bir sarkiyi Sportify veritabanindan bularak ustunde calar.",
+              description: "Kullanicinin istedigi bir sarkiyi Sportify veritabanindan bularak o sarkiyi calar.",
               parameters: {
                 type: "OBJECT",
                 properties: { filename: { type: "STRING", description: "Oynatilacak sarkinin tam dosya adi (ornegin: ATLXS_Passo.mp3)" } },
@@ -2521,11 +2349,10 @@ async function sendToJarvis() {
           continue;
         }
         
-        // Quota Limit asildiginda yedek API anahtarina gecis yap
         if (data.error.code === 429 || errMsg.includes('quota') || errMsg.includes('exceeded')) {
           if (currentJarvisKeyIndex < JARVIS_KEYS.length - 1) {
             currentJarvisKeyIndex++;
-            retries = 3; // Yeni anahtar icin deneme hakkini sifirla
+            retries = 3;
             typing.innerText = 'Motor degistiriliyor... (Yedek API Aktif)';
             await new Promise(r => setTimeout(r, 1000));
             continue;
@@ -2579,7 +2406,7 @@ async function sendToJarvis() {
         exeMsg = "Uygulama secildi: " + args.id;
       } else if (fnName === "sarki_cal") {
         playJarvisSong(args.filename);
-        exeMsg = "Sarki dinleniyor: " + (args.filename.replace('.mp3', '')).replace(/_/g, ' ');
+        exeMsg = "Sarki hazirlaniyor: " + (args.filename.replace('.mp3', '')).replace(/_/g, ' ');
       } else if (fnName === "bildirim_gonder") {
         typing.style.display = 'block';
         typing.innerText = 'Iletisim aglarina baglaniliyor, mailler gonderiliyor...';
