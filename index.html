@@ -2626,9 +2626,31 @@ function startJarvisVoice() {
     return;
   }
   if (isJarvisListening) {
-    jarvisRecognition.stop();
-  } else {
+    try { jarvisRecognition.stop(); } catch(e) {}
+    isJarvisListening = false;
+    const btn = document.getElementById('jarvis-mic-btn');
+    if (btn) { btn.style.animation = 'none'; btn.innerHTML = '🎤'; }
+    return;
+  }
+  try {
+    isJarvisListening = true; // set flag BEFORE .start() to prevent double triggers
     jarvisRecognition.start();
+  } catch(e) {
+    console.warn('JARVIS Voice:', e.message);
+    isJarvisListening = false;
+    // If already started error, abort and restart
+    if (e.name === 'InvalidStateError') {
+      try { jarvisRecognition.abort(); } catch(e2) {}
+      setTimeout(() => {
+        try {
+          isJarvisListening = true;
+          jarvisRecognition.start();
+        } catch(e3) {
+          isJarvisListening = false;
+          console.error('JARVIS Voice start failed:', e3);
+        }
+      }, 300);
+    }
   }
 }
 </script>
