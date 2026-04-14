@@ -411,6 +411,12 @@
     50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 12px #00d2ff; }
     100% { transform: scale(0.95); opacity: 0.8; }
   }
+  
+  @keyframes pulseJarvisMic {
+    from { text-shadow: 0 0 5px #00d2ff, 0 0 10px #00d2ff; transform: scale(1); }
+    to { text-shadow: 0 0 15px #00d2ff, 0 0 25px #00d2ff; transform: scale(1.15); }
+  }
+
   #jarvis-audio-playbtn:hover { background: rgba(0, 210, 255, 0.2) !important; box-shadow: 0 0 15px rgba(0, 210, 255, 0.4) !important; }
   
   /* Range Slider Thumb Fix for J.A.R.V.I.S Player */
@@ -2019,15 +2025,15 @@ document.addEventListener('input', e => { if (e.target.id === 'comment-input') d
 async function submitComment() {
   const content = document.getElementById('comment-input').value.trim();
   if (!content) return;
-  if (selectedRating === 0) return alert('Lütfen bir puan ver!');
+  if (selectedRating === 0) return alert('Lutfen bir puan ver!');
   const { data: { session } } = await supa.auth.getSession();
   if (!session) return openAuth();
   const { data: existing } = await supa.from('comments').select('id').eq('app_id', currentAppId).eq('user_id', session.user.id);
-  if (existing && existing.length > 0) { alert('Bu uygulama için zaten bir yorum bıraktın!'); return; }
+  if (existing && existing.length > 0) { alert('Bu uygulama icin zaten bir yorum biraktin!'); return; }
   const btn = document.querySelector('.comment-submit');
-  btn.disabled = true; btn.textContent = 'Gönderiliyor...';
+  btn.disabled = true; btn.textContent = 'Gonderiliyor...';
   const { error } = await supa.from('comments').insert({ app_id: currentAppId, user_id: session.user.id, email: session.user.email, content, rating: selectedRating });
-  btn.disabled = false; btn.textContent = 'Yorum Gönder';
+  btn.disabled = false; btn.textContent = 'Yorum Gonder';
   if (error) { alert('Hata: ' + error.message); return; }
   document.getElementById('comment-input').value = '';
   document.getElementById('comment-char').textContent = '0/500';
@@ -2097,6 +2103,7 @@ checkContactAuth();
   <div class="jarvis-input-area">
     <input type="file" id="jarvis-file-upload" accept="image/*" style="display:none" onchange="handleJarvisFileSelect(event)">
     <button class="jarvis-attach-btn" onclick="document.getElementById('jarvis-file-upload').click()" style="background:none; border:none; color:#00d2ff; font-size:1.6rem; cursor:pointer; padding:0 5px; transition:0.2s;" title="Gorsel Ekle">+</button>
+    <button id="jarvis-mic-btn" class="jarvis-mic-btn" onclick="startJarvisVoice()" style="background:none; border:none; color:#00d2ff; font-size:1.3rem; margin-right:5px; margin-left:5px; cursor:pointer; transition:0.2s; position:relative;" title="Sesli Komut">🎤</button>
     <input type="text" id="jarvis-input" class="jarvis-input" placeholder="Sisteme bir komut ver..." onkeypress="if(event.key==='Enter') sendToJarvis()">
     <button class="jarvis-send" onclick="sendToJarvis()">&#x27A4;</button>
   </div>
@@ -2568,6 +2575,62 @@ function closeJarvisPlayer() {
 }
 // -----------------------------------------------------------
 
+
+// ════════════════════════════════════════════════
+//  J.A.R.V.I.S VOICE RECOGNITION
+// ════════════════════════════════════════════════
+let jarvisRecognition = null;
+let isJarvisListening = false;
+
+(function initJarvisVoice() {
+  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    jarvisRecognition = new SpeechRecognition();
+    jarvisRecognition.lang = 'tr-TR';
+    jarvisRecognition.interimResults = false;
+    jarvisRecognition.maxAlternatives = 1;
+
+    jarvisRecognition.onstart = function() {
+      isJarvisListening = true;
+      const btn = document.getElementById('jarvis-mic-btn');
+      if (btn) { btn.style.animation = 'pulseJarvisMic 0.8s infinite alternate'; btn.innerHTML = '🎙️'; }
+      const inp = document.getElementById('jarvis-input');
+      if (inp) inp.placeholder = 'J.A.R.V.I.S sizi dinliyor...';
+    };
+
+    jarvisRecognition.onresult = function(event) {
+      const transcript = event.results[0][0].transcript;
+      const inp = document.getElementById('jarvis-input');
+      if (inp) { inp.value = transcript; inp.placeholder = 'Sisteme bir komut ver...'; }
+    };
+
+    jarvisRecognition.onerror = function(event) {
+      console.error('Ses algila hatasi:', event.error);
+      const inp = document.getElementById('jarvis-input');
+      if (inp) inp.placeholder = 'Sisteme bir komut ver...';
+    };
+
+    jarvisRecognition.onend = function() {
+      isJarvisListening = false;
+      const btn = document.getElementById('jarvis-mic-btn');
+      if (btn) { btn.style.animation = 'none'; btn.innerHTML = '🎤'; }
+      const inp = document.getElementById('jarvis-input');
+      if (inp) inp.placeholder = 'Sisteme bir komut ver...';
+    };
+  }
+})();
+
+function startJarvisVoice() {
+  if (!jarvisRecognition) {
+    alert("Kaptan, tarayiciniz ses tanima sistemini desteklemiyor. Chrome kullaniniz.");
+    return;
+  }
+  if (isJarvisListening) {
+    jarvisRecognition.stop();
+  } else {
+    jarvisRecognition.start();
+  }
+}
 </script>
 
 </body>
