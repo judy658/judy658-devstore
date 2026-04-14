@@ -374,7 +374,59 @@
       </div>
     </div>
 
-    <script>
+<!-- J.A.R.V.I.S AUDIO PLAYER UI -->
+<div id="jarvis-audio-player" class="jarvis-audio-player" style="display:none; position:fixed; bottom:20px; right:20px; z-index:999999; width: 320px; background: rgba(0, 15, 30, 0.85); border: 1px solid rgba(0, 210, 255, 0.4); border-radius: 12px; backdrop-filter: blur(12px); box-shadow: 0 0 20px rgba(0, 210, 255, 0.2); flex-direction: column; padding: 15px; font-family: 'Courier New', monospace; box-sizing: border-box;">
+  
+  <!-- Header -->
+  <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(0, 210, 255, 0.2); padding-bottom: 8px;">
+    <div style="display:flex; align-items: center; gap: 8px;">
+      <div style="width:8px; height:8px; background:#00d2ff; border-radius:50%; box-shadow: 0 0 8px #00d2ff; animation: pulseJarvis 1.5s infinite;"></div>
+      <span style="color:#00d2ff; font-weight:bold; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Audio Engine</span>
+    </div>
+    <button onclick="closeJarvisPlayer()" style="background:transparent; border:none; color:rgba(0, 210, 255, 0.6); cursor:pointer; font-size:16px; padding:0; line-height:1;">&times;</button>
+  </div>
+  
+  <!-- Track Info -->
+  <div style="margin-bottom: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+    <span id="jarvis-audio-title" style="color:#ffffff; font-size: 14px; font-weight: bold; text-shadow: 0 0 5px rgba(255,255,255,0.3);">Track Name</span>
+  </div>
+  
+  <!-- Controls -->
+  <div style="display:flex; align-items: center; gap: 10px;">
+    <button id="jarvis-audio-playbtn" onclick="toggleJarvisPlay()" style="background:rgba(0, 210, 255, 0.1); border: 1px solid rgba(0, 210, 255, 0.4); border-radius: 50%; color: #00d2ff; width: 36px; height: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 0 10px rgba(0, 210, 255, 0.2); transition: all 0.2s;">▶</button>
+    
+    <div style="flex: 1; display:flex; flex-direction:column; gap:4px;">
+      <input type="range" id="jarvis-audio-progress" min="0" max="100" value="0" oninput="seekJarvisAudio(this.value)" style="width: 100%; height: 4px; border-radius: 2px; -webkit-appearance: none; background: rgba(0, 210, 255, 0.2); outline: none;">
+      <div style="display:flex; justify-content: flex-end;">
+        <span id="jarvis-audio-time" style="color:rgba(0, 210, 255, 0.7); font-size: 10px;">0:00</span>
+      </div>
+    </div>
+  </div>
+
+  <audio id="jarvis-audio" style="display:none;" ontimeupdate="updateJarvisAudioUI()" onended="closeJarvisPlayer()"></audio>
+</div>
+<style>
+  @keyframes pulseJarvis {
+    0% { transform: scale(0.95); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 12px #00d2ff; }
+    100% { transform: scale(0.95); opacity: 0.8; }
+  }
+  #jarvis-audio-playbtn:hover { background: rgba(0, 210, 255, 0.2) !important; box-shadow: 0 0 15px rgba(0, 210, 255, 0.4) !important; }
+  
+  /* Range Slider Thumb Fix for J.A.R.V.I.S Player */
+  #jarvis-audio-progress::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%; 
+    background: #00d2ff;
+    cursor: pointer;
+    box-shadow: 0 0 8px #00d2ff;
+  }
+</style>
+
+<script>
       let weeklyMuted = true;
       function toggleWeeklyMute() {
         const v = document.getElementById('weekly-video');
