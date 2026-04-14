@@ -2587,7 +2587,9 @@ let isJarvisListening = false;
 function startJarvisVoice() {
   const micBtn = document.getElementById('jarvis-mic-btn');
   const inputEl = document.getElementById('jarvis-input');
-  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  
+  // Chrome oncelikli constructor
+  const SpeechRec = window.webkitSpeechRecognition || window.SpeechRecognition;
   
   console.log("J.A.R.V.I.S: Komut merkezi tetiklendi.");
 
@@ -2610,21 +2612,22 @@ function startJarvisVoice() {
     if (inputEl) inputEl.placeholder = 'Sisteme bir komut ver...';
   }
 
-  console.log("J.A.R.V.I.S: Yeni motor hazirlaniyor...");
+  console.log("J.A.R.V.I.S: Yeni motor hazirlaniyor (V3)...");
   jarvisRecognition = new SpeechRec();
   jarvisRecognition.lang = 'tr-TR';
   jarvisRecognition.continuous = false;
-  jarvisRecognition.interimResults = false;
+  jarvisRecognition.interimResults = true; // Daha hassas dinleme
 
   jarvisRecognition.onstart = () => {
-    console.log("J.A.R.V.I.S: MIKROFON AKTIF - DINLEME BASLADI 🎙️");
+    console.log("J.A.R.V.I.S: >>> MIKROFON AKTIF - DINLEME BASLADI 🎙️ <<<");
     isJarvisListening = true;
     if (micBtn) { micBtn.style.animation = 'pulseJarvisMic 0.8s infinite alternate'; micBtn.innerHTML = '🎙️'; }
     if (inputEl) inputEl.placeholder = 'Dinliyorum Kaptan...';
   };
 
   jarvisRecognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
+    // Sonuc alma mantigini guncelledik
+    const transcript = event.results[event.results.length - 1][0].transcript;
     if (inputEl) { inputEl.value = transcript; inputEl.placeholder = 'Sisteme bir komut ver...'; }
     console.log("J.A.R.V.I.S: Algilanan ->", transcript);
   };
@@ -2639,13 +2642,16 @@ function startJarvisVoice() {
     stopJarvisMicUI();
   };
 
-  try {
-    console.log("J.A.R.V.I.S: .start() komutu gonderiliyor...");
-    jarvisRecognition.start();
-  } catch(e) {
-    console.error("J.A.R.V.I.S: Baslatma KRITIK hata ->", e.message);
-    isJarvisListening = false;
-  }
+  // 100ms gecikme ile baslatmak user-gesture hizini tarayicinin daha iyi sindirmesini saglar
+  console.log("J.A.R.V.I.S: .start() komutu 100ms sonra gonderilecek...");
+  setTimeout(() => {
+    try {
+      jarvisRecognition.start();
+    } catch(e) {
+      console.error("J.A.R.V.I.S: Baslatma KRITIK hata ->", e.message);
+      isJarvisListening = false;
+    }
+  }, 100);
 }
 </script>
 
