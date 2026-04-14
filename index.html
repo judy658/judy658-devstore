@@ -2584,11 +2584,15 @@ function closeJarvisPlayer() {
 let jarvisRecognition = null;
 let isJarvisListening = false;
 
+let jarvisLock = false;
+
 function startJarvisVoice() {
+  if (jarvisLock) return; // Cift tetiklenmeyi engelle
+  jarvisLock = true;
+  setTimeout(() => { jarvisLock = false; }, 500); // 500ms kilit
+
   const micBtn = document.getElementById('jarvis-mic-btn');
   const inputEl = document.getElementById('jarvis-input');
-  
-  // Chrome oncelikli constructor
   const SpeechRec = window.webkitSpeechRecognition || window.SpeechRecognition;
   
   console.log("J.A.R.V.I.S: Komut merkezi tetiklendi.");
@@ -2598,60 +2602,62 @@ function startJarvisVoice() {
     return;
   }
 
+  // Eger zaten dinliyorsak durdur
   if (isJarvisListening && jarvisRecognition) {
-    console.log("J.A.R.V.I.S: Manuel durdurma...");
+    console.log("J.A.R.V.I.S: Durdurma komutu alindi.");
     try { jarvisRecognition.stop(); } catch(e) {}
-    isJarvisListening = false;
-    stopJarvisMicUI();
     return;
   }
 
   function stopJarvisMicUI() {
     isJarvisListening = false;
-    if (micBtn) { micBtn.style.animation = 'none'; micBtn.innerHTML = '🎤'; }
-    if (inputEl) inputEl.placeholder = 'Sisteme bir komut ver...';
+    if (micBtn) { micBtn.style.animation = "none"; micBtn.innerHTML = "🎤"; }
+    if (inputEl) inputEl.placeholder = "Sisteme bir komut ver...";
   }
 
-  console.log("J.A.R.V.I.S: Yeni motor hazirlaniyor (V3)...");
+  // Temizlik: Varsa eski motoru tamamen oldur
+  if (jarvisRecognition) {
+    try { jarvisRecognition.abort(); } catch(e) {}
+  }
+
+  console.log("J.A.R.V.I.S: Iron-Clad Motor hazirlaniyor...");
   jarvisRecognition = new SpeechRec();
-  jarvisRecognition.lang = 'tr-TR';
-  jarvisRecognition.continuous = false;
-  jarvisRecognition.interimResults = true; // Daha hassas dinleme
+  jarvisRecognition.lang = "tr-TR";
+  jarvisRecognition.continuous = true; // Kendi kendine kapanmasini engeller
+  jarvisRecognition.interimResults = true;
 
   jarvisRecognition.onstart = () => {
-    console.log("J.A.R.V.I.S: >>> MIKROFON AKTIF - DINLEME BASLADI 🎙️ <<<");
+    console.log("J.A.R.V.I.S: >>> SISTEM CEVAP VERDI: DINLIYORUM 🎙️ <<<");
     isJarvisListening = true;
-    if (micBtn) { micBtn.style.animation = 'pulseJarvisMic 0.8s infinite alternate'; micBtn.innerHTML = '🎙️'; }
-    if (inputEl) inputEl.placeholder = 'Dinliyorum Kaptan...';
+    if (micBtn) { micBtn.style.animation = "pulseJarvisMic 0.8s infinite alternate"; micBtn.innerHTML = "🎙️"; }
+    if (inputEl) inputEl.placeholder = "Dinliyorum Kaptan...";
   };
 
   jarvisRecognition.onresult = (event) => {
-    // Sonuc alma mantigini guncelledik
     const transcript = event.results[event.results.length - 1][0].transcript;
-    if (inputEl) { inputEl.value = transcript; inputEl.placeholder = 'Sisteme bir komut ver...'; }
+    if (inputEl) { inputEl.value = transcript; }
     console.log("J.A.R.V.I.S: Algilanan ->", transcript);
   };
 
   jarvisRecognition.onerror = (event) => {
     console.error("J.A.R.V.I.S: MOTOR HATASI ->", event.error);
+    if (event.error === "network") alert("Kaptan, bağlantı hatası! Ses tanıma için internet gerekiyor.");
     stopJarvisMicUI();
   };
 
   jarvisRecognition.onend = () => {
-    console.log("J.A.R.V.I.S: Dinleme sona erdi.");
+    console.log("J.A.R.V.I.S: Oturum kapandi.");
     stopJarvisMicUI();
   };
 
-  // 100ms gecikme ile baslatmak user-gesture hizini tarayicinin daha iyi sindirmesini saglar
-  console.log("J.A.R.V.I.S: .start() komutu 100ms sonra gonderilecek...");
-  setTimeout(() => {
-    try {
-      jarvisRecognition.start();
-    } catch(e) {
-      console.error("J.A.R.V.I.S: Baslatma KRITIK hata ->", e.message);
-      isJarvisListening = false;
-    }
-  }, 100);
+  console.log("J.A.R.V.I.S: Aktivasyon sinyali gonderiliyor...");
+  try {
+    jarvisRecognition.start();
+  } catch(e) {
+    console.error("J.A.R.V.I.S: Baslatma hatasi ->", e.message);
+    isJarvisListening = false;
+    jarvisLock = false;
+  }
 }
 </script>
 
