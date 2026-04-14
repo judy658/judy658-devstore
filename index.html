@@ -2584,7 +2584,7 @@ function closeJarvisPlayer() {
 let jarvisRecognition = null;
 let isJarvisListening = false;
 
-function startJarvisVoice() {
+async function startJarvisVoice() {
   const micBtn = document.getElementById('jarvis-mic-btn');
   const inputEl = document.getElementById('jarvis-input');
   const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -2596,7 +2596,7 @@ function startJarvisVoice() {
     return;
   }
 
-  if (isJarvisListening && jarvisRecognition) {
+  if (isJarvisListening) {
     console.log("J.A.R.V.I.S: Manuel durdurma...");
     try { jarvisRecognition.stop(); } catch(e) {}
     isJarvisListening = false;
@@ -2610,36 +2610,58 @@ function startJarvisVoice() {
     if (inputEl) inputEl.placeholder = 'Sisteme bir komut ver...';
   }
 
-  console.log("J.A.R.V.I.S: Yeni oturum baslatiliyor...");
-  jarvisRecognition = new SpeechRec();
-  jarvisRecognition.lang = 'tr-TR';
-  jarvisRecognition.interimResults = false;
-
-  jarvisRecognition.onstart = () => {
-    isJarvisListening = true;
-    if (micBtn) { micBtn.style.animation = 'pulseJarvisMic 0.8s infinite alternate'; micBtn.innerHTML = '🎙️'; }
-    if (inputEl) inputEl.placeholder = 'Dinliyorum Kaptan...';
-  };
-
-  jarvisRecognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    if (inputEl) { inputEl.value = transcript; inputEl.placeholder = 'Sisteme bir komut ver...'; }
-    console.log("J.A.R.V.I.S: Algilanan ->", transcript);
-  };
-
-  jarvisRecognition.onerror = (event) => {
-    console.error("J.A.R.V.I.S: Ses hatası ->", event.error);
-    stopJarvisMicUI();
-  };
-
-  jarvisRecognition.onend = () => {
-    stopJarvisMicUI();
-  };
-
+  // ADIM 1: Donanimi ve Izinleri Zorla
   try {
+    console.log("J.A.R.V.I.S: Mikrofon donanimina erisim deneniyor...");
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    console.log("J.A.R.V.I.S: Donanim erisimi basarili, kanal acildi.");
+    // Izni aldik, simdi stream'i kapatip motoru acalim (stream acik kalmasin)
+    stream.getTracks().forEach(track => track.stop());
+  } catch (err) {
+    console.error("J.A.R.V.I.S: Mikrofon erisim hatasi ->", err.name, err.message);
+    if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+      alert("Kaptan, mikrofon izni REDDEDILDI. Lutfen adres cubugundaki kilit ikonuna tiklayip mikrofonu 'Izin Ver' yapin.");
+    } else {
+      alert("Kaptan, mikrofon donanimina ulasilamadi: " + err.message);
+    }
+    return;
+  }
+
+  // ADIM 2: Motoru Baslat
+  try {
+    console.log("J.A.R.V.I.S: Motor nesnesi olusturuluyor...");
+    jarvisRecognition = new SpeechRec();
+    jarvisRecognition.lang = 'tr-TR';
+    jarvisRecognition.continuous = false;
+    jarvisRecognition.interimResults = false;
+
+    jarvisRecognition.onstart = () => {
+      console.log("J.A.R.V.I.S: Mikrofon AKTIF. Dinliyorum...");
+      isJarvisListening = true;
+      if (micBtn) { micBtn.style.animation = 'pulseJarvisMic 0.8s infinite alternate'; micBtn.innerHTML = '🎙️'; }
+      if (inputEl) inputEl.placeholder = 'Dinliyorum Kaptan...';
+    };
+
+    jarvisRecognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      if (inputEl) { inputEl.value = transcript; inputEl.placeholder = 'Sisteme bir komut ver...'; }
+      console.log("J.A.R.V.I.S: Algilanan ->", transcript);
+    };
+
+    jarvisRecognition.onerror = (event) => {
+      console.error("J.A.R.V.I.S: MOTOR HATASI ->", event.error);
+      stopJarvisMicUI();
+    };
+
+    jarvisRecognition.onend = () => {
+      console.log("J.A.R.V.I.S: Ses oturumu kapandi.");
+      stopJarvisMicUI();
+    };
+
+    console.log("J.A.R.V.I.S: motor.start() baslatiliyor...");
     jarvisRecognition.start();
   } catch(e) {
-    console.error("J.A.R.V.I.S: Kritik hata ->", e.message);
+    console.error("J.A.R.V.I.S: Motor baslatma sirasinda KRITIK hata ->", e.message);
     isJarvisListening = false;
   }
 }
