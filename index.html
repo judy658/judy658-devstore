@@ -2583,14 +2583,17 @@ let jarvisRecognition = null;
 let isJarvisListening = false;
 
 (function initJarvisVoice() {
+  console.log("J.A.R.V.I.S: Ses tanima sistemi baslatiliyor...");
   if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     jarvisRecognition = new SpeechRecognition();
     jarvisRecognition.lang = 'tr-TR';
     jarvisRecognition.interimResults = false;
     jarvisRecognition.maxAlternatives = 1;
+    console.log("J.A.R.V.I.S: Ses tanima motoru hazir.");
 
     jarvisRecognition.onstart = function() {
+      console.log("J.A.R.V.I.S: Mikrofon aktif, dinleme basladi.");
       isJarvisListening = true;
       const btn = document.getElementById('jarvis-mic-btn');
       if (btn) { btn.style.animation = 'pulseJarvisMic 0.8s infinite alternate'; btn.innerHTML = '🎙️'; }
@@ -2600,56 +2603,67 @@ let isJarvisListening = false;
 
     jarvisRecognition.onresult = function(event) {
       const transcript = event.results[0][0].transcript;
+      console.log("J.A.R.V.I.S: Algilanan ses ->", transcript);
       const inp = document.getElementById('jarvis-input');
       if (inp) { inp.value = transcript; inp.placeholder = 'Sisteme bir komut ver...'; }
     };
 
     jarvisRecognition.onerror = function(event) {
-      console.error('Ses algila hatasi:', event.error);
-      const inp = document.getElementById('jarvis-input');
-      if (inp) inp.placeholder = 'Sisteme bir komut ver...';
+      console.error('J.A.R.V.I.S: Ses algilama hatasi ->', event.error);
+      isJarvisListening = false;
+      const btn = document.getElementById('jarvis-mic-btn');
+      if (btn) { btn.style.animation = 'none'; btn.innerHTML = '🎤'; }
     };
 
     jarvisRecognition.onend = function() {
+      console.log("J.A.R.V.I.S: Dinleme sona erdi.");
       isJarvisListening = false;
       const btn = document.getElementById('jarvis-mic-btn');
       if (btn) { btn.style.animation = 'none'; btn.innerHTML = '🎤'; }
       const inp = document.getElementById('jarvis-input');
       if (inp) inp.placeholder = 'Sisteme bir komut ver...';
     };
+  } else {
+    console.error("J.A.R.V.I.S: Tarayici Web Speech API desteklemiyor.");
   }
 })();
 
 function startJarvisVoice() {
+  console.log("J.A.R.V.I.S: Ses butonu tiklandi. Mevcut durum ->", isJarvisListening ? "Dinliyor" : "Bos");
+  
   if (!jarvisRecognition) {
-    alert("Kaptan, tarayiciniz ses tanima sistemini desteklemiyor. Chrome kullaniniz.");
-    return;
+    console.error("J.A.R.V.I.S: Motor yuklenememis. Yeniden deneniyor...");
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        jarvisRecognition = new SpeechRecognition();
+        jarvisRecognition.lang = 'tr-TR';
+        console.log("J.A.R.V.I.S: Motor manuel olarak yeniden olusturuldu.");
+    } else {
+        alert("Kaptan, tarayiciniz ses tanima sistemini desteklemiyor. Lutfen Chrome kullanin.");
+        return;
+    }
   }
+
   if (isJarvisListening) {
-    try { jarvisRecognition.stop(); } catch(e) {}
+    console.log("J.A.R.V.I.S: Dinleme durduruluyor...");
+    try { jarvisRecognition.stop(); } catch(e) { console.error("Durdurma hatasi:", e); }
     isJarvisListening = false;
-    const btn = document.getElementById('jarvis-mic-btn');
-    if (btn) { btn.style.animation = 'none'; btn.innerHTML = '🎤'; }
     return;
   }
+
   try {
-    isJarvisListening = true; // set flag BEFORE .start() to prevent double triggers
+    console.log("J.A.R.V.I.S: Mikrofon istegi gonderiliyor...");
     jarvisRecognition.start();
+    isJarvisListening = true; 
   } catch(e) {
-    console.warn('JARVIS Voice:', e.message);
+    console.warn('J.A.R.V.I.S: Start hatasi ->', e.name, e.message);
     isJarvisListening = false;
-    // If already started error, abort and restart
     if (e.name === 'InvalidStateError') {
-      try { jarvisRecognition.abort(); } catch(e2) {}
-      setTimeout(() => {
-        try {
-          isJarvisListening = true;
-          jarvisRecognition.start();
-        } catch(e3) {
-          isJarvisListening = false;
-          console.error('JARVIS Voice start failed:', e3);
-        }
-      }, 300);
+      console.log("J.A.R.V.I.S: Baglanti mesgul, resetleniyor...");
+      try { jarvisRecognition.abort(); } catch(exp) {}
+      setTimeout(() => { 
+          try { jarvisRecognition.start(); isJarvisListening = true; } catch(e2) { console.error("Fatura Kritik: Baslatilamadi"); }
+      }, 400);
     }
   }
 }
