@@ -2008,7 +2008,7 @@ async function loadComments(appId) {
     const stars = '★'.repeat(c.rating || 0) + '☆'.repeat(5 - (c.rating || 0));
     const date = new Date(c.created_at).toLocaleDateString('tr-TR');
     const isOwn = currentUserId && c.user_id === currentUserId;
-    const replyHtml = c.reply ? `<div class="comment-reply"><div class="comment-reply-header">👨‍💻 Geliştirici Yanıtı ${isAdmin ? `<button onclick="deleteReply('${c.id}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.72rem;margin-left:8px">🗑 Yanıtı Sil</button>` : ''}</div><div class="comment-reply-text">${c.reply}</div></div>` : '';
+    const replyHtml = c.reply ? `<div class="comment-reply"><div class="comment-reply-header">👨💻 Geliştirici Yanıtı ${isAdmin ? `<button onclick="deleteReply('${c.id}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.72rem;margin-left:8px">🗑 Yanıtı Sil</button>` : ''}</div><div class="comment-reply-text">${c.reply}</div></div>` : '';
     const adminReplyBtn = isAdmin && !c.reply ? `<button class="admin-reply-trigger" onclick="toggleReplyForm('${c.id}')">↩ Yanıtla</button><div class="reply-form" id="reply-form-${c.id}"><textarea placeholder="Yanıtını yaz..." id="reply-input-${c.id}"></textarea><button class="reply-btn" onclick="submitReply('${c.id}')">Gönder</button><button class="reply-btn" style="margin-left:6px;border-color:var(--muted);color:var(--muted)" onclick="toggleReplyForm('${c.id}')">İptal</button></div>` : '';
     return `<div class="comment-item" id="comment-${c.id}">
       <div class="comment-header"><span class="comment-author">👤 ${maskEmail(c.email)}</span>
@@ -2577,93 +2577,68 @@ function closeJarvisPlayer() {
 
 
 // ════════════════════════════════════════════════
-//  J.A.R.V.I.S VOICE RECOGNITION
+
+// ════════════════════════════════════════════════
+//  J.A.R.V.I.S VOICE ENGINE (SUPERSTARK REBOOT)
 // ════════════════════════════════════════════════
 let jarvisRecognition = null;
 let isJarvisListening = false;
 
-(function initJarvisVoice() {
-  console.log("J.A.R.V.I.S: Ses tanima sistemi baslatiliyor...");
-  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    jarvisRecognition = new SpeechRecognition();
+function startJarvisVoice() {
+  const micBtn = document.getElementById('jarvis-mic-btn');
+  const inputEl = document.getElementById('jarvis-input');
+  
+  console.log("J.A.R.V.I.S: Komut merkezi tetiklendi.");
+
+  // Motoru her tiklamada kontrol et/yenile (Cok daha saglikli)
+  if (!jarvisRecognition) {
+    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+      alert("Kaptan, bu tarayici ses tanimayi desteklemiyor. Lutfen Chrome kullanin.");
+      return;
+    }
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    jarvisRecognition = new SpeechRec();
     jarvisRecognition.lang = 'tr-TR';
     jarvisRecognition.interimResults = false;
     jarvisRecognition.maxAlternatives = 1;
-    console.log("J.A.R.V.I.S: Ses tanima motoru hazir.");
 
-    jarvisRecognition.onstart = function() {
-      console.log("J.A.R.V.I.S: Mikrofon aktif, dinleme basladi.");
+    jarvisRecognition.onstart = () => {
       isJarvisListening = true;
-      const btn = document.getElementById('jarvis-mic-btn');
-      if (btn) { btn.style.animation = 'pulseJarvisMic 0.8s infinite alternate'; btn.innerHTML = '🎙️'; }
-      const inp = document.getElementById('jarvis-input');
-      if (inp) inp.placeholder = 'J.A.R.V.I.S sizi dinliyor...';
+      if (micBtn) { micBtn.style.animation = 'pulseJarvisMic 0.8s infinite alternate'; micBtn.innerHTML = '🎙️'; }
+      if (inputEl) inputEl.placeholder = 'Dinliyorum Kaptan...';
     };
 
-    jarvisRecognition.onresult = function(event) {
+    jarvisRecognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
-      console.log("J.A.R.V.I.S: Algilanan ses ->", transcript);
-      const inp = document.getElementById('jarvis-input');
-      if (inp) { inp.value = transcript; inp.placeholder = 'Sisteme bir komut ver...'; }
+      if (inputEl) { inputEl.value = transcript; inputEl.placeholder = 'Sisteme bir komut ver...'; }
+      console.log("J.A.R.V.I.S: Algilanan ->", transcript);
     };
 
-    jarvisRecognition.onerror = function(event) {
-      console.error('J.A.R.V.I.S: Ses algilama hatasi ->', event.error);
-      isJarvisListening = false;
-      const btn = document.getElementById('jarvis-mic-btn');
-      if (btn) { btn.style.animation = 'none'; btn.innerHTML = '🎤'; }
+    jarvisRecognition.onerror = (event) => {
+      console.error("J.A.R.V.I.S: Ses hatasi ->", event.error);
+      stopJarvisMicUI();
     };
 
-    jarvisRecognition.onend = function() {
-      console.log("J.A.R.V.I.S: Dinleme sona erdi.");
-      isJarvisListening = false;
-      const btn = document.getElementById('jarvis-mic-btn');
-      if (btn) { btn.style.animation = 'none'; btn.innerHTML = '🎤'; }
-      const inp = document.getElementById('jarvis-input');
-      if (inp) inp.placeholder = 'Sisteme bir komut ver...';
+    jarvisRecognition.onend = () => {
+      stopJarvisMicUI();
     };
-  } else {
-    console.error("J.A.R.V.I.S: Tarayici Web Speech API desteklemiyor.");
   }
-})();
 
-function startJarvisVoice() {
-  console.log("J.A.R.V.I.S: Ses butonu tiklandi. Mevcut durum ->", isJarvisListening ? "Dinliyor" : "Bos");
-  
-  if (!jarvisRecognition) {
-    console.error("J.A.R.V.I.S: Motor yuklenememis. Yeniden deneniyor...");
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        jarvisRecognition = new SpeechRecognition();
-        jarvisRecognition.lang = 'tr-TR';
-        console.log("J.A.R.V.I.S: Motor manuel olarak yeniden olusturuldu.");
-    } else {
-        alert("Kaptan, tarayiciniz ses tanima sistemini desteklemiyor. Lutfen Chrome kullanin.");
-        return;
-    }
+  function stopJarvisMicUI() {
+    isJarvisListening = false;
+    if (micBtn) { micBtn.style.animation = 'none'; micBtn.innerHTML = '🎤'; }
+    if (inputEl) inputEl.placeholder = 'Sisteme bir komut ver...';
   }
 
   if (isJarvisListening) {
-    console.log("J.A.R.V.I.S: Dinleme durduruluyor...");
-    try { jarvisRecognition.stop(); } catch(e) { console.error("Durdurma hatasi:", e); }
-    isJarvisListening = false;
-    return;
-  }
-
-  try {
-    console.log("J.A.R.V.I.S: Mikrofon istegi gonderiliyor...");
-    jarvisRecognition.start();
-    isJarvisListening = true; 
-  } catch(e) {
-    console.warn('J.A.R.V.I.S: Start hatasi ->', e.name, e.message);
-    isJarvisListening = false;
-    if (e.name === 'InvalidStateError') {
-      console.log("J.A.R.V.I.S: Baglanti mesgul, resetleniyor...");
-      try { jarvisRecognition.abort(); } catch(exp) {}
-      setTimeout(() => { 
-          try { jarvisRecognition.start(); isJarvisListening = true; } catch(e2) { console.error("Fatura Kritik: Baslatilamadi"); }
-      }, 400);
+    jarvisRecognition.stop();
+  } else {
+    try {
+      jarvisRecognition.start();
+    } catch(e) {
+      console.warn("J.A.R.V.I.S: Restarting engine...");
+      jarvisRecognition.abort();
+      setTimeout(() => jarvisRecognition.start(), 250);
     }
   }
 }
