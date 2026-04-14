@@ -2587,41 +2587,21 @@ let isJarvisListening = false;
 function startJarvisVoice() {
   const micBtn = document.getElementById('jarvis-mic-btn');
   const inputEl = document.getElementById('jarvis-input');
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
   
   console.log("J.A.R.V.I.S: Komut merkezi tetiklendi.");
 
-  // Motoru her tiklamada kontrol et/yenile (Cok daha saglikli)
-  if (!jarvisRecognition) {
-    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-      alert("Kaptan, bu tarayici ses tanimayi desteklemiyor. Lutfen Chrome kullanin.");
-      return;
-    }
-    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-    jarvisRecognition = new SpeechRec();
-    jarvisRecognition.lang = 'tr-TR';
-    jarvisRecognition.interimResults = false;
-    jarvisRecognition.maxAlternatives = 1;
+  if (!SpeechRec) {
+    alert("Kaptan, tarayiciniz ses tanimayi desteklemiyor. Lutfen Chrome kullanin.");
+    return;
+  }
 
-    jarvisRecognition.onstart = () => {
-      isJarvisListening = true;
-      if (micBtn) { micBtn.style.animation = 'pulseJarvisMic 0.8s infinite alternate'; micBtn.innerHTML = '🎙️'; }
-      if (inputEl) inputEl.placeholder = 'Dinliyorum Kaptan...';
-    };
-
-    jarvisRecognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
-      if (inputEl) { inputEl.value = transcript; inputEl.placeholder = 'Sisteme bir komut ver...'; }
-      console.log("J.A.R.V.I.S: Algilanan ->", transcript);
-    };
-
-    jarvisRecognition.onerror = (event) => {
-      console.error("J.A.R.V.I.S: Ses hatasi ->", event.error);
-      stopJarvisMicUI();
-    };
-
-    jarvisRecognition.onend = () => {
-      stopJarvisMicUI();
-    };
+  if (isJarvisListening && jarvisRecognition) {
+    console.log("J.A.R.V.I.S: Manuel durdurma...");
+    try { jarvisRecognition.stop(); } catch(e) {}
+    isJarvisListening = false;
+    stopJarvisMicUI();
+    return;
   }
 
   function stopJarvisMicUI() {
@@ -2630,16 +2610,37 @@ function startJarvisVoice() {
     if (inputEl) inputEl.placeholder = 'Sisteme bir komut ver...';
   }
 
-  if (isJarvisListening) {
-    jarvisRecognition.stop();
-  } else {
-    try {
-      jarvisRecognition.start();
-    } catch(e) {
-      console.warn("J.A.R.V.I.S: Restarting engine...");
-      jarvisRecognition.abort();
-      setTimeout(() => jarvisRecognition.start(), 250);
-    }
+  console.log("J.A.R.V.I.S: Yeni oturum baslatiliyor...");
+  jarvisRecognition = new SpeechRec();
+  jarvisRecognition.lang = 'tr-TR';
+  jarvisRecognition.interimResults = false;
+
+  jarvisRecognition.onstart = () => {
+    isJarvisListening = true;
+    if (micBtn) { micBtn.style.animation = 'pulseJarvisMic 0.8s infinite alternate'; micBtn.innerHTML = '🎙️'; }
+    if (inputEl) inputEl.placeholder = 'Dinliyorum Kaptan...';
+  };
+
+  jarvisRecognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    if (inputEl) { inputEl.value = transcript; inputEl.placeholder = 'Sisteme bir komut ver...'; }
+    console.log("J.A.R.V.I.S: Algilanan ->", transcript);
+  };
+
+  jarvisRecognition.onerror = (event) => {
+    console.error("J.A.R.V.I.S: Ses hatası ->", event.error);
+    stopJarvisMicUI();
+  };
+
+  jarvisRecognition.onend = () => {
+    stopJarvisMicUI();
+  };
+
+  try {
+    jarvisRecognition.start();
+  } catch(e) {
+    console.error("J.A.R.V.I.S: Kritik hata ->", e.message);
+    isJarvisListening = false;
   }
 }
 </script>
