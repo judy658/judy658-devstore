@@ -2422,7 +2422,7 @@ async function sendToJarvis() {
   }
 
   let dynamicSystemPrompt = JARVIS_SYSTEM;
-  dynamicSystemPrompt += "\n\nNOT: Bu asistan sohbet botu gibi davranmiyor. Kullanıcı talebi bir sayfa veya düğme ile ilgiliyse, arka planda mevcut eylem araçlarını kullanarak yönlendirme ve vurgulama yap. Yanıtlar yine doğal, samimi ve insan konuşması gibi olmalı; kullanıcıya doğrudan bir JSON ya da komut bloğu gösterme.\n";
+  dynamicSystemPrompt += "\n\nNOT: Bu asistan sohbet botu gibi davranmıyor. Kullanıcı talebi bir sayfa veya düğme ile ilgiliyse, arka planda mevcut eylem araçlarını kullanarak yönlendirme ve vurgulama yap. Örneğin 'Sportify'ı indir' veya 'indir butonunu göster' gibi isteklerde mutlaka arka planda `vurgula` fonksiyonunu kullanarak ilgili hedefi işaretle. Yanıtlar yine doğal, samimi ve insan konuşması gibi olmalı; kullanıcıya doğrudan bir JSON ya da komut bloğu gösterme.\n";
   
   // Müzik ile ilgili sorgular için şarkı veritabanını ekle
   const isMusicQuery = msg.toLowerCase().includes('şarkı') || msg.toLowerCase().includes('müzik') || msg.toLowerCase().includes('çal') || msg.toLowerCase().includes('sarki') || msg.toLowerCase().includes('muzik');
@@ -2604,6 +2604,13 @@ async function sendToJarvis() {
     if (textPart) aiMsg = textPart.text;
 
     const fnPart = parts.find(p => p.functionCall);
+    let highlightAuto = false;
+    if (!fnPart && /indir|indirme|download|dld|install|buton/i.test(msg)) {
+      const note = 'Indirme butonunu vurguladim, ordan devam edebilirsin.';
+      highlightAuto = jarvisHighlight('download_button', note);
+      if (highlightAuto) aiMsg += (aiMsg ? '<br>' : '') + note;
+    }
+
     if (fnPart) {
       const fnName = fnPart.functionCall.name;
       const args = fnPart.functionCall.args;
