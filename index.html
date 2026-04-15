@@ -1960,7 +1960,7 @@ async function jarvisHighlight(target, note) {
 
   if (navigateApp && (!detailActive || currentAppId !== navigateApp)) {
     await showDetail(navigateApp);
-    await sleep(400);
+    await sleep(600);
   }
 
   clearJarvisHighlights();
@@ -2568,7 +2568,7 @@ async function sendToJarvis() {
       ];
 
       // AI Motor Seçimi: Grok (xAI) > OpenAI GPT-4o > Gemini
-      const useGrok = GROK_API_KEY && GROK_API_KEY.trim() !== "";
+      const useGrok = GROK_API_KEY && GROK_API_KEY.trim() !== "" && !GROK_API_KEY.includes("your-grok-key");
       const useOpenAI = !useGrok && OPENAI_API_KEY && OPENAI_API_KEY.trim() !== "";
       let response, data;
 
@@ -2786,7 +2786,7 @@ async function sendToJarvis() {
         else if (args.sayfa === 'profil_sayfasi') { showProfile(); exeMsg = "Profil sayfasi acildi."; }
         else { showHome(); exeMsg = "Sayfa bulunamadi, ana sayfaya donuldu."; }
       } else if (fnName === "uygulama_ac") {
-        showDetail(args.id);
+        await showDetail(args.id);
         exeMsg = "Uygulama secildi: " + args.id;
       } else if (fnName === "sarki_cal") {
         playJarvisSong(args.filename);
