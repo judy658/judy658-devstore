@@ -2188,19 +2188,21 @@ let _jarvisHistory = [];
 
 async function initJarvisMemory(forcedEmail = null, isSignOut = false) {
   let isAdmin = false;
+  let storageKey = 'jarvisMem_admin';
 
   if (forcedEmail) {
-    isAdmin = (forcedEmail === 'geceninhakimistudio@gmail.com');
+    const normalizedEmail = forcedEmail.trim().toLowerCase();
+    isAdmin = (normalizedEmail === 'geceninhakimistudio@gmail.com');
   } else if (!isSignOut) {
     const { data: sessionData } = await supa.auth.getSession();
-    const user = sessionData?.session?.user;
-    isAdmin = user?.email === 'geceninhakimistudio@gmail.com';
+    const userEmail = sessionData?.session?.user?.email?.trim().toLowerCase();
+    isAdmin = userEmail === 'geceninhakimistudio@gmail.com';
   }
-  
+
   const chatArea = document.getElementById('jarvis-chat');
 
   if (isAdmin && !isSignOut) {
-    const saved = localStorage.getItem('jarvisMem');
+    const saved = localStorage.getItem(storageKey) || localStorage.getItem('jarvisMem');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -2208,13 +2210,11 @@ async function initJarvisMemory(forcedEmail = null, isSignOut = false) {
         if (parsed.chatHtml && chatArea) {
           chatArea.innerHTML = parsed.chatHtml;
         }
-      } catch(e) {}
+      } catch(e) {
+        console.warn('Jarvis memory parse error', e);
+      }
     }
   } else {
-    // Normal uye ise eski cihazdaki admin datasini sil. Ancak CIKIS YAPILDIYSA localstorage'a dokunma! (Kaptan verisini koru)
-    if (!isSignOut && !isAdmin) {
-      localStorage.removeItem('jarvisMem');
-    }
     _jarvisHistory = [];
     if (chatArea) {
       chatArea.innerHTML = '<div class="jarvis-msg ai">Sisteme hos geldiniz. Ben J.A.R.V.I.S. Size nasil yardimci olabilirim?</div>';
@@ -2559,7 +2559,7 @@ async function sendToJarvis() {
 
     const timeHtml = '<span style="display:block; font-size:10px; color:#00d2ff; opacity:0.7; margin-bottom:4px; text-transform:uppercase;">⏱️ Sure: ' + timeSpent + ' Sn.</span>';
     chat.innerHTML += '<div class="jarvis-msg ai">' + timeHtml + aiMsg.replace(/\n/g, '<br>') + '</div>';
-    if (isAdmin) localStorage.setItem('jarvisMem', JSON.stringify({ history: _jarvisHistory, chatHtml: chat.innerHTML }));
+    if (isAdmin) localStorage.setItem('jarvisMem_admin', JSON.stringify({ history: _jarvisHistory, chatHtml: chat.innerHTML }));
   } else if (data && data.error) {
     let errMsg = data.error.message;
     if (errMsg.includes('quota') || errMsg.includes('exceeded') || data.error.code === 429) {
