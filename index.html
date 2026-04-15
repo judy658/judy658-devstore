@@ -1933,6 +1933,16 @@ const JARVIS_HIGHLIGHT_TARGETS = {
   dld_button: 'd-dl-btn',
 };
 
+const JARVIS_HIGHLIGHT_NAVIGATION = {
+  sportify_download_button: 'sportify',
+  apk_download_button: 'sportify',
+  dld_button: 'sportify'
+};
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function clearJarvisHighlights() {
   document.querySelectorAll('.jarvis-highlight').forEach(el => el.classList.remove('jarvis-highlight'));
   const hint = document.getElementById('jarvis-highlight-hint');
@@ -1943,9 +1953,17 @@ function clearJarvisHighlights() {
   if (speech) speech.remove();
 }
 
-function jarvisHighlight(target, note) {
-  clearJarvisHighlights();
+async function jarvisHighlight(target, note) {
   const mapped = JARVIS_HIGHLIGHT_TARGETS[target] || target;
+  const detailActive = document.getElementById('detail-page')?.classList.contains('active');
+  const navigateApp = JARVIS_HIGHLIGHT_NAVIGATION[target] || JARVIS_HIGHLIGHT_NAVIGATION[mapped];
+
+  if (navigateApp && (!detailActive || currentAppId !== navigateApp)) {
+    await showDetail(navigateApp);
+    await sleep(400);
+  }
+
+  clearJarvisHighlights();
   const el = document.getElementById(mapped);
   if (!el) return false;
   el.classList.add('jarvis-highlight');
@@ -2753,7 +2771,7 @@ async function sendToJarvis() {
     let highlightAuto = false;
     if (!fnPart && /indir|indirme|download|dld|install|buton/i.test(msg)) {
       const note = 'Indirme butonunu vurguladim, ordan devam edebilirsin.';
-      highlightAuto = jarvisHighlight('download_button', note);
+      highlightAuto = await jarvisHighlight('download_button', note);
       if (highlightAuto) aiMsg += (aiMsg ? '<br>' : '') + note;
     }
 
@@ -2775,7 +2793,7 @@ async function sendToJarvis() {
         exeMsg = "Sarki hazirlaniyor: " + (args.filename.replace('.mp3', '')).replace(/_/g, ' ');
       } else if (fnName === "vurgula") {
         const note = args.message || 'Bu butona tiklayabilirsiniz.';
-        const success = jarvisHighlight(args.target, note);
+        const success = await jarvisHighlight(args.target, note);
         exeMsg = success ? note : 'Hedef vurgulanamadi, ancak sizi ilgili sayfaya yonlendiriyorum.';
       } else if (fnName === "bildirim_gonder") {
         typing.style.display = 'block';
