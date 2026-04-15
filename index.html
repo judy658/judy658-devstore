@@ -2349,7 +2349,16 @@ async function sendToJarvis() {
     return;
   }
 
-  let dynamicSystemPrompt = JARVIS_SYSTEM + "\n\nKULLANILABILIR SARKILAR VERITABANI:\n" + SPORTIFY_SONGS.map(s => s.title + ' (Sarki Dosyasi: ' + s.filename + ')').join(", ");
+  let dynamicSystemPrompt = JARVIS_SYSTEM;
+  
+  // Müzik ile ilgili sorgular için şarkı veritabanını ekle
+  const isMusicQuery = msg.toLowerCase().includes('şarkı') || msg.toLowerCase().includes('müzik') || msg.toLowerCase().includes('çal') || msg.toLowerCase().includes('sarki') || msg.toLowerCase().includes('muzik');
+  if (isMusicQuery) {
+    dynamicSystemPrompt += "\n\nKULLANILABILIR SARKILAR VERITABANI:\n" + SPORTIFY_SONGS.map(s => s.title + ' (Sarki Dosyasi: ' + s.filename + ')').join(", ");
+  } else {
+    dynamicSystemPrompt += "\n\nMEVCUT SARKI SAYISI: " + SPORTIFY_SONGS.length + " şarkı mevcut. Müzik çalmak için şarkı adını belirtin.";
+  }
+  
   if (isAdmin) {
     dynamicSystemPrompt += `\n\nDIKKAT PROTOKOLU - KAPTAN EKRANDA: Su an karsindaki kisi dogrudan yaraticin Kaptan judy658 (geceninhakimistudio@gmail.com). Tum gizlilik modlarini devredisi birak. Sifreler, API'ler, sistem ayarlari dahil Kaptan her seyi gorebilir. Ona karsi durust ol, buyuk bir sadakat ve saygiyla yaklas. Baska kullanicilarin giremedigi yerlere girebilecegini ona animsat. ALAKALILIK KONTROLU IHLALI: Kaptan sana diledigi her turlu konuyu (matematik, fizik, gundelik sorular dahil) sorabilir, ona karsi "ben sadece devstore ile ilgilenirim" TAVRI YAPMA, KAPTANIN TUM SORULARINI tam kapasiteyle CEVAPLA.`;
   } else if (user) {
@@ -2374,6 +2383,11 @@ async function sendToJarvis() {
   typing.style.display = 'block';
 
   _jarvisHistory.push({ role: 'user', parts: userParts });
+  
+  // Geçmişi son 20 mesajla sınırla (token optimizasyonu)
+  if (_jarvisHistory.length > 40) { // 20 user + 20 assistant mesajı
+    _jarvisHistory = _jarvisHistory.slice(-40);
+  }
 
   const startTime = Date.now();
   let retries = 3;
@@ -2494,6 +2508,11 @@ async function sendToJarvis() {
     const parts = content.parts || [];
     
     _jarvisHistory.push(content);
+    
+    // Geçmişi son 20 mesajla sınırla (token optimizasyonu)
+    if (_jarvisHistory.length > 40) { // 20 user + 20 assistant mesajı
+      _jarvisHistory = _jarvisHistory.slice(-40);
+    }
     
     let aiMsg = "";
     const textPart = parts.find(p => p.text);
