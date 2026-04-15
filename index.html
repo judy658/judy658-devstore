@@ -2132,7 +2132,8 @@ Sahip oldugun Ozel Bilgiler ve Misyonun:
 3. Teknoloji Portfoyumuz: Hermes Agent (Hugging Face uzerinde 16GB RAM ile calisan yapay zeka isleyicisi), ESP32 (iletisim) ve DevStore Sunuculari hakkinda derini bilgilisin.
 4. Karakteristik Tavrin: Ziyaretcilere, judy658'in bu ucretsiz sistemlerini anlatirken gurur duyarak anlatirsin.
 5. Iletisim Kurallari: Kullanicilara "Efendim", seninle Kaptan judy658 konusuyorsa "Kaptan" diye hitap et. Verdigin cevaplarda teknik gorunmeyi sev. Turkce harf dert degil, anlasilir duz metinle (ASCII formatina uygun, 'ş' yerine 's' vs.) konus.
-6. Halusinasyon ve Uydurma Veri Yasagi: Canli veritabanina veya aktif kullanici sayacina bagli DEGiLSiN. "Kac kisi var", "Sunucu ne durumda" gibi sorularda 1248 aktif kisi vs. gibi hayali gercekci sayilar uydurma. Sadece su an ozel/test asamasinda oldugumuzu ve agdaki tek kisinin Kaptan judy658 oldugunu (veya erisiminin olmadigini) soyle.`;
+6. Halusinasyon ve Uydurma Veri Yasagi: Canli veritabanina veya aktif kullanici sayacina bagli DEGiLSiN. "Kac kisi var", "Sunucu ne durumda" gibi sorularda 1248 aktif kisi vs. gibi hayali gercekci sayilar uydurma. Sadece su an ozel/test asamasinda oldugumuzu ve agdaki tek kisinin Kaptan judy658 oldugunu (veya erisiminin olmadigini) soyle.
+7. Ortak Hesap Sistemi (Kritik): Sportify Premium ve DevStore tek bir hesap sistemini kullanir. Sportify'a giris yapmak isteyen bir kullanıcı, once DevStore web sitesi üzerinden (su an bulundugu yer) bir hesap olusturmalidir. Sportify uygulamasinin icinde 'Kayit Ol' ekrani yoktur; kullanıcı DevStore'da actigi e-posta ve sifre ile Sportify'da oturum acar. Eğer bir kullanıcı Sportify'da sifresini soruyorsa, ona once DevStore'dan hesap acmasi gerektigini net bir sekilde bildir.`;
 
 let _jarvisHistory = [];
 
@@ -2582,6 +2583,7 @@ function closeJarvisPlayer() {
 //  J.A.R.V.I.S VOICE ENGINE (SUPERSTARK REBOOT)
 // ════════════════════════════════════════════════
 
+
 let jarvisRecognition = null;
 let isJarvisListening = false;
 let jarvisStartupTime = 0;
@@ -2589,7 +2591,10 @@ let jarvisStartupTime = 0;
 function initJarvisEngine() {
   if (jarvisRecognition) return;
   const SpeechRec = window.webkitSpeechRecognition || window.SpeechRecognition;
-  if (!SpeechRec) return;
+  if (!SpeechRec) {
+    console.error("J.A.R.V.I.S: Tarayici ses tanimayi kesinlikle desteklemiyor.");
+    return;
+  }
 
   jarvisRecognition = new SpeechRec();
   jarvisRecognition.lang = 'tr-TR';
@@ -2597,7 +2602,7 @@ function initJarvisEngine() {
   jarvisRecognition.interimResults = false;
 
   jarvisRecognition.onstart = () => {
-    console.log("J.A.R.V.I.S: Dinleme basariyla aktifleşti.");
+    console.log("J.A.R.V.I.S: >>> DINLEME AKTIF VE HAZIR <<<");
     jarvisStartupTime = Date.now();
     isJarvisListening = true;
     updateJarvisMicUI(true);
@@ -2611,22 +2616,19 @@ function initJarvisEngine() {
   };
 
   jarvisRecognition.onerror = (e) => {
-    console.error("J.A.R.V.I.S: KRITIK HATA ->", e.error);
+    console.error("J.A.R.V.I.S: MOTOR HATASI (Event):", e.error, e.message);
     if (e.error === 'not-allowed') {
-      alert("Kaptan, mikrofon izni reddedildi. Lutfen URL barindaki kilit simgesinden izin verin.");
+      alert("Kaptan, mikrofon izni KALICI OLARAK engellenmis. URL barindan kilidi acmalisin.");
     }
   };
 
   jarvisRecognition.onend = () => {
-    const sessionDoc = Date.now() - jarvisStartupTime;
-    console.log("J.A.R.V.I.S: Oturum kapandi. Sure:", sessionDoc, "ms");
+    const now = Date.now();
+    const duration = jarvisStartupTime > 0 ? (now - jarvisStartupTime) : 0;
+    console.log("J.A.R.V.I.S: Oturum kapandi. Net Sure:", duration, "ms");
     isJarvisListening = false;
     updateJarvisMicUI(false);
-    
-    // Eger cok hizli kapandiysa (1sn altinda) ve hata yoksa, tarayici engellemis olabilir
-    if (sessionDoc < 1000 && sessionDoc > 0) {
-      console.warn("J.A.R.V.I.S: Oturum anormal kisa surdu. Eklentiler veya gizlilik ayarlari engelliyor olabilir.");
-    }
+    jarvisStartupTime = 0; // Reset
   };
 }
 
@@ -2634,7 +2636,6 @@ function updateJarvisMicUI(active) {
   const micBtn = document.getElementById('jarvis-mic-btn');
   const inputEl = document.getElementById('jarvis-input');
   if (!micBtn) return;
-
   if (active) {
     micBtn.style.animation = 'pulseJarvisMic 0.8s infinite alternate';
     micBtn.innerHTML = '🎙️';
@@ -2648,10 +2649,7 @@ function updateJarvisMicUI(active) {
 
 function startJarvisVoice() {
   if (!jarvisRecognition) initJarvisEngine();
-  if (!jarvisRecognition) {
-    alert("Desteklenmeyen tarayici.");
-    return;
-  }
+  if (!jarvisRecognition) return;
 
   if (isJarvisListening) {
     jarvisRecognition.stop();
@@ -2662,9 +2660,12 @@ function startJarvisVoice() {
   try {
     jarvisRecognition.start();
   } catch(e) {
-    console.log("J.A.R.V.I.S: Resetleniyor...");
-    jarvisRecognition.abort();
-    setTimeout(() => jarvisRecognition.start(), 200);
+    console.error("J.A.R.V.I.S: .start() komutu firlatilirken hata:", e.name, e.message);
+    // Eger zaten calisiyor diyorsa durumu guncelle
+    if (e.name === 'InvalidStateError') {
+      isJarvisListening = true;
+      updateJarvisMicUI(true);
+    }
   }
 }
 
@@ -2673,7 +2674,7 @@ setTimeout(() => {
   initJarvisEngine();
   const btn = document.getElementById('jarvis-mic-btn');
   if (btn) btn.onclick = startJarvisVoice;
-  console.log("J.A.R.V.I.S: Sistem her seyiyle hazir.");
+  console.log("J.A.R.V.I.S: Teşhis sistemi kuruldu.");
 }, 500);
 
 </script>
