@@ -1929,6 +1929,10 @@ function clearJarvisHighlights() {
   document.querySelectorAll('.jarvis-highlight').forEach(el => el.classList.remove('jarvis-highlight'));
   const hint = document.getElementById('jarvis-highlight-hint');
   if (hint) hint.remove();
+  const overlay = document.getElementById('jarvis-highlight-overlay');
+  if (overlay) overlay.remove();
+  const speech = document.querySelector('.jarvis-highlight-speech');
+  if (speech) speech.remove();
 }
 
 function jarvisHighlight(target, note) {
@@ -1937,14 +1941,46 @@ function jarvisHighlight(target, note) {
   const el = document.getElementById(mapped);
   if (!el) return false;
   el.classList.add('jarvis-highlight');
+
   const hint = document.createElement('div');
   hint.id = 'jarvis-highlight-hint';
   hint.textContent = note || 'Buraya tiklayabilirsiniz.';
   document.body.appendChild(hint);
+
+  const rect = el.getBoundingClientRect();
+  const overlay = document.createElement('div');
+  overlay.id = 'jarvis-highlight-overlay';
+  overlay.style.position = 'absolute';
+  overlay.style.pointerEvents = 'none';
+  const overlayLeft = Math.max(12, rect.left + rect.width / 2 - 32);
+  const overlayTop = Math.max(12, rect.top - 88);
+  overlay.style.left = overlayLeft + 'px';
+  overlay.style.top = overlayTop + 'px';
+  overlay.style.width = '64px';
+  overlay.style.height = '64px';
+  overlay.style.zIndex = '999999';
+  overlay.innerHTML = `
+    <div class="jarvis-highlight-hand"></div>
+    <div class="jarvis-highlight-tear" style="top: -10px; left: 4px"></div>
+    <div class="jarvis-highlight-tear" style="top: 10px; left: 52px"></div>
+  `;
+  document.body.appendChild(overlay);
+
+  const speech = document.createElement('div');
+  speech.className = 'jarvis-highlight-speech';
+  speech.style.position = 'absolute';
+  speech.style.left = Math.max(12, overlayLeft - 72) + 'px';
+  speech.style.top = Math.max(12, overlayTop - 88) + 'px';
+  speech.textContent = note || 'AHA bu indirme işte kocaman yazıyor! Allah Allah';
+  document.body.appendChild(speech);
+
   setTimeout(() => {
     el.classList.remove('jarvis-highlight');
     hint.remove();
+    if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    if (speech.parentNode) speech.parentNode.removeChild(speech);
   }, 7500);
+
   el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   return true;
 }
