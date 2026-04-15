@@ -2265,7 +2265,7 @@ async function initJarvisMemory(forcedEmail = null, isSignOut = false) {
   let isAdmin = false;
   let storageKey = 'jarvisMem_admin';
 
-  if (forcedEmail) {
+  if (forcedEmail && typeof forcedEmail === 'string') {
     const normalizedEmail = forcedEmail.trim().toLowerCase();
     isAdmin = (normalizedEmail === 'geceninhakimistudio@gmail.com');
   } else if (!isSignOut) {
