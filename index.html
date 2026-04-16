@@ -2478,33 +2478,49 @@ async function sendToJarvis() {
         }
       ];
 
+      const grokEndpoint = 'https://api.x.ai/v1/responses';
+      let grokInput = dynamicSystemPrompt + '\n\n';
+      for (let item of _jarvisHistory) {
+        let text = '';
+        if (item.parts) {
+          for (let part of item.parts) {
+            if (part.text) text += part.text;
+          }
+        }
+        if (!text) continue;
+        if (item.role === 'user') grokInput += `Kullanici: ${text}\n`;
+        else grokInput += `Jarvis: ${text}\n`;
+      }
+
       response = await fetch(
-        'https://api.x.ai/v1/chat/completions',
+        grokEndpoint,
         {
           method: 'POST',
-          headers: { 
+          headers: {
             'Authorization': 'Bearer ' + JARVIS_KEY,
-            'Content-Type': 'application/json' 
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            model: "grok-4.20",
-            messages: grokMessages,
-            tools: grokTools,
-            tool_choice: "auto"
+            model: 'grok-4.20',
+            input: grokInput
           })
         }
       );
       const data = await response.json();
-      
+
       if (data.error) {
-        const errMsg = data.error.message || "";
+        const errMsg = data.error.message || '';
         if (response.status === 429 || errMsg.includes('rate limit') || errMsg.includes('quota')) {
           retries--;
           if (retries === 0) successData = data;
           continue;
         }
+        if (response.status === 403 || response.status === 401) {
+          successData = data;
+          break;
+        }
       }
-      
+
       successData = data;
       break;
     } catch(e) {
@@ -2522,72 +2538,24 @@ async function sendToJarvis() {
   const data = successData;
   const endTime = Date.now();
   const timeSpent = ((endTime - startTime) / 1000).toFixed(2);
-  
-  typing.style.display = 'none';
-  
-  if (data && data.choices && data.choices[0] && data.choices[0].message) {
-    const message = data.choices[0].message;
-    const toolCalls = Array.isArray(message.tool_calls) ? message.tool_calls : [];
-    const content = extractMessageText(message.content);
-    
-    // Push to history
-    _jarvisHistory.push({ role: 'model', parts: [{ text: content }] });
-    
-    let aiMsg = content || '';
-    
-    if (toolCalls.length > 0) {
-      for (let toolCall of toolCalls) {
-        const fnName = toolCall.function.name;
-        const args = JSON.parse(toolCall.function.arguments);
-        let exeMsg = "";
-        
-        if (fnName === "yonlendir") {
-          if (args.sayfa === 'ana_sayfa') { showHome(); exeMsg = "Ana sayfaya yonlendirildi."; }
-          else if (args.sayfa === 'admin_paneli') { showAdminPanel(); exeMsg = "Admin Paneli acildi."; }
-          else if (args.sayfa === 'profil_sayfasi') { showProfile(); exeMsg = "Profil sayfasi acildi."; }
-          else { showHome(); exeMsg = "Sayfa bulunamadi, ana sayfaya donuldu."; }
-        } else if (fnName === "uygulama_ac") {
-          showDetail(args.id);
-          exeMsg = "Uygulama secildi: " + args.id;
-        } else if (fnName === "sarki_cal") {
-          playJarvisSong(args.filename);
-          exeMsg = "Sarki hazirlaniyor: " + (args.filename.replace('.mp3', '')).replace(/_/g, ' ');
-        } else if (fnName === "bildirim_gonder") {
-          typing.style.display = 'block';
-          typing.innerText = 'Iletisim aglarina baglaniliyor, mailler gonderiliyor...';
-          chat.scrollTop = chat.scrollHeight;
-          const resMsg = await jarvisSendNotification(args.title, args.content, args.tag, args.recipients);
-          exeMsg = `Bildirim Protokolu: ${resMsg}`;
-          typing.style.display = 'none';
-        }
-        
-        if (!aiMsg) aiMsg = `Islem basariyla tamamlandi Kaptan! (${exeMsg})`;
-        
-        // Push tool response to history
-        _jarvisHistory.push({
-          role: "function",
-          parts: [{
-            functionResponse: {
-              name: fnName,
-              response: { name: fnName, content: "islem_basarili" }
-            }
-          }]
-        });
-      }
-    }
 
-    if (!aiMsg) {
-      aiMsg = 'J.A.R.V.I.S. su an bir yanit olusturamadi, lutfen tekrar deneyin.';
-    }
+  typing.style.display = 'none';
+
+  if (data && !data.error) {
+    const content = data.output_text || (data.output && Array.isArray(data.output) ? extractMessageText(data.output[0].content) : '');
+    _jarvisHistory.push({ role: 'model', parts: [{ text: content }] });
+    let aiMsg = content || 'J.A.R.V.I.S. su an bir yanit olusturamadi, lutfen tekrar deneyin.';
     const timeHtml = '<span style="display:block; font-size:10px; color:#00d2ff; opacity:0.7; margin-bottom:4px; text-transform:uppercase;">⏱️ Sure: ' + timeSpent + ' Sn.</span>';
     chat.innerHTML += '<div class="jarvis-msg ai">' + timeHtml + aiMsg.replace(/\n/g, '<br>') + '</div>';
     localStorage.setItem('jarvisMem', JSON.stringify({ history: _jarvisHistory, chatHtml: chat.innerHTML }));
   } else if (data && data.error) {
-    let errMsg = data.error.message;
-    if (errMsg.includes('rate limit') || errMsg.includes('quota') || response?.status === 429) {
-      errMsg = "Kaptan, Grok API limitlerine ulastik. Lutfen bir sure bekleyin veya daha fazla kredi satin alin.";
+    let errMsg = data.error.message || 'Bilinmeyen bir Grok hatasi olustu.';
+    if (response?.status === 403 || response?.status === 401) {
+      errMsg = 'Grok anahtari bu endpoint icin yetkili degil veya hesabin aktif degil. Lutfen anahtari ve xAI hesabini kontrol et.';
+    } else if (errMsg.includes('rate limit') || errMsg.includes('quota') || response?.status === 429) {
+      errMsg = 'Kaptan, Grok API limitlerine ulastik. Lutfen bir sure bekleyin veya daha fazla kredi satin alin.';
     } else {
-      errMsg = "API Hatasi: " + errMsg;
+      errMsg = 'API Hatasi: ' + errMsg;
     }
     chat.innerHTML += '<div class="jarvis-msg ai">' + errMsg + '</div>';
     _jarvisHistory.pop();
