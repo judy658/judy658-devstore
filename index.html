@@ -2232,14 +2232,6 @@ function toggleJarvis() {
   panel.classList.toggle('active');
   if (panel.classList.contains('active')) document.getElementById('jarvis-input').focus();
 }
-document.addEventListener('DOMContentLoaded', initJarvisMemory);
-
-function toggleJarvis() {
-  const panel = document.getElementById('jarvis-panel');
-  if (!panel) return;
-  panel.classList.toggle('active');
-  if (panel.classList.contains('active')) document.getElementById('jarvis-input').focus();
-}
 
 let _jarvisPendingImage = null; // { mimeType, data (base64) }
 
@@ -2402,29 +2394,6 @@ async function sendToJarvis() {
         typing.innerText = 'Dusunuluyor...';
       }
       
-      // Convert history to Grok format
-      let grokMessages = [{ role: "system", content: dynamicSystemPrompt }];
-      for (let msg of _jarvisHistory) {
-        if (msg.role === 'user') {
-          let content = "";
-          if (msg.parts) {
-            for (let part of msg.parts) {
-              if (part.text) content += part.text;
-              // Images not handled for now
-            }
-          }
-          grokMessages.push({ role: "user", content: content });
-        } else if (msg.role === 'model' || msg.role === 'assistant') {
-          let content = "";
-          if (msg.parts) {
-            for (let part of msg.parts) {
-              if (part.text) content += part.text;
-            }
-          }
-          grokMessages.push({ role: "assistant", content: content });
-        }
-      }
-
       const grokTools = [
         {
           type: "function",
