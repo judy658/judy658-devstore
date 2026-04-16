@@ -2482,7 +2482,7 @@ async function sendToJarvis() {
       ];
 
       const grokEndpoint = 'https://api.x.ai/v1/responses';
-      let grokInput = dynamicSystemPrompt + '\n\n';
+      let grokMessages = [{ role: 'system', content: dynamicSystemPrompt }];
       for (let item of _jarvisHistory) {
         let text = '';
         if (item.parts) {
@@ -2491,9 +2491,14 @@ async function sendToJarvis() {
           }
         }
         if (!text) continue;
-        if (item.role === 'user') grokInput += `Kullanici: ${text}\n`;
-        else grokInput += `Jarvis: ${text}\n`;
+        if (item.role === 'user') grokMessages.push({ role: 'user', content: text });
+        else grokMessages.push({ role: 'assistant', content: text });
       }
+
+      const payload = {
+        model: 'grok-4.1',
+        input: grokMessages
+      };
 
       response = await fetch(
         grokEndpoint,
@@ -2503,13 +2508,24 @@ async function sendToJarvis() {
             'Authorization': 'Bearer ' + currentJarvisKey,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-            model: 'grok-4.1',
-            input: grokInput
-          })
+          body: JSON.stringify(payload)
         }
       );
-      const data = await response.json();
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        const text = await response.text();
+        console.error('Grok response parse error', response.status, response.statusText, text, jsonError);
+        data = { error: { message: `Sunucudan beklenmeyen cevap dondu (${response.status}).` } };
+      }
+
+      if (!response.ok && !data.error) {
+        const bodyText = typeof data === 'string' ? data : JSON.stringify(data);
+        console.error('Grok non-ok response without error object', response.status, response.statusText, bodyText);
+        data = { error: { message: `Sunucudan hatali cevap dondu: ${response.status} ${response.statusText}` } };
+      }
 
       if (data.error) {
         const errMsg = data.error.message || '';
@@ -2558,10 +2574,10 @@ async function sendToJarvis() {
     chat.innerHTML += '<div class="jarvis-msg ai">' + timeHtml + aiMsg.replace(/\n/g, '<br>') + '</div>';
     localStorage.setItem('jarvisMem', JSON.stringify({ history: _jarvisHistory, chatHtml: chat.innerHTML }));
   } else if (data && data.error) {
-    let errMsg = data.error.message || 'Bilinmeyen bir Grok hatasi olustu.';
+    let errMsg = data.error.message || `Grok API hatasi (${response?.status || 'bilinmiyor'}): Bilinmeyen bir hata olustu.`;
     if (response?.status === 403 || response?.status === 401) {
       errMsg = 'Grok anahtari bu endpoint icin yetkili degil veya hesabin aktif degil. Lutfen anahtari ve xAI hesabini kontrol et.';
-    } else if (errMsg.includes('rate limit') || errMsg.includes('quota') || response?.status === 429) {
+    } else if (errMsg.toLowerCase().includes('rate limit') || errMsg.toLowerCase().includes('quota') || response?.status === 429) {
       errMsg = 'Kaptan, Grok API limitlerine ulastik. Lutfen bir sure bekleyin veya daha fazla kredi satin alin.';
     } else {
       errMsg = 'API Hatasi: ' + errMsg;
