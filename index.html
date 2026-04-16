@@ -2451,7 +2451,7 @@ async function sendToJarvis() {
       ];
 
       const grokEndpoint = 'https://api.x.ai/v1/responses';
-      let grokMessages = [{ role: 'system', content: dynamicSystemPrompt }];
+      let grokInput = dynamicSystemPrompt + '\n\n';
       for (let item of _jarvisHistory) {
         let text = '';
         if (item.parts) {
@@ -2460,13 +2460,13 @@ async function sendToJarvis() {
           }
         }
         if (!text) continue;
-        if (item.role === 'user') grokMessages.push({ role: 'user', content: text });
-        else grokMessages.push({ role: 'assistant', content: text });
+        if (item.role === 'user') grokInput += `Kullanici: ${text}\n`;
+        else grokInput += `Jarvis: ${text}\n`;
       }
 
       const payload = {
         model: 'grok-4.1',
-        input: grokMessages
+        input: grokInput
       };
 
       response = await fetch(
@@ -2546,6 +2546,8 @@ async function sendToJarvis() {
     let errMsg = data.error.message || `Grok API hatasi (${response?.status || 'bilinmiyor'}): Bilinmeyen bir hata olustu.`;
     if (response?.status === 403 || response?.status === 401) {
       errMsg = 'Grok anahtari bu endpoint icin yetkili degil veya hesabin aktif degil. Lutfen anahtari ve xAI hesabini kontrol et.';
+    } else if (errMsg.toLowerCase().includes('credit') || errMsg.toLowerCase().includes('spend') || errMsg.toLowerCase().includes('no credits')) {
+      errMsg = 'Grok hesabinizda kredi yok veya kullaniminiz bitmis. xAI hesabinizi ve bakiye durumunu kontrol edin.';
     } else if (errMsg.toLowerCase().includes('rate limit') || errMsg.toLowerCase().includes('quota') || response?.status === 429) {
       errMsg = 'Kaptan, Grok API limitlerine ulastik. Lutfen bir sure bekleyin veya daha fazla kredi satin alin.';
     } else {
