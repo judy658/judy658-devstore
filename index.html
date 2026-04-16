@@ -2254,12 +2254,15 @@ checkContactAuth();
 <script>
 // J.A.R.V.I.S INTELLIGENCE ENGINE (STARK OS) - MULTI-AI SUPPORT 🧠
 // Gemini API Keys (yedekler)
+// IMPORTANT: Get valid keys from https://aistudio.google.com/app/apikey
+// Base64 encode your key: btoa("YOUR_REAL_KEY") in console
+// Replace the placeholder below with real base64-encoded keys
 const JARVIS_KEYS = [
-  atob("QUl6YVN5Q2ktNF9maDhuOTVZMTZtMjFDMlY3dXl4bXVHOWptVFY0"),
-  atob("QUl6YVN5Qk1KYWhyUFVpR0ZJRTVMQUtRSkVnQ0tQLUtldmdBTGs4"),
-  atob("QUl6YVN5QjQ3NWx4UlVTUEt4MU5xWFozN2F4TUd2QkZOZzE2dmM4"),
-  atob("QUl6YVN5QlNYdUtFTTdOOWtQSHRERkdnbW1MZGxhR3FHUG9vRmlz"),
-  atob("QUl6YVN5QkhpUnFvTUFYTnVkY2N5UXVOZUNabzU3VzRkbGMxTlpZ")
+  atob("QUl6YVN5Q2ktNF9maDhuOTVZMTZtMjFDMlY3dXl4bXVHOWptVFY0"), // TODO: Replace with valid key
+  atob("QUl6YVN5Qk1KYWhyUFVpR0ZJRTVMQUtRSkVnQ0tQLUtldmdBTGs4"), // TODO: Replace with valid key
+  atob("QUl6YVN5QjQ3NWx4UlVTUEt4MU5xWFozN2F4TUd2QkZOZzE2dmM4"), // TODO: Replace with valid key
+  atob("QUl6YVN5QlNYdUtFTTdOOWtQSHRERkdnbW1MZGxhR3FHUG9vRmlz"), // TODO: Replace with valid key
+  atob("QUl6YVN5QkhpUnFvTUFYTnVkY2N5UXVOZUNabzU3VzRkbGMxTlpZ")  // TODO: Replace with valid key
 ];
 
 // OpenAI API Key (GPT-4o için - daha uzun token limiti)
@@ -3046,6 +3049,8 @@ window.toggleJarvis = function() {
 };
 
 </script>
+
+<script src="jarvis.js"></script>
 
 </body>
 </html>
