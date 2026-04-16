@@ -2191,28 +2191,45 @@ async function initJarvisMemory(forcedEmail = null, isSignOut = false) {
   }
   
   const chatArea = document.getElementById('jarvis-chat');
+  const saved = localStorage.getItem('jarvisMem');
 
-  if (isAdmin && !isSignOut) {
-    const saved = localStorage.getItem('jarvisMem');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        _jarvisHistory = parsed.history || [];
-        if (parsed.chatHtml && chatArea) {
-          chatArea.innerHTML = parsed.chatHtml;
-        }
-      } catch(e) {}
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      _jarvisHistory = parsed.history || [];
+      if (parsed.chatHtml && chatArea) {
+        chatArea.innerHTML = parsed.chatHtml;
+      }
+    } catch(e) {
+      _jarvisHistory = [];
+      if (chatArea) {
+        chatArea.innerHTML = '<div class="jarvis-msg ai">Sisteme hos geldiniz. Ben J.A.R.V.I.S. Size nasil yardimci olabilirim?</div>';
+      }
     }
   } else {
-    // Normal uye ise eski cihazdaki admin datasini sil. Ancak CIKIS YAPILDIYSA localstorage'a dokunma! (Kaptan verisini koru)
-    if (!isSignOut && !isAdmin) {
-      localStorage.removeItem('jarvisMem');
-    }
     _jarvisHistory = [];
     if (chatArea) {
       chatArea.innerHTML = '<div class="jarvis-msg ai">Sisteme hos geldiniz. Ben J.A.R.V.I.S. Size nasil yardimci olabilirim?</div>';
     }
   }
+}
+
+document.addEventListener('DOMContentLoaded', initJarvisMemory);
+
+function extractMessageText(message) {
+  if (typeof message === 'string') return message;
+  if (!message) return '';
+  if (Array.isArray(message)) return message.map(extractMessageText).join('');
+  if (message.text) return message.text;
+  if (message.content) return extractMessageText(message.content);
+  return '';
+}
+
+function toggleJarvis() {
+  const panel = document.getElementById('jarvis-panel');
+  if (!panel) return;
+  panel.classList.toggle('active');
+  if (panel.classList.contains('active')) document.getElementById('jarvis-input').focus();
 }
 document.addEventListener('DOMContentLoaded', initJarvisMemory);
 
@@ -2371,6 +2388,7 @@ async function sendToJarvis() {
   const startTime = Date.now();
   let retries = 3;
   let successData = null;
+  let response = null;
 
   while(retries > 0) {
     try {
@@ -2460,7 +2478,7 @@ async function sendToJarvis() {
         }
       ];
 
-      const response = await fetch(
+      response = await fetch(
         'https://api.x.ai/v1/chat/completions',
         {
           method: 'POST',
@@ -2508,14 +2526,14 @@ async function sendToJarvis() {
   typing.style.display = 'none';
   
   if (data && data.choices && data.choices[0] && data.choices[0].message) {
-const message = data.choices[0].message;
-    const content = message.content || "";
-    const toolCalls = message.tool_calls || [];
+    const message = data.choices[0].message;
+    const toolCalls = Array.isArray(message.tool_calls) ? message.tool_calls : [];
+    const content = extractMessageText(message.content);
     
     // Push to history
     _jarvisHistory.push({ role: 'model', parts: [{ text: content }] });
     
-    let aiMsg = content;
+    let aiMsg = content || '';
     
     if (toolCalls.length > 0) {
       for (let toolCall of toolCalls) {
@@ -2558,12 +2576,15 @@ const message = data.choices[0].message;
       }
     }
 
+    if (!aiMsg) {
+      aiMsg = 'J.A.R.V.I.S. su an bir yanit olusturamadi, lutfen tekrar deneyin.';
+    }
     const timeHtml = '<span style="display:block; font-size:10px; color:#00d2ff; opacity:0.7; margin-bottom:4px; text-transform:uppercase;">⏱️ Sure: ' + timeSpent + ' Sn.</span>';
     chat.innerHTML += '<div class="jarvis-msg ai">' + timeHtml + aiMsg.replace(/\n/g, '<br>') + '</div>';
-    if (isAdmin) localStorage.setItem('jarvisMem', JSON.stringify({ history: _jarvisHistory, chatHtml: chat.innerHTML }));
+    localStorage.setItem('jarvisMem', JSON.stringify({ history: _jarvisHistory, chatHtml: chat.innerHTML }));
   } else if (data && data.error) {
     let errMsg = data.error.message;
-    if (errMsg.includes('rate limit') || errMsg.includes('quota') || response.status === 429) {
+    if (errMsg.includes('rate limit') || errMsg.includes('quota') || response?.status === 429) {
       errMsg = "Kaptan, Grok API limitlerine ulastik. Lutfen bir sure bekleyin veya daha fazla kredi satin alin.";
     } else {
       errMsg = "API Hatasi: " + errMsg;
