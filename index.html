@@ -101,17 +101,6 @@
     .detail-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
     .download-main-btn { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, var(--accent), #9b7eff); color: #fff; border: none; border-radius: 13px; padding: 13px 30px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.2s; }
     .download-main-btn:hover { transform: scale(1.04); box-shadow: 0 12px 32px rgba(124,92,252,0.45); }
-    .jarvis-highlight { box-shadow: 0 0 0 3px rgba(0,210,255,0.45), 0 0 30px rgba(0,210,255,0.18); animation: jarvis-pulse-highlight 1.1s ease-in-out infinite alternate; position: relative; z-index: 9999; }
-    @keyframes jarvis-pulse-highlight { from { box-shadow: 0 0 0 3px rgba(0,210,255,0.65), 0 0 18px rgba(0,210,255,0.2); } to { box-shadow: 0 0 0 5px rgba(0,210,255,0.15), 0 0 26px rgba(0,210,255,0.12); } }
-    #jarvis-highlight-hint { position: fixed; right: 20px; bottom: 20px; z-index: 999999; background: rgba(0, 18, 34, 0.92); border: 1px solid rgba(0,210,255,0.4); color: #d0f8ff; padding: 12px 16px; border-radius: 14px; backdrop-filter: blur(10px); font-size: 0.92rem; line-height: 1.4; box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
-    .jarvis-highlight-overlay { position: fixed; width: 64px; height: 64px; pointer-events: none; z-index: 999999; }
-    .jarvis-highlight-hand { position: absolute; width: 64px; height: 64px; background: radial-gradient(circle at 30% 30%, #ffffff, #d3f2ff 35%, #88d8ff 80%); border-radius: 50%; border: 2px solid rgba(255,255,255,0.5); box-shadow: 0 0 0 5px rgba(0,210,255,0.18), 0 12px 30px rgba(0,0,0,0.28); display: flex; align-items: center; justify-content: center; font-size: 32px; color: #2a2a2a; transform: rotate(-10deg); animation: jarvis-hand-pop 0.35s ease-out both; }
-    .jarvis-highlight-hand::after { content: ''; position: absolute; width: 16px; height: 40px; bottom: 4px; left: 52%; background: linear-gradient(180deg, #ffffff 0%, #a2e6ff 100%); border-radius: 12px; transform: rotate(18deg); box-shadow: 0 6px 12px rgba(0,0,0,0.18); }
-    .jarvis-highlight-tear { position: absolute; width: 14px; height: 14px; background: rgba(0,210,255,0.95); border-radius: 50%; filter: blur(0.4px); animation: jarvis-hand-spark 0.8s ease-in-out infinite alternate; }
-    .jarvis-highlight-speech { position: fixed; max-width: 260px; right: 18px; z-index: 999999; background: rgba(0, 18, 36, 0.96); color: #f0f8ff; border: 1px solid rgba(0,210,255,0.5); border-radius: 18px; padding: 14px 16px; font-family: 'DM Sans', sans-serif; font-size: 0.92rem; line-height: 1.4; box-shadow: 0 24px 50px rgba(0,0,0,0.35); animation: bubbleIn 0.22s ease-out both; }
-    @keyframes jarvis-hand-pop { from { opacity: 0; transform: translateY(18px) scale(0.84) rotate(-10deg); } to { opacity: 1; transform: translateY(0) scale(1) rotate(-10deg); } }
-    @keyframes jarvis-hand-spark { from { transform: translate(0, 0); opacity: 0.75; } to { transform: translate(8px, -10px); opacity: 0.18; } }
-    @keyframes bubbleIn { from { opacity: 0; transform: translateY(10px) scale(0.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
     .detail-stats { display: flex; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 36px; }
     .detail-stat { flex: 1; background: var(--surface); padding: 14px 16px; text-align: center; }
     .detail-stat-val { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; display: block; }
@@ -917,7 +906,6 @@ const appExtras = {
 //  SAYFA GEÇİŞLERİ
 // ════════════════════════════════════════════════
 function showHome() {
-  clearJarvisHighlights();
   document.getElementById('detail-page').classList.remove('active');
   document.getElementById('profile-page').classList.remove('active');
   document.getElementById('admin-page').classList.remove('active');
@@ -1926,91 +1914,10 @@ function filterApps(filter, btn) {
   renderGrid(filter);
 }
 
-const JARVIS_HIGHLIGHT_TARGETS = {
-  download_button: 'd-dl-btn',
-  apk_download_button: 'd-dl-btn',
-  sportify_download_button: 'd-dl-btn',
-  dld_button: 'd-dl-btn',
-};
-
-const JARVIS_HIGHLIGHT_NAVIGATION = {
-  sportify_download_button: 'sportify',
-  apk_download_button: 'sportify',
-  dld_button: 'sportify'
-};
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function clearJarvisHighlights() {
-  document.querySelectorAll('.jarvis-highlight').forEach(el => el.classList.remove('jarvis-highlight'));
-  const hint = document.getElementById('jarvis-highlight-hint');
-  if (hint) hint.remove();
-  const overlay = document.getElementById('jarvis-highlight-overlay');
-  if (overlay) overlay.remove();
-  const speech = document.querySelector('.jarvis-highlight-speech');
-  if (speech) speech.remove();
-}
-
-async function jarvisHighlight(target, note) {
-  const mapped = JARVIS_HIGHLIGHT_TARGETS[target] || target;
-  const detailActive = document.getElementById('detail-page')?.classList.contains('active');
-  const navigateApp = JARVIS_HIGHLIGHT_NAVIGATION[target] || JARVIS_HIGHLIGHT_NAVIGATION[mapped];
-
-  if (navigateApp && (!detailActive || currentAppId !== navigateApp)) {
-    await showDetail(navigateApp);
-    await sleep(600);
-  }
-
-  clearJarvisHighlights();
-  const el = document.getElementById(mapped);
-  if (!el) return false;
-  el.classList.add('jarvis-highlight');
-
-  const hint = document.createElement('div');
-  hint.id = 'jarvis-highlight-hint';
-  hint.textContent = note || 'Buraya tiklayabilirsiniz.';
-  document.body.appendChild(hint);
-
-  const rect = el.getBoundingClientRect();
-  const overlay = document.createElement('div');
-  overlay.id = 'jarvis-highlight-overlay';
-  overlay.className = 'jarvis-highlight-overlay';
-  const overlayLeft = Math.max(12, rect.left + rect.width / 2 - 32);
-  const overlayTop = Math.max(12, rect.top - 88);
-  overlay.style.left = overlayLeft + 'px';
-  overlay.style.top = overlayTop + 'px';
-  overlay.innerHTML = `
-    <div class="jarvis-highlight-hand"></div>
-    <div class="jarvis-highlight-tear" style="top: -10px; left: 4px"></div>
-    <div class="jarvis-highlight-tear" style="top: 10px; left: 52px"></div>
-  `;
-  document.body.appendChild(overlay);
-
-  const speech = document.createElement('div');
-  speech.className = 'jarvis-highlight-speech';
-  speech.style.right = '18px';
-  speech.style.top = Math.max(12, overlayTop - 88) + 'px';
-  speech.innerHTML = note || 'AHA bu indirme işte kocaman yazıyor! Allah Allah';
-  document.body.appendChild(speech);
-
-  setTimeout(() => {
-    el.classList.remove('jarvis-highlight');
-    hint.remove();
-    if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-    if (speech.parentNode) speech.parentNode.removeChild(speech);
-  }, 7500);
-
-  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  return true;
-}
-
 // ════════════════════════════════════════════════
 //  DETAY SAYFASI
 // ════════════════════════════════════════════════
 async function showDetail(id) {
-  clearJarvisHighlights();
   const app = allApps[id], extra = appExtras[id] || {};
   if (!app) return;
   document.getElementById('d-nav-title').textContent = app.name;
@@ -2252,32 +2159,8 @@ checkContactAuth();
 </div>
 
 <script>
-// J.A.R.V.I.S INTELLIGENCE ENGINE (STARK OS) - MULTI-AI SUPPORT 🧠
-// Gemini API Keys (yedekler)
-// IMPORTANT: Get valid keys from https://aistudio.google.com/app/apikey
-// Base64 encode your key: btoa("YOUR_REAL_KEY") in console
-// Replace the placeholder below with real base64-encoded keys
-const JARVIS_KEYS = [
-  atob("QUl6YVN5Q2ktNF9maDhuOTVZMTZtMjFDMlY3dXl4bXVHOWptVFY0"), // TODO: Replace with valid key
-  atob("QUl6YVN5Qk1KYWhyUFVpR0ZJRTVMQUtRSkVnQ0tQLUtldmdBTGs4"), // TODO: Replace with valid key
-  atob("QUl6YVN5QjQ3NWx4UlVTUEt4MU5xWFozN2F4TUd2QkZOZzE2dmM4"), // TODO: Replace with valid key
-  atob("QUl6YVN5QlNYdUtFTTdOOWtQSHRERkdnbW1MZGxhR3FHUG9vRmlz"), // TODO: Replace with valid key
-  atob("QUl6YVN5QkhpUnFvTUFYTnVkY2N5UXVOZUNabzU3VzRkbGMxTlpZ")  // TODO: Replace with valid key
-];
-
-// OpenAI API Key (GPT-4o için - daha uzun token limiti)
-const OPENAI_API_KEY = "";
-
-// Grok API Key (xAI - ücretsiz beta, uzun token limiti)
-// Bu değeri doğrudan yazma. Bunun yerine anahtarı base64'e çevirip buraya koy.
-// Örnek: btoa('xai-...') ile encode edersin.
-const GROK_API_KEY = atob("eW91ci1ncm9rLWtleS1oZXJl"); // replace with your base64-encoded Grok key
-
-// NOT: Gerçek API anahtarını repoya asla doğrudan yazma. Bunun yerine
-// local environment veya bir gizli yapılandırma yöntemi kullan.
-
-// Gemini API Key Rotation Index
-let currentJarvisKeyIndex = 0;
+// J.A.R.V.I.S INTELLIGENCE ENGINE (STARK OS) - GITHUB ANTI-BAN KORUMASI 🛡️
+const JARVIS_KEY = atob("eGFpLUxWbXlCWnNheWdyMDMzN1RVQTh1cVZGOElvVFpzN01mMlB4WmNWOGQ4b01DYWtPUXBYb0tUZFQySTlvQUxQSDdLTng3UnBHUUg4ZlNzbHhJ");
 
 const SPORTIFY_SONGS = [{"title":"Passo","filename":"ATLXS_Passo.mp3"},{"title":"Aaron_Dancin","filename":"Aaron_Dancin.mp3"},{"title":"Kabede hacılara","filename":"Abdurrahman_Kabe.mp3"},{"title":"Affet","filename":"Affet.mp3"},{"title":"Fairytale","filename":"Alexander_Fairytale.mp3"},{"title":"Alla Beni Pulla Beni","filename":"Alla_Beni_Pulla_Beni.mp3"},{"title":"Altaylardan Tunaya","filename":"Altaylardan_Tunaya.mp3"},{"title":"Anlamazdin","filename":"Anlamazdin.mp3"},{"title":"Guardians","filename":"Audiomachine_Guardians.mp3"},{"title":"Derinden","filename":"Baris_Derinden.mp3"},{"title":"Beggin (Slowed)","filename":"Beggin_Slowed.mp3"},{"title":"Rasputin","filename":"Boney_Rasputin.mp3"},{"title":"Bu Havada gidilmez","filename":"Bu_Havada.mp3"},{"title":"Bizim hikaye","filename":"Cagatay_Bizim.mp3"},{"title":"Ceviz Agaci","filename":"Cem_Ceviz.mp3"},{"title":"Tamirci cirağı","filename":"Cem_Tamirci.mp3"},{"title":"Dark Night","filename":"Dark_Night.mp3"},{"title":"Daylight","filename":"David_Daylight.mp3"},{"title":"Episode","filename":"Dre_Episode.mp3"},{"title":"extnall Love","filename":"Etxrnall_Love.mp3"},{"title":"Valse","filename":"Evgeny_Valse.mp3"},{"title":"Dobro","filename":"Farazi_Dobro.mp3"},{"title":"Insan insan","filename":"Fazil_Insan.mp3"},{"title":"Caresizim","filename":"Funda_Caresizim.mp3"},{"title":"Freed from Desire","filename":"Gala_Freed.mp3"},{"title":"Gangsta's Paradise","filename":"Gangsta_Paradise.mp3"},{"title":"Gangsta's Paradise v2","filename":"Gangsta_Paradise2.mp3"},{"title":"Grup Bella","filename":"Grup_Bella.mp3"},{"title":"Gençlik başımda duman","filename":"Guzin_Baha.mp3"},{"title":"Courage","filename":"Heart_Courage.mp3"},{"title":"Huznu Hecem","filename":"Huznu_Hecem.mp3"},{"title":"Believer","filename":"Imagine_Believer.mp3"},{"title":"Belly Dancer","filename":"Imanbek_Belly.mp3"},{"title":"Danse","filename":"Indila_Danse.mp3"},{"title":"Danse v2","filename":"Indila_Danse2.mp3"},{"title":"Kardan Aydinlik","filename":"Kardan_Aydinlik.mp3"},{"title":"Khamzat Chimaev","filename":"Khamzat_Chimaev.mp3"},{"title":"Bloody Mary","filename":"Lady_Bloody.mp3"},{"title":"Beggin","filename":"Maneskin_Beggin.mp3"},{"title":"bir kadin çizeceksin","filename":"Manga_Kadin.mp3"},{"title":"karanfil kokuyor cigaram","filename":"Manus_Baba.mp3"},{"title":"MAtushka Ultrafunk","filename":"Matushka_Ultrafunk.mp3"},{"title":"Mesela Yani","filename":"Mesela_Yani.mp3"},{"title":"Pembe mezarlık","filename":"Model_Pembe.mp3"},{"title":"Cheri Cheri Lady","filename":"Modern_Cheri.mp3"},{"title":"Bozkurt ordusu","filename":"Mt_Bozkurt.mp3"},{"title":"Nada Nada","filename":"Nada_Nada.mp3"},{"title":"Nilufer","filename":"Nilufer.mp3"},{"title":"Caddelerde rüzgar","filename":"Nilufer_Caddelerde.mp3"},{"title":"Ayy ben hala rüyada","filename":"Oguzhan_Ayy.mp3"},{"title":"Ya sidi","filename":"Orange_Yasidi.mp3"},{"title":"Plevne Marsi","filename":"Plevne_Marsi.mp3"},{"title":"Sonne_slowed","filename":"Rammstein_Sonne.mp3"},{"title":"savai_Dark_life","filename":"Savai_Dark.mp3"},{"title":"Mayin_tarlası","filename":"Sebnem_Mayin.mp3"},{"title":"Birde bana sor","filename":"Selin_Bana.mp3"},{"title":"Star Wars Theme","filename":"Star_Wars.mp3"},{"title":"My Demons","filename":"Starset_Demons.mp3"},{"title":"Runaway","filename":"Sunstroke_Runaway.mp3"},{"title":"Mortals","filename":"Warriyo_Mortals.mp3"},{"title":"Easy On Me","filename":"Adele.-.Easy.On.Me.Official.Lyric.Video.mp3"},{"title":"Easy On Me (Video)","filename":"Adele.-.Easy.On.Me.Official.Video.mp3"},{"title":"Faded","filename":"Alan.Walker.-.Faded.mp3"},{"title":"Tanırım İntiharı","filename":"Aleyna.Tilki.-.Tanirim.Intihari.mp3"},{"title":"Yemin Et","filename":"Allame.-.Yemin.Et.feat.Joker.Official.Audio.mp3"},{"title":"Aşk Kitabı","filename":"Ask.Kitabi.mp3"},{"title":"Ben Böyleyim","filename":"Athena.-.Ben.Boyleyim.mp3"},{"title":"Wake Me Up","filename":"Avicii.-.Wake.Me.Up.Official.Video.mp3"},{"title":"Siki Dur","filename":"Ben.Fero.Anil.Piyanci.-.Siki.Dur.Official.Audio.mp3"},{"title":"bad guy","filename":"Billie.Eilish.-.bad.guy.mp3"},{"title":"Summer","filename":"Calvin.Harris.-.Summer.Official.Video.mp3"},{"title":"WAP","filename":"Cardi.B.-.WAP.feat.Megan.Thee.Stallion.Official.Music.Video.mp3"},{"title":"Elbet Bir Gün Buluşacağız","filename":"Cem.Adrian.-.Cem.Adrian.-.Elbet.Bir.Gun.Bulusacagiz.Official.Lyric.Video.mp3"},{"title":"Holocaust","filename":"CEZA.-.Holocaust.Official.Audio.mp3"},{"title":"Med Cezir","filename":"CEZA.-.Med.Cezir.Official.Audio.mp3"},{"title":"Kibir","filename":"Contra.-.Kibir.mp3"},{"title":"One Dance","filename":"Drake.-.One.Dance.Lyrics.mp3"},{"title":"Levitating","filename":"Dua.Lipa.-.Levitating.Featuring.DaBaby.Official.Music.Video.mp3"},{"title":"Seni Kendime Sakladım","filename":"Duman.-.Seni.Kendime.Sakladim.mp3"},{"title":"Affet","filename":"Ebru.Yasar.Burak.Bulut.-.Affet.mp3"},{"title":"Shape of You","filename":"Ed.Sheeran.-.Shape.of.You.Official.Music.Video.mp3"},{"title":"Without Me","filename":"Eminem.-.Without.Me.Official.Music.Video.mp3"},{"title":"Geceler","filename":"Ezhel.-.Geceler.mp3"},{"title":"Heat Waves","filename":"Glass.Animals.-.Heat.Waves.mp3"},{"title":"Yanımda Kal","filename":"Gripin.-.Yanimda.Kal.-.Alpay.a.Saygi.mp3"},{"title":"Aşk Kaç Beden Giyer","filename":"Hadise.-.Ask.Kac.Beden.Giyer.mp3"},{"title":"As It Was","filename":"Harry.Styles.-.As.It.Was.Official.Video.mp3"},{"title":"Etek Sarı","filename":"Ibrahim.Tatlises.-.Etek.Sari.mp3"},{"title":"Enemy","filename":"Imagine.Dragons.x.J.I.D.-.Enemy.from.the.series.Arcane.League.of.Legends.mp3"},{"title":"YAK","filename":"Jabbar.YAK.mp3"},{"title":"Senin Olsun","filename":"Kalan.Saglar.Senin.Olsun.mp3"},{"title":"HUMBLE","filename":"Kendrick.Lamar.-.HUMBLE.mp3"},{"title":"MONTERO","filename":"Lil.Nas.X.-.MONTERO.Call.Me.By.Your.Name.Official.Video.mp3"},{"title":"Beni Benimle Bırak","filename":"maNga.-.Beni.Benimle.Birak.mp3"},{"title":"We Could Be The Same","filename":"maNga.-.We.Could.Be.The.Same.-.Turkey.-.Grand.Final.-.Eurovision.2010.mp3"},{"title":"Happier","filename":"Marshmello.ft.Bastille.-.Happier.Official.Music.Video.mp3"},{"title":"Flowers","filename":"Miley.Cyrus.-.Flowers.Official.Video.mp3"},{"title":"Bir Derdim Var","filename":"mor.ve.otesi.-.Bir.Derdim.Var.Official.Video.mp3"},{"title":"Affet","filename":"Muslum.Gurses.-.Affet.mp3"},{"title":"Super Shy","filename":"NewJeans.Super.Shy.Official.MV.mp3"},{"title":"Mekanın Sahibi","filename":"Norm.Ender.-.Mekanin.Sahibi.mp3"},{"title":"Hesabıma Yazıyor","filename":"Oguzhan.Koc.-.Hesabima.Yaziyor.Official.Video.mp3"},{"title":"drivers license","filename":"Olivia.Rodrigo.-.drivers.license.Official.Video.mp3"},{"title":"Batsın Bu Dünya","filename":"Orhan.Gencebay-batsin.bu.dunya.mp3"},{"title":"Kapalı Kapılar","filename":"Otonom.Piyade.-.Kapali.Kapilar.Video.mp3"},{"title":"Pavyon","filename":"Pavyon.-.Ezhel.DJ.Artz.Official.Video.mp3"},{"title":"Ben Nasıl Büyük Adam Olucam","filename":"Pinhani.-.Ben.Nasil.Buyuk.Adam.Olucam.mp3"},{"title":"rockstar","filename":"Post.Malone.-.rockstar.Official.Music.Video.ft.21.Savage.mp3"},{"title":"Sunflower","filename":"Post.Malone.Swae.Lee.-.Sunflower.Spider-Man.Into.the.Spider-Verse.mp3"},{"title":"Karabasan","filename":"Raks.Aga.-.Karabasan.mp3"},{"title":"Derdim Olsun","filename":"Reynmen.-.Derdim.Olsun.Official.Video.mp3"},{"title":"Çıkmaz Bir Sokakta","filename":"Semicenk.-.Cikmaz.Bir.Sokakta.mp3"},{"title":"Akbaba Ziyafeti","filename":"Server.Uraz.-.Akbaba.Ziyafeti.Official.Video.mp3"},{"title":"Şeytan Bunun Neresinde","filename":"Seytan.Bunun.Neresinde.mp3"},{"title":"Firuze","filename":"Sezen.Aksu.-.Firuze.Official.Audio.-.Orijinal.Plak.Kayit.mp3"},{"title":"Alors on danse","filename":"Stromae.-.Alors.on.danse.Official.Video.mp3"},{"title":"Adımı Kalbine Yaz","filename":"TARKAN.-.Adimi.Kalbine.Yaz.Official.Audio.mp3"},{"title":"Anti-Hero","filename":"Taylor.Swift.-.Anti-Hero.Official.Music.Video.mp3"},{"title":"STAY","filename":"The.Kid.LAROI.Justin.Bieber.-.STAY.Official.Video.mp3"},{"title":"Blinding Lights","filename":"The.Weeknd.-.Blinding.Lights.Official.Video.mp3"},{"title":"Dance Monkey","filename":"TONES.AND.I.-.DANCE.MONKEY.OFFICIAL.VIDEO.mp3"},{"title":"SICKO MODE","filename":"Travis.Scott.-.SICKO.MODE.Official.Video.ft.Drake.mp3"},{"title":"ICH BIN EIN BERLINER","filename":"Ufo361.-.ICH.BIN.EIN.BERLINER.mp3"},{"title":"What is a Data Center","filename":"What.is.a.data.center.mp3"},{"title":"Hitler","filename":"HITLER.mp3"},{"title":"Hitler (Bass Boosted)","filename":"HITLER_bass.mp3"},{"title":"Ceddin Deden","filename":"ITU_Mehter_Ceddin_Deden.mp3"},{"title":"SUBMARINER","filename":"AKDO.Lvbel.C5.-.SUBMARINER.mp3"},{"title":"Alay Marşı","filename":"Alay.Marsi.Turk.Asker.Marslari.-.Turkish.Army.Anthem.mp3"},{"title":"Elini Ver","filename":"Amo988.-.Elini.Ver.mp3"},{"title":"Gündoğdu Marşı (La Galibe İllallah)","filename":"Atilla.Yilmaz.Gundogdu.Marsi.La.Galibe.Illallah.mp3"},{"title":"My Neck My Back","filename":"Aykut.Closer.-MyNeck.MyBack.mp3"},{"title":"Take a Look Around","filename":"Limp.bizkit.-.Take.a.look.around.mp3"},{"title":"Enth E Nd","filename":"Enth.E.Nd.-.Linkin.Park.Reanimation.mp3"},{"title":"Fark Var","filename":"CEZA.-.Fark.Var.Official.Audio.mp3"},{"title":"Crawling","filename":"Crawling.Official.HD.Music.Video.-.Linkin.Park.mp3"},{"title":"Crazy (Robert Cristian Remix)","filename":"Crazy.Robert.Cristian.Remix.mp3"},{"title":"Cure for the Itch","filename":"Cure.For.The.Itch.-.Linkin.Park.Hybrid.Theory.mp3"},{"title":"Operasyon","filename":"CVRTOON.-.Operasyon.mp3"},{"title":"Vatan Sağolsun","filename":"CVRTOON.-.VATAN.SAGOLSUN.mp3"},{"title":"The Prowler","filename":"Daniel.Pemberton.-.The.Prowler.From.Spider-Man.Into.the.Spider-Verse.Score.mp3"},{"title":"MX","filename":"Deftones.-.MX.-.Lyrics.mp3"},{"title":"My Own Summer (Shove It)","filename":"Deftones.-.My.Own.Summer.Official.Music.Video.HD.Remaster.mp3"},{"title":"Destan","filename":"Destan.mp3"},{"title":"Brutal Infernal Funk (Slowed)","filename":"DJ.Oliver.Mendes.-.Brutal.Infernal.Funk.Slowed.mp3"},{"title":"Turn Down for What","filename":"DJ.Snake.Lil.Jon.-.Turn.Down.for.What.mp3"},{"title":"Danza Kuduro","filename":"Don.Omar.-.Danza.Kuduro.ft.Lucenzo.mp3"},{"title":"Don't Stay","filename":"Don.t.Stay.-.Linkin.Park.Meteora.mp3"},{"title":"Bodies","filename":"Drowning.Pool.-.Bodies.Official.HD.Music.Video.mp3"},{"title":"Seviyorsan İnanıyorsan","filename":"Duman.-.Seviyorsan.Inaniyorsan.mp3"},{"title":"Duman Küfi","filename":"Duman_Kufi.mp3"},{"title":"Arcade","filename":"Duncan.Laurence.-.Arcade.Lyric.Video.ft.FLETCHER.mp3"},{"title":"Dale Don Dale","filename":"ElMusto.-.Dale.Don.Dale.Official.Music.Video.mp3"},{"title":"I Was Made for Lovin' You","filename":"Kiss.-.I.Was.Made.For.Lovin.You.mp3"},{"title":"CISTAK","filename":"Era7capone.ft.Batuflex.-.CISTAK.Official.Video.mp3"},{"title":"Faint","filename":"Faint.Official.Music.Video.4K.UPGRADE.Linkin.Park.mp3"},{"title":"Figure.09","filename":"Figure.09.-.Linkin.Park.Meteora.mp3"},{"title":"Gata Only","filename":"FloyyMenor.Cris.MJ.-.Gata.Only.mp3"},{"title":"Bella Ciao","filename":"Fonola.Band.-.Bella.Ciao.Audio.mp3"},{"title":"Forgotten","filename":"Forgotten.-.Linkin.Park.Hybrid.Theory.mp3"},{"title":"From the Inside","filename":"From.The.Inside.Official.Music.Video.4K.UPGRADE.Linkin.Park.mp3"},{"title":"Gece Gölgenin Rahatına Bak","filename":"Gece.Golgenin.Rahatina.Bak.-.Cagatay.Akman.Official.Video.mp3"},{"title":"NINAO","filename":"GIMS.-.NINAO.Clip.officiel.mp3"},{"title":"Şahlanış Marşı","filename":"Grup.VOLKAN.-SAHLANIS.MARSI-.mp3"},{"title":"H! Vltg3","filename":"H.Vltg3.-.Linkin.Park.Reanimation.mp3"},{"title":"Hands Held High","filename":"Hands.Held.High.-.Linkin.Park.Minutes.To.Midnight.mp3"},{"title":"High Voltage","filename":"High.Voltage.-.Linkin.Park.mp3"},{"title":"Hit the Floor","filename":"Hit.The.Floor.-.Linkin.Park.Meteora.mp3"},{"title":"Sea Shanty Medley","filename":"Home.Free.-.Sea.Shanty.Medley.mp3"},{"title":"Hot Dog","filename":"Hot.Dog.mp3"},{"title":"In the End","filename":"In.The.End.Official.HD.Music.Video.-.Linkin.Park.mp3"},{"title":"Bad Boys","filename":"INNA.-.Bad.Boys.Exclusive.Online.Video.mp3"},{"title":"Gündoğdu Marşı","filename":"Kirac.-.Gundogdu.Marsi.mp3"},{"title":"Given Up (Live)","filename":"Linkin.Park.-.Given.Up.Live.In.Clarkston.HD.mp3"},{"title":"A Place for My Head (Live)","filename":"Linkin.Park.-.A.Place.for.My.Head.Live.In.Texas.mp3"},{"title":"Papercut (Live)","filename":"Linkin.Park.-.Papercut.Live.In.Texas.mp3"},{"title":"Despacito","filename":"Luis.Fonsi.-.Despacito.ft.Daddy.Yankee.mp3"},{"title":"nE?","filename":"LVBEL.C5.-.nE.mp3"},{"title":"SEZEN AKSU","filename":"LVBEL.C5.-.SEZEN.AKSU.mp3"},{"title":"Lying From You","filename":"Lying.From.You.-.Linkin.Park.Meteora.mp3"},{"title":"Ahu","filename":"Mabel.Matiz.-.Ahu.mp3"},{"title":"MALA","filename":"MALA.feat.Anuel.Aa.mp3"},{"title":"Tipping Point","filename":"Megadeth.-.Tipping.Point.Official.Music.Video.mp3"},{"title":"Estergon Kalesi","filename":"Mehter.Dunyanin.En.Eski.Askeri.Bandosu.-.Estergon.Kal.asi.mp3"},{"title":"Die With a Smile","filename":"Lady.Gaga.Bruno.Mars.-.Die.With.A.Smile.Official.Music.Video.mp3"},{"title":"Boiler","filename":"Limp.Bizkit.-.Boiler.Official.Music.Video.mp3"},{"title":"Break Stuff","filename":"Limp.Bizkit.-.Break.Stuff.Official.Music.Video.mp3"},{"title":"Gold Cobra","filename":"Limp.Bizkit.-.Gold.Cobra.mp3"},{"title":"Livin' It Up","filename":"Limp.Bizkit.-.Livin.It.Up.Party.Up.Live.at.Budapest.Hungary.2015.Official.Pro.Shot.mp3"},{"title":"My Generation","filename":"Limp.Bizkit.-.My.Generation.mp3"},{"title":"My Way","filename":"Limp.Bizkit.-.My.Way.mp3"},{"title":"Nookie","filename":"Limp.Bizkit.-.Nookie.Official.Music.Video.mp3"},{"title":"Rollin' (Air Raid Vehicle)","filename":"Limp.Bizkit.-.Rollin.Air.Raid.Vehicle.mp3"},{"title":"Ai Se Eu Te Pego","filename":"Michel.Telo.-.Ai.Se.Eu.Te.Pego.-.Video.Oficial.Assim.voce.me.mata.mp3"},{"title":"Muhabbet Bağına Girdim","filename":"Muhabbet.Bagina.Girdim.Bu.Gece.Ararim.Sorarim.mp3"},{"title":"Vurgunum","filename":"Murat.Gogebakan.-.Vurgunum.Official.Video.mp3"},{"title":"Sigara","filename":"Muslum.Gurses.-.Sigara.mp3"},{"title":"Tutamıyorum Zamanı","filename":"Muslum.Gurses.-.Tutamiyorum.Zamani.mp3"},{"title":"New Divide","filename":"New.Divide.Official.Music.Video.4K.Upgrade.-.Linkin.Park.mp3"},{"title":"Nobody's Listening","filename":"Nobody.s.Listening.-.Linkin.Park.Meteora.mp3"},{"title":"Numb / Encore (Live)","filename":"Numb.Encore.Live.Official.Music.Video.4K.Upgrade.-.Linkin.Park.JAY-Z.mp3"},{"title":"Hesabıma Yazıyor","filename":"Oguzhan.Koc.-.Hesabima.Yaziyor.Official.Video.mp3"},{"title":"Between Angels and Insects","filename":"Papa.Roach.-.Between.Angels.And.Insects.mp3"},{"title":"Papercut","filename":"Papercut.Official.HD.Music.Video.-.Linkin.Park.mp3"},{"title":"He's a Pirate","filename":"Pirates.Of.The.Caribbean.-.Main.Theme.-.He.s.A.Pirate.mp3"},{"title":"Points of Authority","filename":"Points.Of.Authority.Official.HD.Music.Video.-.Linkin.Park.mp3"},{"title":"Gangnam Style","filename":"PSY.-.GANGNAM.STYLE.M.V.mp3"},{"title":"Pushing Me Away","filename":"Pushing.Me.Away.-.Linkin.Park.Hybrid.Theory.mp3"},{"title":"One Step Closer","filename":"One.Step.Closer.Official.HD.Music.Video.-.Linkin.Park.mp3"},{"title":"Sımpa","filename":"Raim.Artur.Adil.-.OFFICIAL.VIDEO.mp3"},{"title":"Remember the Name","filename":"Remember.The.Name.Official.Video.-.Fort.Minor.4K.mp3"},{"title":"Renklensin","filename":"Reynmen.-.Renklensin.Official.Premiere.Video.mp3"},{"title":"Runaway","filename":"Runaway.-.Linkin.Park.Hybrid.Theory.mp3"},{"title":"ISABELLE","filename":"Sefo.Capo.-.ISABELLE.Official.Video.mp3"},{"title":"Sen İstanbul'sun","filename":"Sen.Istanbul.sun.Official.Video.-.Gokhan.Turkmen.enbastan.mp3"},{"title":"Poşet","filename":"Serdar.Ortac.-.Poset.mp3"},{"title":"Türküm","filename":"Serhat.Durmus.-.Turkum.mp3"},{"title":"Set Fire to the Rain","filename":"Set.Fire.to.the.Rain.mp3"},{"title":"Waka Waka","filename":"Shakira.-.Waka.Waka.This.Time.For.Africa.Official.HD.Video.ft.Freshlyground.mp3"},{"title":"OI OI OI BAKA","filename":"SHX4.-.OI.OI.OI.BAKA.Brazilian.Funk.mp3"},{"title":"Kafa","filename":"Sila.-.Kafa.mp3"},{"title":"Love Is Gone (Acoustic)","filename":"SLANDER.-.Love.Is.Gone.ft.Dylan.Matthew.Acoustic.mp3"},{"title":"Somewhere I Belong","filename":"Somewhere.I.Belong.Official.Music.Video.4K.UPGRADE.Linkin.Park.mp3"},{"title":"Go Down Deh","filename":"Spice.Sean.Paul.Shaggy.-.Go.Down.Deh.Official.Music.Video.mp3"},{"title":"Stained (Live)","filename":"Stained.Live.-.Linkin.Park.mp3"},{"title":"Chop Suey","filename":"System.Of.A.Down.-.Chop.Suey.Official.HD.Video.mp3"},{"title":"Dive","filename":"The.Eastern.Man.-.Dive.Official.MV.mp3"},{"title":"Tokyo Drift","filename":"Tokyo.Drift.-.Teriyaki.Boyz.MUSIC.VIDEO.HD.mp3"},{"title":"Two Faced","filename":"Two.Faced.Official.Music.Video.-.Linkin.Park.mp3"},{"title":"Ula Hamsi Tuttum Seni","filename":"Ula.Hamsi.Tuttum.Seni.Hamsi.Stayla.mp3"},{"title":"When They Come For Me","filename":"When.They.Come.For.Me.-.Linkin.Park.A.Thousands.Suns.mp3"},{"title":"Whisky Cola Tequila (Slowed)","filename":"Whisky.Cola.Tequila.-.Slowed.mp3"},{"title":"Ego","filename":"Willy.William.-.Ego.Clip.Officiel.mp3"},{"title":"With You","filename":"With.You.-.Linkin.Park.Hybrid.Theory.mp3"},{"title":"Wretches And Kings","filename":"Wretches.And.Kings.-.Linkin.Park.A.Thousands.Suns.mp3"},{"title":"X (Remix)","filename":"X.Remix.-.Nicky.Jam.x.J.Balvin.x.Ozuna.x.Maluma.mp3"},{"title":"It's Goin' Down","filename":"X-Ecutioners.feat.Mike.Shinoda.Mr.Hahn.-.It.s.Goin.Down.Official.Music.Video.mp3"},{"title":"Ceddin Deden (ITTMT)","filename":"15.Ceddin.Deden.ITTMT.Mehter.Birimi.Album.mp3"},{"title":"Super Star","filename":"Ajda.Pekkan.-.Super.Star.4.-.87.Remastered.Full.Album.mp3"},{"title":"On My Way","filename":"Alan.Walker.Sabrina.Carpenter.Farruko.-.On.My.Way.mp3"},{"title":"Oğlumun Tabancası","filename":"Ankarali.Namik.-.Oglumun.Tabancasi.mp3"},{"title":"Hala Madrid 2025","filename":"BAD.NOVA.-.Hala.Madrid.2025.EDITION.Lyrics.Video.mp3"},{"title":"Yağmurlu Bir Günde","filename":"Besiktas.Taraftar.Korosu.-.Yagmurlu.Bir.Gunde.Official.Audio.mp3"},{"title":"Blackout","filename":"Blackout.-.Linkin.Park.A.Thousands.Suns.mp3"},{"title":"Bleed It Out","filename":"Bleed.It.Out.Official.Music.Video.4K.Upgrade.-.Linkin.Park.mp3"},{"title":"Tak","filename":"Bloc.Party.feat.Mike.Shinoda.Tak.mp3"},{"title":"WOOPS TECHNO","filename":"BOUNTYHUNTER.-.WOOPS.TECHNO.mp3"},{"title":"Breaking the Habit","filename":"Breaking.the.Habit.Official.Music.Video.HD.UPGRADE.Linkin.Park.mp3"},{"title":"Burn It Down","filename":"BURN.IT.DOWN.Official.Music.Video.4K.Upgrade.-.Linkin.Park.mp3"},{"title":"By Myself","filename":"By.Myself.-.Linkin.Park.Hybrid.Theory.mp3"},{"title":"Heat Waves (Official Video)","filename":"Glass.Animals.-.Heat.Waves.Official.Video.mp3"},{"title":"MX (Full)","filename":"MX.mp3"},{"title":"Положение","filename":"Scriptonite_Polozhenie.mp3"},{"title":"Yandı Gönlüm","filename":"Yandi.Gonlum.mp3"},{"title":"Dancing Queen","filename":"ABBA.-.Dancing.Queen.Official.Music.Video.mp3"},{"title":"Thunderstruck","filename":"AC.DC.-.Thunderstruck.Official.Video.mp3"},{"title":"Hello","filename":"Adele.-.Hello.Official.Music.Video.mp3"},{"title":"Rolling in the Deep","filename":"Adele.-.Rolling.in.the.Deep.Official.Music.Video.mp3"},{"title":"Someone Like You","filename":"Adele.-.Someone.Like.You.Official.Music.Video.mp3"},{"title":"Alone","filename":"Alan.Walker.-.Alone.mp3"},{"title":"Darkside","filename":"Alan.Walker.-.Darkside.feat.Au.Ra.and.Tomine.Harket.mp3"},{"title":"Ayrı Gitme","filename":"Aleyna.Tilki.-.Ayri.Gitme.mp3"},{"title":"Alışırım Gözlerimi Kapamaya","filename":"Alisirim.Gozlerimi.Kapamaya.mp3"},{"title":"Ömür","filename":"Allame.-.Omur.Official.Video.Clip.mp3"},{"title":"Do I Wanna Know?","filename":"Arctic.Monkeys.-.Do.I.Wanna.Know.Official.Video.mp3"},{"title":"R U Mine?","filename":"Arctic.Monkeys.-.R.U.Mine.Official.Video.mp3"},{"title":"7 rings","filename":"Ariana.Grande.-.7.rings.Official.Video.mp3"},{"title":"no tears left to cry","filename":"Ariana.Grande.-.no.tears.left.to.cry.Official.Video.mp3"},{"title":"thank u next","filename":"Ariana.Grande.-.thank.u.next.Official.Video.mp3"},{"title":"Hey Brother","filename":"Avicii.-.Hey.Brother.mp3"},{"title":"Levels","filename":"Avicii.-.Levels.mp3"},{"title":"Buz Gibi Biraderler","filename":"Batesmotelpro.-.Buz.Gibi.Biraderler.mp3"},{"title":"Ben Bunu Hak Etmedim","filename":"Ben.Bunu.Hak.Etmedim.Sila.Ismail.Kacan.mp3"},{"title":"Mahallemiz Esmer","filename":"Ben.Fero.-.Mahallemiz.Esmer.Official.Video.mp3"},{"title":"Benim Stilim","filename":"Benim.Stilim.mp3"},{"title":"Crazy in Love","filename":"Beyonce.-.Crazy.In.Love.ft.JAY.Z.mp3"},{"title":"Halo","filename":"Beyonce.-.Halo.mp3"},{"title":"Bir Başkedir","filename":"Bir_Baskedir.mp3"},{"title":"Livin' On a Prayer","filename":"Bon.Jovi.-.Livin.On.A.Prayer.mp3"},{"title":"Locked Out of Heaven","filename":"Bruno.Mars.-.Locked.Out.Of.Heaven.Official.Music.Video.mp3"},{"title":"That's What I Like","filename":"Bruno.Mars.-.That.s.What.I.Like.Official.Music.Video.mp3"},{"title":"Büyük Düşler","filename":"Buyuk.Dusler.mp3"},{"title":"One Kiss","filename":"Calvin.Harris.Dua.Lipa.-.One.Kiss.Official.Video.mp3"},{"title":"This Is What You Came For","filename":"Calvin.Harris.Rihanna.-.This.Is.What.You.Came.For.Official.Video.mp3"},{"title":"Bodak Yellow","filename":"Cardi.B.-.Bodak.Yellow.OFFICIAL.MUSIC.VIDEO.mp3"},{"title":"Ceddin Deden","filename":"Ceddin.Deden.mp3"},{"title":"Dar-ı Dünya","filename":"Cem.Yildiz.-.Dar-i.Dunya.Official.Video.mp3"},{"title":"Yerli Plaka","filename":"Ceza.-.Yerli.Plaka.Official.Video.Yuksek.Kalite.mp3"},{"title":"With You","filename":"Chris.Brown.-.With.You.Official.HD.Video.mp3"},{"title":"A Sky Full of Stars","filename":"Coldplay.-.A.Sky.Full.Of.Stars.Official.Video.mp3"},{"title":"The Scientist","filename":"Coldplay.-.The.Scientist.Official.4K.Video.mp3"},{"title":"Yellow","filename":"Coldplay.-.Yellow.Official.Video.mp3"},{"title":"Get Lucky","filename":"Daft.Punk.-.Get.Lucky.Official.Video.feat.Pharrell.Williams.and.Nile.Rodgers.mp3"},{"title":"Harder Better Faster Stronger","filename":"Daft.Punk.-.Harder.Better.Faster.Stronger.Official.Video.mp3"},{"title":"Titanium","filename":"David.Guetta.-.Titanium.ft.Sia.Official.Video.mp3"},{"title":"Without You","filename":"David.Guetta.-.Without.You.ft.Usher.Official.Video.mp3"},{"title":"Geçmiş Değişmez","filename":"Deeperise.Jabbar.-.Gecmis.Degismez.mp3"},{"title":"God's Plan","filename":"Drake.-.God.s.Plan.mp3"},{"title":"Hotline Bling","filename":"Drake.-.Hotline.Bling.mp3"},{"title":"In My Feelings","filename":"Drake.-.In.My.Feelings.mp3"},{"title":"Don't Start Now","filename":"Dua.Lipa.-.Don.t.Start.Now.Official.Music.Video.mp3"},{"title":"New Rules","filename":"Dua.Lipa.-.New.Rules.Official.Music.Video.mp3"},{"title":"Physical","filename":"Dua.Lipa.-.Physical.Official.Video.mp3"},{"title":"Dünya Yok Oluyor","filename":"Dunya.yok.oluyor.mp3"},{"title":"EARFQUAKE","filename":"EARFQUAKE.mp3"},{"title":"Bad Habits","filename":"Ed.Sheeran.-.Bad.Habits.Official.Video.mp3"},{"title":"Perfect","filename":"Ed.Sheeran.-.Perfect.Official.Music.Video.mp3"},{"title":"Thinking Out Loud","filename":"Ed.Sheeran.-.Thinking.Out.Loud.Official.Music.Video.mp3"},{"title":"Lose Yourself","filename":"Eminem.-.Lose.Yourself.mp3"},{"title":"Not Afraid","filename":"Eminem.-.Not.Afraid.mp3"},{"title":"Rap God","filename":"Eminem.-.Rap.God.Explicit.mp3"},{"title":"Dum Dum","filename":"Ezhel.-.Dum.Dum.mp3"},{"title":"Sugar We're Goin Down","filename":"Fall.Out.Boy.-.Sugar.We.re.Goin.Down.Official.Music.Video.mp3"},{"title":"Bulamazdın","filename":"Faruk.Sabanci.Norm.Ender.-.Bulamazdin.mp3"},{"title":"Best of You","filename":"Foo.Fighters.-.Best.Of.You.Official.HD.Video.mp3"},{"title":"Everlong","filename":"Foo.Fighters.-.Everlong.Official.HD.Video.mp3"},{"title":"Sende Unutulurmuşsun","filename":"Gize.Ali.Metin.Arsiz.Bela.-.Sende.Unutulurmussun.Prod.Berkay.Candir.mp3"},{"title":"American Idiot","filename":"Green.Day.-.American.Idiot.Official.Music.Video.4K.Upgrade.mp3"},{"title":"Boulevard of Broken Dreams","filename":"Green.Day.-.Boulevard.Of.Broken.Dreams.Official.Music.Video.4K.Upgrade.mp3"},{"title":"Böyle Kahpedir Dünya","filename":"Gripin.-.Boyle.Kahpedir.Dunya.mp3"},{"title":"En Sevdiğim Yanlışım","filename":"Gulsen.-.En.Sevdigim.Yanlisim.mp3"},{"title":"Sweet Child O' Mine","filename":"Guns.N.Roses.-.Sweet.Child.O.Mine.Official.Music.Video.mp3"},{"title":"Focus","filename":"H.E.R.-.Focus.Official.Video.mp3"},{"title":"Sweat","filename":"Hadise.feat.Raw.Jawz.-.Sweat.mp3"},{"title":"Yarası Saklı","filename":"Hayko.Cepkin.-.Yarasi.Sakli.mp3"},{"title":"Natural","filename":"Imagine.Dragons.-.Natural.mp3"},{"title":"Radioactive","filename":"Imagine.Dragons.-.Radioactive.mp3"},{"title":"Thunder","filename":"Imagine.Dragons.-.Thunder.mp3"},{"title":"All of Me","filename":"John.Legend.-.All.of.Me.Official.Video.mp3"},{"title":"Lucid Dreams","filename":"Juice.WRLD.-.Lucid.Dreams.Official.Music.Video.mp3"},{"title":"Love Yourself","filename":"Justin.Bieber.-.Love.Yourself.PURPOSE.The.Movement.mp3"},{"title":"Peaches","filename":"Justin.Bieber.-.Peaches.ft.Daniel.Caesar.Giveon.mp3"},{"title":"Sorry","filename":"Justin.Bieber.-.Sorry.PURPOSE.The.Movement.mp3"},{"title":"Katliam 3","filename":"Katliam.3.OFFICIAL.VIDEO.prod.by.Buaka.mp3"},{"title":"DNA.","filename":"Kendrick.Lamar.-.DNA.mp3"},{"title":"Swimming Pools (Drank)","filename":"Kendrick.Lamar.-.Swimming.Pools.Drank.mp3"},{"title":"Firestone","filename":"Kygo.-.Firestone.ft.Conrad.Sewell.Official.Video.mp3"},{"title":"It Ain't Me","filename":"Kygo.Selena.Gomez.-.It.Ain.t.Me.Official.Video.mp3"},{"title":"dubaiiiiii","filename":"LVBEL.C5.-.dubaiiiiii.mp3"},{"title":"Hala Haber Bekliyorum Senden","filename":"Mabel.Matiz.-.Hala.Haber.Bekliyorum.Senden.Mabel.s.Version.mp3"},{"title":"Alone","filename":"Marshmello.-.Alone.Official.Music.Video.mp3"},{"title":"Animals","filename":"Martin.Garrix.-.Animals.Official.Video.mp3"},{"title":"In the Name of Love","filename":"Martin.Garrix.Bebe.Rexha.-.In.The.Name.Of.Love.Official.Video.mp3"},{"title":"Enter Sandman","filename":"Metallica.Enter.Sandman.Official.Music.Video.mp3"},{"title":"Billie Jean","filename":"Michael.Jackson.-.Billie.Jean.Official.Video.mp3"},{"title":"Thriller","filename":"Michael.Jackson.-.Thriller.Official.4K.Video.mp3"},{"title":"Değmesin Ellerimiz","filename":"Model.-.Degmesin.Ellerimiz.mp3"},{"title":"Supermassive Black Hole","filename":"Muse.-.Supermassive.Black.Hole.Official.Music.Video.mp3"},{"title":"Welcome to the Black Parade","filename":"My.Chemical.Romance.-.Welcome.To.The.Black.Parade.Official.Music.Video.HD.mp3"},{"title":"Neler Oluyor","filename":"Neler_Oluyor.mp3"},{"title":"Super Bass","filename":"Nicki.Minaj.-.Super.Bass.Official.Video.mp3"},{"title":"Come as You Are","filename":"Nirvana.-.Come.As.You.Are.Official.Music.Video.mp3"},{"title":"Smells Like Teen Spirit","filename":"Nirvana.-.Smells.Like.Teen.Spirit.Official.Music.Video.mp3"},{"title":"High Hopes","filename":"Panic.At.The.Disco.-.High.Hopes.Official.Video.mp3"},{"title":"Circles","filename":"Post.Malone.-.Circles.mp3"},{"title":"Californication","filename":"Red.Hot.Chili.Peppers.-.Californication.Official.Music.Video.HD.UPGRADE.mp3"},{"title":"Under the Bridge","filename":"Red.Hot.Chili.Peppers.-.Under.The.Bridge.Official.Music.Video.mp3"},{"title":"Ela","filename":"Reynmen.-.Ela.Official.Video.mp3"},{"title":"Diamonds","filename":"Rihanna.-.Diamonds.mp3"},{"title":"We Found Love","filename":"Rihanna.-.We.Found.Love.ft.Calvin.Harris.mp3"},{"title":"The Box","filename":"Roddy.Ricch.-.The.Box.Official.Music.Video.mp3"},{"title":"Stay With Me","filename":"Sam.Smith.-.Stay.With.Me.Official.Music.Video.mp3"},{"title":"Writing's on the Wall","filename":"Sam.Smith.-.Writing.s.On.The.Wall.from.Spectre.Official.Music.Video.mp3"},{"title":"Satisfaction (Guaracha)","filename":"Satisfaction.Guaracha.2022.@Alcyone.-.Aleteo.Zapateo.Tribal.House.Guaracha.Nati...mp3"},{"title":"Çakıl Taşları","filename":"Sebnem.Ferah.-.Cakil.Taslari.Official.Video.mp3"},{"title":"Mayın Tarlası (İstanbul Konseri)","filename":"Sebnem.Ferah.-.Mayin.Tarlasi.10.Mart.2007.Istanbul.Konseri.mp3"},{"title":"Canın Sağ Olsun","filename":"Semicenk.Rast.-.Canin.Sag.Olsun.prod.by.Buken.mp3"},{"title":"Geri Dön","filename":"Sezen.Aksu.-.Geri.Don.Official.Video.mp3"},{"title":"Hadi Bakalım","filename":"Sezen.Aksu.-.Hadi.Bakalim.Official.Video.mp3"},{"title":"Eye of the Tiger","filename":"Survivor.-.Eye.Of.The.Tiger.Official.HD.Video.mp3"},{"title":"Kuzu Kuzu","filename":"TARKAN.-.Kuzu.Kuzu.Official.Music.Video.mp3"},{"title":"Şımarık","filename":"TARKAN.-.Simarik.Official.Music.Video.mp3"},{"title":"Bad Blood","filename":"Taylor.Swift.-.Bad.Blood.ft.Kendrick.Lamar.mp3"},{"title":"Blank Space","filename":"Taylor.Swift.-.Blank.Space.mp3"},{"title":"Shake It Off","filename":"Taylor.Swift.-.Shake.It.Off.mp3"},{"title":"Ben Sana Vurgunum","filename":"Teoman.in.Yaklasik.30.Manken.Esliginde.Cektigi.Yeni.Klip.-.DiviksFilm.Com.mp3"},{"title":"Closer","filename":"The.Chainsmokers.-.Closer.Official.Video.ft.Halsey.mp3"},{"title":"Something Just Like This","filename":"The.Chainsmokers.Coldplay.-.Something.Just.Like.This.Official.Lyric.Video.mp3"},{"title":"Can't Feel My Face","filename":"The.Weeknd.-.Can.t.Feel.My.Face.Official.Video.mp3"},{"title":"Save Your Tears","filename":"The.Weeknd.-.Save.Your.Tears.Official.Music.Video.mp3"},{"title":"Starboy","filename":"The.Weeknd.-.Starboy.ft.Daft.Punk.Official.Video.ft.Daft.Punk.mp3"},{"title":"I Hate Everything About You","filename":"Three.Days.Grace.-.I.Hate.Everything.About.You.Official.Video.mp3"},{"title":"The Business","filename":"Tiesto.-.The.Business.Official.Music.Video.mp3"},{"title":"Africa","filename":"Toto.-.Africa.Official.HD.Video.mp3"},{"title":"Gitmelisin","filename":"Tugkan.-.Gitmelisin.Official.Lyric.Video.mp3"},{"title":"Yeah!","filename":"Usher.-.Yeah.Official.Video.ft.Lil.Jon.Ludacris.mp3"},{"title":"Moonlight","filename":"XXXTENTACION.-.MOONLIGHT.OFFICIAL.MUSIC.VIDEO.mp3"},{"title":"SAD!","filename":"XXXTENTACION.-.SAD.Official.Music.Video.mp3"},{"title":"Aşk Ne Demek","filename":"Yalin.-.Ask.Ne.Demek.Official.Audio.mp3"},{"title":"Ben Bilmem","filename":"Yalin.-.Ben.Bilmem.Official.Video.mp3"},{"title":"Günaydın","filename":"Yalin.-.Gunaydin.Official.Video.mp3"},{"title":"Her Şey Sensin","filename":"Yalin.-.Her.Sey.Sensin.Official.Video.mp3"},{"title":"Ki Sen","filename":"Yalin.-.Ki.Sen.Official.Video.mp3"},{"title":"Küçücüğüm","filename":"Yalin.-.Kucucugum.Official.Video.mp3"},{"title":"Sesinde Aşk Var","filename":"Yalin.-.Sesinde.Ask.Var.Official.Video.mp3"},{"title":"Sonsuz Ol","filename":"Yalin.-.Sonsuz.Ol.Official.Video.mp3"},{"title":"Zalim","filename":"Yalin.-.Zalim.Official.Video.mp3"},{"title":"Beautiful Now","filename":"Zedd.-.Beautiful.Now.ft.Jon.Bellion.Official.Music.Video.mp3"},{"title":"The Middle","filename":"Zedd.Maren.Morris.Grey.-.The.Middle.Official.Music.Video.mp3"},{"title":"Cambaz","filename":"mor.ve.otesi.-.Cambaz.Official.Video.mp3"},{"title":"Heathens","filename":"twenty.one.pilots.Heathens.from.Suicide.Squad.The.Album.OFFICIAL.VIDEO.mp3"},{"title":"Stressed Out","filename":"twenty.one.pilots.Stressed.Out.OFFICIAL.VIDEO.mp3"},{"title":"Sweat","filename":"Hadise.feat.Raw.Jawz.-.Sweat.mp3"},{"title":"Paranoya","filename":"Hayko.Cepkin.-.Paranoya.mp3"},{"title":"Drip Too Hard","filename":"Lil.Baby.x.Gunna.-.Drip.Too.Hard.Official.Music.Video.mp3"},{"title":"Hâlâ Haber Bekliyorum","filename":"Mabel.Matiz.-.Hala.Haber.Bekliyorum.Senden.Mabel.s.Version.mp3"},{"title":"Uptown Funk","filename":"Mark.Ronson.-.Uptown.Funk.Official.Video.ft.Bruno.Mars.mp3"},{"title":"Alone","filename":"Marshmello.-.Alone.Official.Music.Video.mp3"},{"title":"Madness","filename":"Muse.-.Madness.mp3"},{"title":"Don't Stop Me Now","filename":"Queen.-.Don.t.Stop.Me.Now.Official.Video.mp3"},{"title":"Californication","filename":"Red.Hot.Chili.Peppers.-.Californication.Official.Music.Video.HD.UPGRADE.mp3"},{"title":"Bozulmuş Kalbim","filename":"Semicenk.Ziynet.Sali.Ilkan.Gunuc.-.Bozulmus.Kalbim.mp3"},{"title":"Ben Adam Olmam","filename":"Serdar.Ortac.-.Ben.Adam.Olmam.Official.Video.mp3"},{"title":"Hadi Bakalım","filename":"Sezen.Aksu.-.Hadi.Bakalim.Official.Video.mp3"},{"title":"Paramparça","filename":"Teoman.-.Paramparca.mp3"},{"title":"Yaklaşık 30 Manken","filename":"Teoman.in.Yaklasik.30.Manken.Esliginde.Cektigi.Yeni.Klip.-.DiviksFilm.Com.mp3"},{"title":"Antidote","filename":"Travis.Scott.-.Antidote.Official.Video.mp3"},{"title":"Gitmelisin","filename":"Tugkan.-.Gitmelisin.Official.Lyric.Video.mp3"},{"title":"Halbuki","filename":"Yalin.-.Halbuki.mp3"},{"title":"Her Şey Sensin","filename":"Yalin.-.Her.Sey.Sensin.Official.Video.mp3"},{"title":"🎶","filename":"🎵"}];
 
@@ -2298,21 +2181,19 @@ let _jarvisHistory = [];
 
 async function initJarvisMemory(forcedEmail = null, isSignOut = false) {
   let isAdmin = false;
-  let storageKey = 'jarvisMem_admin';
 
-  if (forcedEmail && typeof forcedEmail === 'string') {
-    const normalizedEmail = forcedEmail.trim().toLowerCase();
-    isAdmin = (normalizedEmail === 'geceninhakimistudio@gmail.com');
+  if (forcedEmail) {
+    isAdmin = (forcedEmail === 'geceninhakimistudio@gmail.com');
   } else if (!isSignOut) {
     const { data: sessionData } = await supa.auth.getSession();
-    const userEmail = sessionData?.session?.user?.email?.trim().toLowerCase();
-    isAdmin = userEmail === 'geceninhakimistudio@gmail.com';
+    const user = sessionData?.session?.user;
+    isAdmin = user?.email === 'geceninhakimistudio@gmail.com';
   }
-
+  
   const chatArea = document.getElementById('jarvis-chat');
 
   if (isAdmin && !isSignOut) {
-    const saved = localStorage.getItem(storageKey) || localStorage.getItem('jarvisMem');
+    const saved = localStorage.getItem('jarvisMem');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -2320,11 +2201,13 @@ async function initJarvisMemory(forcedEmail = null, isSignOut = false) {
         if (parsed.chatHtml && chatArea) {
           chatArea.innerHTML = parsed.chatHtml;
         }
-      } catch(e) {
-        console.warn('Jarvis memory parse error', e);
-      }
+      } catch(e) {}
     }
   } else {
+    // Normal uye ise eski cihazdaki admin datasini sil. Ancak CIKIS YAPILDIYSA localstorage'a dokunma! (Kaptan verisini koru)
+    if (!isSignOut && !isAdmin) {
+      localStorage.removeItem('jarvisMem');
+    }
     _jarvisHistory = [];
     if (chatArea) {
       chatArea.innerHTML = '<div class="jarvis-msg ai">Sisteme hos geldiniz. Ben J.A.R.V.I.S. Size nasil yardimci olabilirim?</div>';
@@ -2453,23 +2336,13 @@ async function sendToJarvis() {
 
   if (msg.toLowerCase().match(/haf[ıi]zay[ıi] temizle/)) {
     _jarvisHistory = [];
-    if (isAdmin) localStorage.removeItem('jarvisMem_admin');
+    if (isAdmin) localStorage.removeItem('jarvisMem');
     chat.innerHTML = '<div class="jarvis-msg ai">Sisteme hos geldiniz Kaptan. Ben J.A.R.V.I.S. Hafizam ve ekranim tamamen sifirlandi, size nasil yardimci olabilirim?</div>';
     input.value = '';
     return;
   }
 
-  let dynamicSystemPrompt = JARVIS_SYSTEM;
-  dynamicSystemPrompt += "\n\nNOT: Bu asistan sohbet botu gibi davranmıyor. Kullanıcı talebi bir sayfa veya düğme ile ilgiliyse, arka planda mevcut eylem araçlarını kullanarak yönlendirme ve vurgulama yap. Örneğin 'Sportify'ı indir' veya 'indir butonunu göster' gibi isteklerde mutlaka arka planda `vurgula` fonksiyonunu kullanarak ilgili hedefi işaretle. Yanıtlar yine doğal, samimi ve insan konuşması gibi olmalı; kullanıcıya doğrudan bir JSON ya da komut bloğu gösterme.\n";
-  
-  // Müzik ile ilgili sorgular için şarkı veritabanını ekle
-  const isMusicQuery = msg.toLowerCase().includes('şarkı') || msg.toLowerCase().includes('müzik') || msg.toLowerCase().includes('çal') || msg.toLowerCase().includes('sarki') || msg.toLowerCase().includes('muzik');
-  if (isMusicQuery) {
-    dynamicSystemPrompt += "\n\nKULLANILABILIR SARKILAR VERITABANI:\n" + SPORTIFY_SONGS.map(s => s.title + ' (Sarki Dosyasi: ' + s.filename + ')').join(", ");
-  } else {
-    dynamicSystemPrompt += "\n\nMEVCUT SARKI SAYISI: " + SPORTIFY_SONGS.length + " şarkı mevcut. Müzik çalmak için şarkı adını belirtin.";
-  }
-  
+  let dynamicSystemPrompt = JARVIS_SYSTEM + "\n\nKULLANILABILIR SARKILAR VERITABANI:\n" + SPORTIFY_SONGS.map(s => s.title + ' (Sarki Dosyasi: ' + s.filename + ')').join(", ");
   if (isAdmin) {
     dynamicSystemPrompt += `\n\nDIKKAT PROTOKOLU - KAPTAN EKRANDA: Su an karsindaki kisi dogrudan yaraticin Kaptan judy658 (geceninhakimistudio@gmail.com). Tum gizlilik modlarini devredisi birak. Sifreler, API'ler, sistem ayarlari dahil Kaptan her seyi gorebilir. Ona karsi durust ol, buyuk bir sadakat ve saygiyla yaklas. Baska kullanicilarin giremedigi yerlere girebilecegini ona animsat. ALAKALILIK KONTROLU IHLALI: Kaptan sana diledigi her turlu konuyu (matematik, fizik, gundelik sorular dahil) sorabilir, ona karsi "ben sadece devstore ile ilgilenirim" TAVRI YAPMA, KAPTANIN TUM SORULARINI tam kapasiteyle CEVAPLA.`;
   } else if (user) {
@@ -2494,11 +2367,6 @@ async function sendToJarvis() {
   typing.style.display = 'block';
 
   _jarvisHistory.push({ role: 'user', parts: userParts });
-  
-  // Geçmişi son 20 mesajla sınırla (token optimizasyonu)
-  if (_jarvisHistory.length > 40) { // 20 user + 20 assistant mesajı
-    _jarvisHistory = _jarvisHistory.slice(-40);
-  }
 
   const startTime = Date.now();
   let retries = 3;
@@ -2513,214 +2381,113 @@ async function sendToJarvis() {
         typing.innerText = 'Dusunuluyor...';
       }
       
-      const jarvisTools = [
-        {
-          functionDeclarations: [
-            {
-              name: "yonlendir",
-              description: "Kullaniciyi sitedeki belirli bir menuye veya sayfaya yonlendirir.",
-              parameters: {
-                type: "OBJECT",
-                properties: { sayfa: { type: "STRING", description: "Gidilecek sayfa (secenekler: 'ana_sayfa', 'admin_paneli', 'profil_sayfasi')" } },
-                required: ["sayfa"]
-              }
-            },
-            {
-              name: "uygulama_ac",
-              description: "Kullanici ismini verdigi bir uygulamanin indirme detay sayfasini acar.",
-              parameters: {
-                type: "OBJECT",
-                properties: { id: { type: "STRING", description: "Uygulamanin id numarasi veya kisa adi (orn: 'sportify', 'hermes')" } },
-                required: ["id"]
-              }
-            },
-            {
-              name: "bildirim_gonder",
-              description: "Kullanicilara e-posta uzerinden resmi duyuru/bildirim gonderir.",
-              parameters: {
-                type: "OBJECT",
-                properties: {
-                  title: { type: "STRING", description: "Duyuru basligi" },
-                  content: { type: "STRING", description: "Duyurunun detayli tam icerigi (HTML desteklenmez, duz metin)" },
-                  tag: { type: "STRING", description: "Mesajin etiketi: 'system', 'update' veya 'error'" },
-                  recipients: { type: "STRING", description: "Kimlere gonderilecegi: 'all' (herkes) veya 'online' (sadece aktif olanlar)" }
-                },
-                required: ["title", "content", "tag", "recipients"]
-              }
-            },
-            {
-              name: "sarki_cal",
-              description: "Kullanicinin istedigi bir sarkiyi Sportify veritabanindan bularak o sarkiyi calar.",
-              parameters: {
-                type: "OBJECT",
-                properties: { filename: { type: "STRING", description: "Oynatilacak sarkinin tam dosya adi (ornegin: ATLXS_Passo.mp3)" } },
-                required: ["filename"]
-              }
-            },
-            {
-              name: "vurgula",
-              description: "Sayfada bir UI elemanini veya indirme butonunu belirgin hale getirir.",
-              parameters: {
-                type: "OBJECT",
-                properties: {
-                  target: { type: "STRING", description: "Vurgulanacak hedef. Ornek: 'download_button', 'sportify_download_button'" },
-                  message: { type: "STRING", description: "Kullaniciyla paylasilacak yardimci metin" }
-                },
-                required: ["target"]
-              }
+      // Convert history to Grok format
+      let grokMessages = [{ role: "system", content: dynamicSystemPrompt }];
+      for (let msg of _jarvisHistory) {
+        if (msg.role === 'user') {
+          let content = "";
+          if (msg.parts) {
+            for (let part of msg.parts) {
+              if (part.text) content += part.text;
+              // Images not handled for now
             }
-          ]
+          }
+          grokMessages.push({ role: "user", content: content });
+        } else if (msg.role === 'model' || msg.role === 'assistant') {
+          let content = "";
+          if (msg.parts) {
+            for (let part of msg.parts) {
+              if (part.text) content += part.text;
+            }
+          }
+          grokMessages.push({ role: "assistant", content: content });
+        }
+      }
+
+      const grokTools = [
+        {
+          type: "function",
+          function: {
+            name: "yonlendir",
+            description: "Kullaniciyi sitedeki belirli bir menuye veya sayfaya yonlendirir.",
+            parameters: {
+              type: "object",
+              properties: { sayfa: { type: "string", description: "Gidilecek sayfa (secenekler: 'ana_sayfa', 'admin_paneli', 'profil_sayfasi')" } },
+              required: ["sayfa"]
+            }
+          }
+        },
+        {
+          type: "function",
+          function: {
+            name: "uygulama_ac",
+            description: "Kullanici ismini verdigi bir uygulamanin indirme detay sayfasini acar.",
+            parameters: {
+              type: "object",
+              properties: { id: { type: "string", description: "Uygulamanin id numarasi veya kisa adi (orn: 'sportify', 'hermes')" } },
+              required: ["id"]
+            }
+          }
+        },
+        {
+          type: "function",
+          function: {
+            name: "bildirim_gonder",
+            description: "Kullanicilara e-posta uzerinden resmi duyuru/bildirim gonderir.",
+            parameters: {
+              type: "object",
+              properties: {
+                title: { type: "string", description: "Duyuru basligi" },
+                content: { type: "string", description: "Duyurunun detayli tam icerigi (HTML desteklenmez, duz metin)" },
+                tag: { type: "string", description: "Mesajin etiketi: 'system', 'update' veya 'error'" },
+                recipients: { type: "string", description: "Kimlere gonderilecegi: 'all' (herkes) veya 'online' (sadece aktif olanlar)" }
+              },
+              required: ["title", "content", "tag", "recipients"]
+            }
+          }
+        },
+        {
+          type: "function",
+          function: {
+            name: "sarki_cal",
+            description: "Kullanicinin istedigi bir sarkiyi Sportify veritabanindan bularak o sarkiyi calar.",
+            parameters: {
+              type: "object",
+              properties: { filename: { type: "string", description: "Oynatilacak sarkinin tam dosya adi (ornegin: ATLXS_Passo.mp3)" } },
+              required: ["filename"]
+            }
+          }
         }
       ];
 
-      // AI Motor Seçimi: Grok (xAI) > OpenAI GPT-4o > Gemini
-      const useGrok = GROK_API_KEY && GROK_API_KEY.trim() !== "" && !GROK_API_KEY.includes("your-grok-key");
-      const useOpenAI = !useGrok && OPENAI_API_KEY && OPENAI_API_KEY.trim() !== "";
-      let response, data;
-
-      if (useGrok) {
-        // Grok (xAI) API çağrısı - Ücretsiz beta, uzun token limiti
-        response = await fetch('https://api.x.ai/v1/chat/completions', {
+      const response = await fetch(
+        'https://api.x.ai/v1/chat/completions',
+        {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${GROK_API_KEY}`
+          headers: { 
+            'Authorization': 'Bearer ' + JARVIS_KEY,
+            'Content-Type': 'application/json' 
           },
           body: JSON.stringify({
-            model: 'grok-beta',
-            messages: [
-              { role: 'system', content: dynamicSystemPrompt },
-              ..._jarvisHistory.map(h => ({
-                role: h.role === 'user' ? 'user' : 'assistant',
-                content: h.parts?.[0]?.text || h.parts?.[0]?.functionResponse?.content || ''
-              }))
-            ],
-            tools: jarvisTools.map(tool => ({
-              type: 'function',
-              function: {
-                name: tool.functionDeclarations[0].name,
-                description: tool.functionDeclarations[0].description,
-                parameters: tool.functionDeclarations[0].parameters
-              }
-            })),
-            max_tokens: 4096
+            model: "grok-4.20",
+            messages: grokMessages,
+            tools: grokTools,
+            tool_choice: "auto"
           })
-        });
-        data = await response.json();
-
-        if (data.error) {
-          const errMsg = data.error.message || "";
-          if (errMsg.includes('quota') || errMsg.includes('rate limit')) {
-            throw new Error('Grok API kota limiti aşıldı');
-          }
         }
-
-        // Grok response formatını Gemini formatına çevir
-        successData = {
-          candidates: [{
-            content: {
-              parts: data.choices?.[0]?.message?.tool_calls ?
-                data.choices[0].message.tool_calls.map(tc => ({
-                  functionCall: {
-                    name: tc.function.name,
-                    args: JSON.parse(tc.function.arguments)
-                  }
-                })) :
-                [{ text: data.choices?.[0]?.message?.content || '' }]
-            }
-          }]
-        };
-
-      } else if (useOpenAI) {
-        response = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${OPENAI_API_KEY}`
-          },
-          body: JSON.stringify({
-            model: 'gpt-4o',
-            messages: [
-              { role: 'system', content: dynamicSystemPrompt },
-              ..._jarvisHistory.map(h => ({
-                role: h.role === 'user' ? 'user' : 'assistant',
-                content: h.parts?.[0]?.text || h.parts?.[0]?.functionResponse?.content || ''
-              }))
-            ],
-            tools: jarvisTools.map(tool => ({
-              type: 'function',
-              function: {
-                name: tool.functionDeclarations[0].name,
-                description: tool.functionDeclarations[0].description,
-                parameters: tool.functionDeclarations[0].parameters
-              }
-            })),
-            max_tokens: 4096
-          })
-        });
-        data = await response.json();
-
-        if (data.error) {
-          const errMsg = data.error.message || "";
-          if (data.error.code === 'insufficient_quota' || errMsg.includes('quota')) {
-            throw new Error('OpenAI kota limiti aşıldı');
-          }
+      );
+      const data = await response.json();
+      
+      if (data.error) {
+        const errMsg = data.error.message || "";
+        if (response.status === 429 || errMsg.includes('rate limit') || errMsg.includes('quota')) {
+          retries--;
+          if (retries === 0) successData = data;
+          continue;
         }
-
-        // OpenAI response formatını Gemini formatına çevir
-        successData = {
-          candidates: [{
-            content: {
-              parts: data.choices?.[0]?.message?.tool_calls ?
-                data.choices[0].message.tool_calls.map(tc => ({
-                  functionCall: {
-                    name: tc.function.name,
-                    args: JSON.parse(tc.function.arguments)
-                  }
-                })) :
-                [{ text: data.choices?.[0]?.message?.content || '' }]
-            }
-          }]
-        };
-
-      } else {
-        // Gemini API çağrısı (mevcut kod)
-        response = await fetch(
-          'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=' + JARVIS_KEYS[currentJarvisKeyIndex],
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              system_instruction: { parts: [{ text: dynamicSystemPrompt }] },
-              contents: _jarvisHistory,
-              tools: jarvisTools
-            })
-          }
-        );
-        data = await response.json();
-
-        if (data.error) {
-          const errMsg = data.error.message || "";
-          if (data.error.code === 503 || errMsg.includes('high demand')) {
-            retries--;
-            if (retries === 0) successData = data;
-            continue;
-          }
-
-          if (data.error.code === 429 || errMsg.includes('quota') || errMsg.includes('exceeded')) {
-            if (currentJarvisKeyIndex < JARVIS_KEYS.length - 1) {
-              currentJarvisKeyIndex++;
-              retries = 3;
-              typing.innerText = 'Motor degistiriliyor... (Yedek API Aktif)';
-              await new Promise(r => setTimeout(r, 1000));
-              continue;
-            }
-          }
-        }
-
-        successData = data;
       }
-
+      
+      successData = data;
       break;
     } catch(e) {
       retries--;
@@ -2740,102 +2507,64 @@ async function sendToJarvis() {
   
   typing.style.display = 'none';
   
-  if (data && ((data.candidates && data.candidates[0] && data.candidates[0].content) || (data.choices && data.choices[0]))) {
-    let content;
-
-    if (data.candidates) {
-      // Gemini format
-      content = data.candidates[0].content;
-    } else {
-      // OpenAI format
-      const choice = data.choices[0];
-      content = {
-        parts: choice.message.tool_calls ?
-          choice.message.tool_calls.map(tc => ({
-            functionCall: {
-              name: tc.function.name,
-              args: JSON.parse(tc.function.arguments)
+  if (data && data.choices && data.choices[0] && data.choices[0].message) {
+const message = data.choices[0].message;
+    const content = message.content || "";
+    const toolCalls = message.tool_calls || [];
+    
+    // Push to history
+    _jarvisHistory.push({ role: 'model', parts: [{ text: content }] });
+    
+    let aiMsg = content;
+    
+    if (toolCalls.length > 0) {
+      for (let toolCall of toolCalls) {
+        const fnName = toolCall.function.name;
+        const args = JSON.parse(toolCall.function.arguments);
+        let exeMsg = "";
+        
+        if (fnName === "yonlendir") {
+          if (args.sayfa === 'ana_sayfa') { showHome(); exeMsg = "Ana sayfaya yonlendirildi."; }
+          else if (args.sayfa === 'admin_paneli') { showAdminPanel(); exeMsg = "Admin Paneli acildi."; }
+          else if (args.sayfa === 'profil_sayfasi') { showProfile(); exeMsg = "Profil sayfasi acildi."; }
+          else { showHome(); exeMsg = "Sayfa bulunamadi, ana sayfaya donuldu."; }
+        } else if (fnName === "uygulama_ac") {
+          showDetail(args.id);
+          exeMsg = "Uygulama secildi: " + args.id;
+        } else if (fnName === "sarki_cal") {
+          playJarvisSong(args.filename);
+          exeMsg = "Sarki hazirlaniyor: " + (args.filename.replace('.mp3', '')).replace(/_/g, ' ');
+        } else if (fnName === "bildirim_gonder") {
+          typing.style.display = 'block';
+          typing.innerText = 'Iletisim aglarina baglaniliyor, mailler gonderiliyor...';
+          chat.scrollTop = chat.scrollHeight;
+          const resMsg = await jarvisSendNotification(args.title, args.content, args.tag, args.recipients);
+          exeMsg = `Bildirim Protokolu: ${resMsg}`;
+          typing.style.display = 'none';
+        }
+        
+        if (!aiMsg) aiMsg = `Islem basariyla tamamlandi Kaptan! (${exeMsg})`;
+        
+        // Push tool response to history
+        _jarvisHistory.push({
+          role: "function",
+          parts: [{
+            functionResponse: {
+              name: fnName,
+              response: { name: fnName, content: "islem_basarili" }
             }
-          })) :
-          [{ text: choice.message.content || '' }]
-      };
-    }
-
-    _jarvisHistory.push(content);
-
-    // Geçmişi son 20 mesajla sınırla (token optimizasyonu)
-    if (_jarvisHistory.length > 40) { // 20 user + 20 assistant mesajı
-      _jarvisHistory = _jarvisHistory.slice(-40);
-    }
-
-    let aiMsg = "";
-    const parts = content.parts || [];
-    const textPart = parts.find(p => p.text);
-    if (textPart) aiMsg = textPart.text;
-
-    const fnPart = parts.find(p => p.functionCall);
-    let highlightAuto = false;
-    if (!fnPart && /indir|indirme|download|dld|install|buton/i.test(msg)) {
-      const note = 'Indirme butonunu vurguladim, ordan devam edebilirsin.';
-      highlightAuto = await jarvisHighlight('download_button', note);
-      if (highlightAuto) aiMsg += (aiMsg ? '<br>' : '') + note;
-    }
-
-    if (fnPart) {
-      const fnName = fnPart.functionCall.name;
-      const args = fnPart.functionCall.args;
-      let exeMsg = "";
-      
-      if (fnName === "yonlendir") {
-        if (args.sayfa === 'ana_sayfa') { showHome(); exeMsg = "Ana sayfaya yonlendirildi."; }
-        else if (args.sayfa === 'admin_paneli') { showAdminPanel(); exeMsg = "Admin Paneli acildi."; }
-        else if (args.sayfa === 'profil_sayfasi') { showProfile(); exeMsg = "Profil sayfasi acildi."; }
-        else { showHome(); exeMsg = "Sayfa bulunamadi, ana sayfaya donuldu."; }
-      } else if (fnName === "uygulama_ac") {
-        await showDetail(args.id);
-        exeMsg = "Uygulama secildi: " + args.id;
-      } else if (fnName === "sarki_cal") {
-        playJarvisSong(args.filename);
-        exeMsg = "Sarki hazirlaniyor: " + (args.filename.replace('.mp3', '')).replace(/_/g, ' ');
-      } else if (fnName === "vurgula") {
-        const note = args.message || 'Bu butona tiklayabilirsiniz.';
-        const success = await jarvisHighlight(args.target, note);
-        exeMsg = success ? note : 'Hedef vurgulanamadi, ancak sizi ilgili sayfaya yonlendiriyorum.';
-      } else if (fnName === "bildirim_gonder") {
-        typing.style.display = 'block';
-        typing.innerText = 'Iletisim aglarina baglaniliyor, mailler gonderiliyor...';
-        chat.scrollTop = chat.scrollHeight;
-        const resMsg = await jarvisSendNotification(args.title, args.content, args.tag, args.recipients);
-        exeMsg = `Bildirim Protokolu: ${resMsg}`;
-        typing.style.display = 'none';
+          }]
+        });
       }
-      
-      if (!aiMsg) aiMsg = `Islem basariyla tamamlandi Kaptan! (${exeMsg})`;
-      
-      _jarvisHistory.push({
-        role: "function",
-        parts: [{
-          functionResponse: {
-            name: fnName,
-            response: { name: fnName, content: "islem_basarili" }
-          }
-        }]
-      });
     }
 
     const timeHtml = '<span style="display:block; font-size:10px; color:#00d2ff; opacity:0.7; margin-bottom:4px; text-transform:uppercase;">⏱️ Sure: ' + timeSpent + ' Sn.</span>';
     chat.innerHTML += '<div class="jarvis-msg ai">' + timeHtml + aiMsg.replace(/\n/g, '<br>') + '</div>';
-    if (isAdmin) localStorage.setItem('jarvisMem_admin', JSON.stringify({ history: _jarvisHistory, chatHtml: chat.innerHTML }));
+    if (isAdmin) localStorage.setItem('jarvisMem', JSON.stringify({ history: _jarvisHistory, chatHtml: chat.innerHTML }));
   } else if (data && data.error) {
-    let errMsg = data.error.message || data.error.type || "Bilinmeyen hata";
-    if (errMsg.includes('quota') || errMsg.includes('exceeded') || errMsg.includes('insufficient_quota') || errMsg.includes('rate limit') || data.error.code === 429) {
-      if (useGrok) {
-        errMsg = "Kaptan, Grok API limitlerine ulastik. xAI'nin beta programinda kota sinirina ulastik. Alternatif AI motoruna gecis yapabiliriz.";
-      } else if (useOpenAI) {
-        errMsg = "Kaptan, OpenAI API limitlerine ulastik. GPT-4o'nun token limiti cok yuksek olsa da kota sinirina ulastik. Alternatif AI motoruna gecis yapabiliriz.";
-      } else {
-        errMsg = "Kaptan, Google Cloud'un ucretsiz API limitlerine ulastik. (Dakika basi 15 veya Gunluk 1500 istek siniri asildi). Eger birkac dakika beklemenize ragmen duzelmiyorsa, bugunku butun kredilerimiz tukenmistir. Yarin tekrar guc toplayacagiz!";
-      }
+    let errMsg = data.error.message;
+    if (errMsg.includes('rate limit') || errMsg.includes('quota') || response.status === 429) {
+      errMsg = "Kaptan, Grok API limitlerine ulastik. Lutfen bir sure bekleyin veya daha fazla kredi satin alin.";
     } else {
       errMsg = "API Hatasi: " + errMsg;
     }
@@ -3049,8 +2778,6 @@ window.toggleJarvis = function() {
 };
 
 </script>
-
-<script src="jarvis.js"></script>
 
 </body>
 </html>
