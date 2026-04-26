@@ -1777,7 +1777,8 @@ async function banUser(userId, email, btn) {
   if (!confirm('"' + email + '" kullanıcısını yasaklamak istediğine emin misin?')) return;
   btn.disabled = true; btn.textContent = '⏱...';
   try {
-    await supa.from('user_presence').upsert({ user_id: userId, email, is_banned: true, last_seen: '1990-01-01T00:00:00+00:00', is_online: false }, { onConflict: 'email' });
+    const { error } = await supa.from('user_presence').upsert({ user_id: userId, email, is_banned: true, last_seen: '1990-01-01T00:00:00+00:00', is_online: false }, { onConflict: 'email' });
+    if (error) throw error;
     await loadAdminUsers();
   } catch(e) { btn.disabled = false; btn.textContent = '🚫 Yasakla'; alert('Hata: ' + e.message); }
 }
@@ -1806,7 +1807,8 @@ async function unbanUser(userId, email, btn) {
   if (!confirm('"' + email + '" kullanıcısının yasağını kaldırmak istediğine emin misin?')) return;
   btn.disabled = true; btn.textContent = 'Kaldırılıyor...';
   try {
-    await supa.from('user_presence').update({ is_banned: false, last_seen: new Date().toISOString(), is_online: false }).eq('email', email);
+    const { error } = await supa.from('user_presence').upsert({ user_id: userId, email: email, is_banned: false, last_seen: new Date().toISOString(), is_online: false }, { onConflict: 'email' });
+    if (error) throw error;
     
     if (document.getElementById('admin-banned').classList.contains('active')) {
       await loadBannedUsers();
