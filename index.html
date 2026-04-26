@@ -1185,9 +1185,23 @@ async function doLogin() {
   if (!email || !pass) return showMsg('E-posta ve şifre gir!', 'error');
   const btn = document.querySelector('#auth-login .auth-submit');
   btn.disabled = true; btn.textContent = 'Giriş yapılıyor...';
+  
   const { error } = await supa.auth.signInWithPassword({ email, password: pass });
+  
+  if (error) {
+    btn.disabled = false; btn.textContent = 'Giriş Yap';
+    return showMsg('Hata: ' + error.message, 'error');
+  }
+
+  // Yasaklı kullanıcı kontrolü
+  const { data: presence } = await supa.from('user_presence').select('is_banned').eq('email', email).maybeSingle();
+  if (presence && presence.is_banned) {
+    await supa.auth.signOut();
+    btn.disabled = false; btn.textContent = 'Giriş Yap';
+    return showMsg('Hesabınız kalıcı olarak yasaklanmıştır! 🚫', 'error');
+  }
+
   btn.disabled = false; btn.textContent = 'Giriş Yap';
-  if (error) return showMsg('Hata: ' + error.message, 'error');
   showMsg('Giriş başarılı! ✓', 'success');
   showUserLoggedIn(email);
   setTimeout(closeAuth, 1200);
@@ -1301,6 +1315,7 @@ async function _pingPresence(uid, email, isInitial = false) {
   
   if (presence && presence.is_banned === true) {
     console.log('[Presence] Hesap banlı. Oturum kapatılıyor...');
+    alert('Hesabınız sistemden kalıcı olarak yasaklanmıştır. 🚫');
     doSignOut();
     return;
   }
@@ -1791,8 +1806,13 @@ async function unbanUser(userId, email, btn) {
   if (!confirm('"' + email + '" kullanıcısının yasağını kaldırmak istediğine emin misin?')) return;
   btn.disabled = true; btn.textContent = 'Kaldırılıyor...';
   try {
-    await supa.from('user_presence').update({ is_banned: false, last_seen: new Date().toISOString(), is_online: false }).eq('user_id', userId);
-    await loadBannedUsers();
+    await supa.from('user_presence').update({ is_banned: false, last_seen: new Date().toISOString(), is_online: false }).eq('email', email);
+    
+    if (document.getElementById('admin-banned').classList.contains('active')) {
+      await loadBannedUsers();
+    } else {
+      await loadAdminUsers();
+    }
   } catch(e) { btn.disabled = false; btn.textContent = '🔓 Yasağı Kaldır'; alert('Hata: ' + e.message); }
 }
 async function loadAdminMessages() {
