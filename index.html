@@ -899,6 +899,19 @@ const appExtras = {
     changelog_history: [
       { version: "V1", text: "YouTube'dan MP3/MP4 indirme, playlist desteği, otomatik etiket düzenleme, kapak fotoğrafı gömme." }
     ]
+  },
+  gravity_watch: {
+    developer: "judy658",
+    platform: "windows",
+    description: "Gravity Watch, YouTube kütüphanesini kullanarak kişiselleştirilmiş bir video deneyimi sunan yeni nesil bir video platformudur.\n\nBeğendiğiniz videoları anında kaydedebilir, aboneliklerinizi yönetebilir ve izleme geçmişinize her yerden erişebilirsiniz. Local-first mimarisi sayesinde internetiniz yavaş olsa bile arayüz anında tepki verir.",
+    screenshots: [
+      "https://raw.githubusercontent.com/judy658/judy658-devstore/main/gravity_ss1.png",
+      "https://raw.githubusercontent.com/judy658/judy658-devstore/main/gravity_ss2.png",
+      "https://raw.githubusercontent.com/judy658/judy658-devstore/main/gravity_ss3.png"
+    ],
+    changelog_history: [
+      { version: "V1", text: "İlk stabil sürüm: Local-first hibrit mimari, anlık senkronizasyon ve DevStore entegrasyonu." }
+    ]
   }
 };
 
@@ -1892,6 +1905,21 @@ async function loadApps() {
     const res = await fetch('versions.json');
     if (res.ok) { const data = await res.json(); allApps = data.apps || {}; }
   } catch(e) {}
+  
+  // Gravity Watch Manuel Entegrasyon (Remote güncellenene kadar)
+  if (!allApps.gravity_watch) {
+    allApps.gravity_watch = {
+      name: "Gravity Watch",
+      version: "1.0",
+      min_version: "1.0",
+      category: "app",
+      image: "https://raw.githubusercontent.com/judy658/judy658-devstore/main/gravity_logo.png",
+      icon: "🌌",
+      changelog: "Hibrit video deneyimi ve local-first mimari yayında!",
+      force_update: false
+    };
+  }
+  
   updateStats(); renderGrid(currentFilter);
 }
 function updateStats() {
