@@ -599,6 +599,7 @@
         <select id="admin-app-filter" onchange="filterUserList()" style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;color:var(--text);outline:none;cursor:pointer">
           <option value="all">Tüm Uygulamalar</option>
           <option value="sportify">🎵 Sportify</option>
+          <option value="gravity-watch">🌌 Gravity Watch</option>
           <option value="devstore">🌐 DevStore</option>
         </select>
         <button class="admin-refresh" onclick="loadAdminUsers()">↻ Yenile</button>
@@ -1093,6 +1094,7 @@ async function updateDashboardAnalytics() {
   if (!all) return;
 
   const sportify = all.filter(u => u.current_app === 'sportify').length;
+  const gravity = all.filter(u => u.current_app === 'gravity-watch').length;
   const devstore = all.filter(u => u.current_app === 'devstore').length;
   const banned = all.filter(u => u.is_banned).length;
   const dead = all.filter(u => u.is_dead).length;
@@ -1110,8 +1112,8 @@ async function updateDashboardAnalytics() {
     window.chart1 = new Chart(ctx1, {
       type: 'doughnut',
       data: {
-        labels: ['Sportify', 'DevStore'],
-        datasets: [{ data: [sportify, devstore], backgroundColor: ['#7c5cfc', '#fc5c7d'], borderWidth: 0, hoverOffset: 4 }]
+        labels: ['Sportify', 'Gravity Watch', 'DevStore'],
+        datasets: [{ data: [sportify, gravity, devstore], backgroundColor: ['#7c5cfc', '#3ddc97', '#fc5c7d'], borderWidth: 0, hoverOffset: 4 }]
       },
       options: chartConfig
     });
@@ -1744,7 +1746,7 @@ function renderUserList(list) {
       <div class="user-avatar">${u.email ? u.email[0].toUpperCase() : '?'}</div>
       <div class="user-info">
         <div class="user-email-text">${u.email}${isMe ? ' 👑' : ''}</div>
-        <div class="user-meta">${isOnline ? '🟢 Şu an aktif' + (u.current_app ? ' · ' + (u.current_app === 'sportify' ? '🎵 Sportify' : '🌐 DevStore') : '') : '⚫ Son görülme: ' + _timeAgo(u.last_seen)}</div>
+        <div class="user-meta">${isOnline ? '🟢 Şu an aktif' + (u.current_app ? ' · ' + (u.current_app === 'sportify' ? '🎵 Sportify' : u.current_app === 'gravity-watch' ? '🌌 Gravity Watch' : '🌐 DevStore') : '') : '⚫ Son görülme: ' + _timeAgo(u.last_seen)}</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px">
         <div class="online-dot ${isOnline ? 'active' : ''}"></div>
@@ -1769,7 +1771,7 @@ function showUserDetail(userId) {
   
   const isOnline = (Date.now() - new Date(user.last_seen).getTime()) / 1000 < 60;
   document.getElementById('m-user-status').innerHTML = isOnline ? '<span style="color:var(--green)">Online</span>' : '<span style="color:var(--muted)">Offline</span>';
-  document.getElementById('m-user-app').textContent = user.current_app === 'sportify' ? '🎵 Sportify' : '🌐 DevStore';
+  document.getElementById('m-user-app').textContent = user.current_app === 'sportify' ? '🎵 Sportify' : user.current_app === 'gravity-watch' ? '🌌 Gravity Watch' : '🌐 DevStore';
   document.getElementById('m-user-lastseen').textContent = _timeAgo(user.last_seen) + ' (' + new Date(user.last_seen).toLocaleString() + ')';
   document.getElementById('m-user-firstdevice').textContent = user.first_device || 'Bilinmiyor';
   document.getElementById('m-user-lastdevice').textContent = user.last_device || 'Bilinmiyor';
