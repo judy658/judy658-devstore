@@ -4006,15 +4006,15 @@
     }
     async function getDownloads(appId) {
       try {
-        const { data } = await supa.from('apps').select('download_count').eq('id', appId).maybeSingle();
-        return data ? data.download_count : 0;
+        const { data } = await supa.from('app_stats').select('downloads').eq('app_id', appId).maybeSingle();
+        return data ? data.downloads : 0;
       } catch (e) { return 0; }
     }
     async function incrementDownload(appId) {
       try {
-        const { data } = await supa.from('apps').select('download_count').eq('id', appId).maybeSingle();
-        const count = (data ? data.download_count : 0) + 1;
-        await supa.from('apps').upsert({ id: appId, download_count: count });
+        const { data } = await supa.from('app_stats').select('downloads').eq('app_id', appId).maybeSingle();
+        const count = (data ? data.downloads : 0) + 1;
+        await supa.from('app_stats').upsert({ app_id: appId, downloads: count }, { onConflict: 'app_id' });
         const el = document.getElementById('d-dl-count');
         if (el) el.textContent = count;
       } catch (e) { console.warn("Supabase indirme sayısı güncellenemedi."); }
