@@ -4119,10 +4119,36 @@
           const stars = '★'.repeat(c.rating || 0) + '☆'.repeat(5 - (c.rating || 0));
           const date = new Date(c.created_at).toLocaleDateString('tr-TR');
           const isOwn = currentUserId && c.user_id === currentUserId;
-          const replyHtml = c.reply ? `<div class="comment-reply"><div class="comment-reply-header">👨‍💻 Geliştirici Yanıtı ${isAdmin ? `<button onclick="deleteReply('${c.id}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.72rem;margin-left:8px">🗑 Yanıtı Sil</button>` : ''}</div><div class="comment-reply-text">${c.reply}</div></div>` : '';
-          const adminReplyBtn = (isAdmin && !c.reply) ? `<button onclick="postReply('${c.id}')" class="comment-btn reply-btn">Yanıtla</button>` : '';
-          const deleteBtn = (isAdmin || isOwn) ? `<button onclick="deleteComment('${c.id}')" class="comment-btn delete-btn">Sil</button>` : '';
-          return `<div class="comment-card"><div class="comment-header"><span class="comment-user">${maskEmail(c.user_email)}</span><span class="comment-stars">${stars}</span><span class="comment-date">${date}</span></div><div class="comment-text">${c.content}</div>${replyHtml}<div class="comment-actions">${adminReplyBtn}${deleteBtn}</div></div>`;
+          const userIdent = c.email ? c.email.split('@')[0] : 'Misafir';
+          
+          const replyHtml = c.reply ? `
+            <div class="comment-reply">
+              <div class="comment-reply-header">
+                <span>👨‍💻 Geliştirici Yanıtı</span>
+                ${isAdmin ? `<button onclick="deleteReply('${c.id}')" class="reply-del-btn">🗑 Sil</button>` : ''}
+              </div>
+              <div class="comment-reply-text">${c.reply}</div>
+            </div>` : '';
+            
+          const adminReplyBtn = (isAdmin && !c.reply) ? `<button onclick="postReply('${c.id}')" class="comment-btn reply-btn">💬 Yanıtla</button>` : '';
+          const deleteBtn = (isAdmin || isOwn) ? `<button onclick="deleteComment('${c.id}')" class="comment-btn delete-btn">🗑 Sil</button>` : '';
+          
+          return `
+            <div class="comment-card">
+              <div class="comment-header">
+                <div class="comment-user-info">
+                  <div class="comment-avatar">${userIdent[0].toUpperCase()}</div>
+                  <div>
+                    <div class="comment-user-name">${userIdent}</div>
+                    <div class="comment-stars">${stars}</div>
+                  </div>
+                </div>
+                <span class="comment-date">${date}</span>
+              </div>
+              <div class="comment-text">${c.content}</div>
+              ${replyHtml}
+              <div class="comment-actions">${adminReplyBtn}${deleteBtn}</div>
+            </div>`;
         }).join('');
       } catch (e) { console.warn("Yorumlar yüklenemedi."); }
     }
