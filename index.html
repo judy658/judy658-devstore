@@ -2906,6 +2906,11 @@
               style="background:linear-gradient(135deg, var(--accent), var(--accent2)); color:white; border:none; padding:12px 28px; border-radius:12px; font-weight:700; cursor:pointer; font-family:inherit; font-size:0.9rem; transition:all 0.3s; box-shadow:0 10px 20px rgba(124, 92, 252, 0.3);">🚀 Yorumu Yayınla</button>
           </div>
         </div>
+        <div id="already-commented-note" style="display:none; background:rgba(61, 220, 151, 0.05); border:1px solid rgba(61, 220, 151, 0.2); border-radius:20px; padding:24px; text-align:center; margin-bottom:30px; backdrop-filter:blur(8px);">
+          <div style="font-size:2rem; margin-bottom:10px;">❤️</div>
+          <div style="font-weight:800; font-family:Syne,sans-serif; font-size:1.1rem; color:var(--green); margin-bottom:5px;">Görüşlerin İçin Teşekkürler!</div>
+          <div style="font-size:0.9rem; color:var(--muted);">Bu uygulamaya zaten yorum yapmışsın. Topluluğumuza katkıda bulunduğun için mutluyuz!</div>
+        </div>
         <div class="comment-list" id="comment-list"></div>
       </div>
     </div>
@@ -4104,10 +4109,15 @@
         currentUserEmail = session ? session.user.email : null;
         const form = document.getElementById('comment-form');
         const note = document.getElementById('comment-login-note');
-        if(form) form.style.display = session ? 'block' : 'none';
-        if(note) note.style.display = session ? 'none' : 'block';
+        const alreadyNote = document.getElementById('already-commented-note');
         
         const { data } = await supa.from('comments').select('*').eq('app_id', appId).order('created_at', { ascending: false });
+        const hasCommented = data && currentUserId && data.some(c => c.user_id === currentUserId);
+        
+        if(form) form.style.display = (session && !hasCommented) ? 'block' : 'none';
+        if(note) note.style.display = session ? 'none' : 'block';
+        if(alreadyNote) alreadyNote.style.display = hasCommented ? 'block' : 'none';
+        
         const list = document.getElementById('comment-list');
         const countEl = document.getElementById('comment-count');
         if (!list) return;
@@ -4167,6 +4177,10 @@
       const content = document.getElementById('comment-input').value.trim();
       const rating = parseInt(document.getElementById('comment-rating').value || "5");
       if (!content || !currentAppId || !currentUserId) return;
+
+      // Duplicate Check
+      const { data: existing } = await supa.from('comments').select('id').eq('app_id', currentAppId).eq('user_id', currentUserId).maybeSingle();
+      if (existing) { alert('Bu uygulamaya zaten yorum yapmışsınız!'); return; }
       
       const btn = (e && e.target && e.target.tagName === 'BUTTON') ? e.target : document.querySelector('.comment-submit');
       if(btn) { btn.disabled = true; btn.textContent = '⏳ Gönderiliyor...'; }
