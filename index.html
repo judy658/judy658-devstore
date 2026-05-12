@@ -2522,6 +2522,13 @@
       <div class="profile-since" id="profile-since"></div>
       <div class="profile-card">
         <h3>📋 Hesap Bilgileri</h3>
+        <div class="profile-field">
+          <label>Takma Ad (Yorumlarda Görünür)</label>
+          <div style="display:flex; gap:10px;">
+            <input type="text" id="profile-nickname-input" placeholder="Havalı bir isim seç..." style="flex:1; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:12px 14px; color:var(--text); font-family:DM Sans,sans-serif; font-size:0.9rem; outline:none;" />
+            <button class="profile-save-btn" onclick="saveNickname()" id="nick-save-btn" style="width:auto; padding:0 20px;">Kaydet</button>
+          </div>
+        </div>
         <div class="profile-field"><label>E-posta Adresi</label><input type="email" id="profile-email-input" disabled />
         </div>
         <div style="font-size:0.78rem;color:var(--muted)">E-posta adresi değiştirilemez.</div>
@@ -3239,12 +3246,19 @@
     // ════════════════════════════════════════════════
     //  KULLANICI OTURUMU
     // ════════════════════════════════════════════════
-    function showUserLoggedIn(email) {
+    async function showUserLoggedIn(email) {
       currentUserEmail = email;
       document.getElementById('login-btn').style.display = 'none';
       const info = document.getElementById('user-info');
       info.style.display = 'flex';
-      document.getElementById('user-email-short').textContent = email.length > 18 ? email.substring(0, 15) + '...' : email;
+      
+      // Fetch nickname
+      const { data: presence } = await supa.from('user_presence').select('nickname').eq('email', email).maybeSingle();
+      const displayName = (presence && presence.nickname) ? presence.nickname : email.split('@')[0];
+      document.getElementById('user-email-short').textContent = displayName.length > 15 ? displayName.substring(0, 12) + '...' : displayName;
+      const nickInput = document.getElementById('profile-nickname-input');
+      if(nickInput && presence && presence.nickname) nickInput.value = presence.nickname;
+
       if (email === ADMIN_EMAIL && !document.getElementById('admin-nav-btn')) {
         const btn = document.createElement('button');
         btn.id = 'admin-nav-btn'; btn.className = 'user-btn';
@@ -3255,6 +3269,21 @@
       startPresence();
       checkContactAuth();
       if (typeof initJarvisMemory === 'function') initJarvisMemory(email, false);
+    }
+
+    async function saveNickname() {
+      if(!currentUserEmail) return;
+      const nick = document.getElementById('profile-nickname-input').value.trim();
+      if(!nick) { alert('Lütfen geçerli bir takma ad gir!'); return; }
+      const btn = document.getElementById('nick-save-btn');
+      btn.disabled = true; btn.textContent = '⏳...';
+      try {
+        const { error } = await supa.from('user_presence').update({ nickname: nick }).eq('email', currentUserEmail);
+        if(error) throw error;
+        alert('Takma ad başarıyla güncellendi! ✓');
+        showUserLoggedIn(currentUserEmail);
+      } catch(e) { alert('Hata: ' + e.message); }
+      finally { btn.disabled = false; btn.textContent = 'Kaydet'; }
     }
 
     function showUserLoggedOut() {
@@ -4112,6 +4141,13 @@
         const alreadyNote = document.getElementById('already-commented-note');
         
         const { data } = await supa.from('comments').select('*').eq('app_id', appId).order('created_at', { ascending: false });
+        
+        // Fetch Nicknames for all commenters
+        const emails = [...new Set(data.map(c => c.email))];
+        const { data: profiles } = await supa.from('user_presence').select('email, nickname').in('email', emails);
+        const nickMap = {};
+        if(profiles) profiles.forEach(p => { if(p.nickname) nickMap[p.email] = p.nickname; });
+
         const hasCommented = data && currentUserId && data.some(c => c.user_id === currentUserId);
         
         if(form) form.style.display = (session && !hasCommented) ? 'block' : 'none';
@@ -4135,7 +4171,8 @@
           const stars = '★'.repeat(c.rating || 0) + '☆'.repeat(5 - (c.rating || 0));
           const date = new Date(c.created_at).toLocaleDateString('tr-TR');
           const isOwn = currentUserId && c.user_id === currentUserId;
-          const userIdent = c.email ? c.email.split('@')[0] : 'Misafir';
+          
+          const displayName = nickMap[c.email] || (c.email ? c.email.split('@')[0] : 'Misafir');
           
           const replyHtml = c.reply ? `
             <div style="margin-top:15px; padding:12px; background:rgba(100,100,255,0.05); border-left:3px solid var(--accent); border-radius:8px;">
@@ -4153,9 +4190,9 @@
             <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:20px; margin-bottom:15px; position:relative; transition:all 0.3s hover; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
               <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
                 <div style="display:flex; align-items:center; gap:12px;">
-                  <div style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, var(--accent), var(--accent2)); display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:1.1rem;">${userIdent[0].toUpperCase()}</div>
+                  <div style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, var(--accent), var(--accent2)); display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:1.1rem;">${displayName[0].toUpperCase()}</div>
                   <div>
-                    <div style="font-weight:700; font-size:0.95rem; color:var(--text);">${userIdent}</div>
+                    <div style="font-weight:700; font-size:0.95rem; color:var(--text);">${displayName}</div>
                     <div style="color:var(--yellow); font-size:0.8rem; letter-spacing:1px;">${stars}</div>
                   </div>
                 </div>
