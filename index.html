@@ -4329,7 +4329,26 @@ Asistan: Sistemlerim optimize edildi, her şey yolunda Kaptan!`;
       if (b) { b.classList.add('hide'); setTimeout(() => b.style.display = 'none', 500); }
     }
 
-    // --- JARVIS CHAT UPDATE ---
+    let JARVIS_MODEL = "qwen2.5:0.5b"; // Varsayılan (hızlı ama cahil)
+    const PREFERRED_MODEL = "qwen2.5:1.5b"; // Hedef (zeki)
+
+    async function checkAndUpgradeJarvis() {
+      console.log("J.A.R.V.I.S: Sistem kontrol ediliyor...");
+      try {
+        // Sunucuya zeki modeli indir komutu veriyoruz (zaten varsa bir şey yapmaz)
+        const resp = await fetch(`${DEV_CLUSTER_NODES[0]}/api/pull`, {
+          method: 'POST',
+          body: JSON.stringify({ name: PREFERRED_MODEL, stream: false })
+        });
+        if (resp.ok) {
+          console.log("J.A.R.V.I.S: Beyin nakli başarılı. Yeni model aktif: " + PREFERRED_MODEL);
+          JARVIS_MODEL = PREFERRED_MODEL;
+        }
+      } catch (e) {
+        console.warn("J.A.R.V.I.S: Beyin nakli ertelendi (Sunucu hazır değil).");
+      }
+    }
+
     async function sendToJarvis() {
       const input = document.getElementById('jarvis-input');
       const chat = document.getElementById('jarvis-chat');
@@ -4341,12 +4360,13 @@ Asistan: Sistemlerim optimize edildi, her şey yolunda Kaptan!`;
       input.value = '';
       typing.style.display = 'block';
       _jarvisHistory.push({ role: 'user', content: msg });
+      
       try {
         const resp = await fetch(`${DEV_CLUSTER_NODES[0]}/api/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
-            model: "qwen2.5:0.5b", 
+            model: JARVIS_MODEL, 
             messages: [{ role: "system", content: JARVIS_SYSTEM }, ..._jarvisHistory],
             stream: false
           })
@@ -4357,12 +4377,9 @@ Asistan: Sistemlerim optimize edildi, her şey yolunda Kaptan!`;
         const rawText = await resp.text();
         let data;
         try {
-          // Ollama NDJSON formatında (birden fazla JSON objesi) dönebilir.
-          // İlk geçerli JSON objesini ayıklıyoruz.
           const cleanText = rawText.trim().split('\n')[0];
           data = JSON.parse(cleanText);
         } catch (parseErr) {
-          // Eğer basit ayıklama başarısız olursa, regex ile JSON bloğunu bul.
           const match = rawText.match(/\{.*\}/s);
           if (match) data = JSON.parse(match[0]);
           else throw new Error("Yanıt formatı anlaşılamadı.");
@@ -4392,6 +4409,7 @@ Asistan: Sistemlerim optimize edildi, her şey yolunda Kaptan!`;
     window.addEventListener('load', () => {
       loadApps();
       checkSession();
+      checkAndUpgradeJarvis(); // Beyin nakli kontrolü
       setTimeout(() => {
         const b = document.getElementById('jarvis-bubble');
         if (b && !sessionStorage.getItem('jarvisSeen')) b.style.display = 'block';
