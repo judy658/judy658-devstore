@@ -4163,12 +4163,14 @@
     }
 
     async function submitComment(e) {
-      e.preventDefault();
+      if(e) e.preventDefault();
       const content = document.getElementById('comment-input').value.trim();
       const rating = parseInt(document.getElementById('comment-rating').value || "5");
       if (!content || !currentAppId || !currentUserId) return;
-      const btn = e.target.querySelector('button');
-      btn.disabled = true;
+      
+      const btn = (e && e.target && e.target.tagName === 'BUTTON') ? e.target : document.querySelector('.comment-submit');
+      if(btn) { btn.disabled = true; btn.textContent = '⏳ Gönderiliyor...'; }
+      
       try {
         const { error } = await supa.from('comments').insert({
           app_id: currentAppId,
@@ -4179,10 +4181,12 @@
         });
         if (error) throw error;
         document.getElementById('comment-input').value = '';
-        setRating(5); // Reset to 5 stars
+        setRating(5); 
         loadComments(currentAppId);
       } catch (err) { alert('Hata: ' + err.message); }
-      finally { btn.disabled = false; }
+      finally { 
+        if(btn) { btn.disabled = false; btn.textContent = '🚀 Yorumu Yayınla'; }
+      }
     }
 
     function setRating(n) {
