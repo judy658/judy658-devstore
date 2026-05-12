@@ -4005,15 +4005,19 @@
       return (sum / comments.length).toFixed(1);
     }
     async function getDownloads(appId) {
-      const { data } = await supa.from('apps').select('download_count').eq('id', appId).maybeSingle();
-      return data ? data.download_count : 0;
+      try {
+        const { data } = await supa.from('apps').select('download_count').eq('id', appId).maybeSingle();
+        return data ? data.download_count : 0;
+      } catch (e) { return 0; }
     }
     async function incrementDownload(appId) {
-      const { data } = await supa.from('apps').select('download_count').eq('id', appId).maybeSingle();
-      const count = (data ? data.download_count : 0) + 1;
-      await supa.from('apps').upsert({ id: appId, download_count: count });
-      const el = document.getElementById('d-dl-count');
-      if (el) el.textContent = count;
+      try {
+        const { data } = await supa.from('apps').select('download_count').eq('id', appId).maybeSingle();
+        const count = (data ? data.download_count : 0) + 1;
+        await supa.from('apps').upsert({ id: appId, download_count: count });
+        const el = document.getElementById('d-dl-count');
+        if (el) el.textContent = count;
+      } catch (e) { console.warn("Supabase indirme sayısı güncellenemedi."); }
     }
 
     // ════════════════════════════════════════════════
@@ -4021,36 +4025,37 @@
     // ════════════════════════════════════════════════
     async function loadApps() {
       try {
-        // Garantili çekim için GitHub Raw linki kullanılıyor
         const res = await fetch('https://raw.githubusercontent.com/judy658/judy658-devstore/main/versions.json?v=' + Date.now());
         if (res.ok) { 
           const data = await res.json(); 
           allApps = data.apps || {}; 
-          console.log("Apps loaded:", Object.keys(allApps).length);
         } else {
-          console.error("Uygulama listesi alınamadı:", res.status);
-          // Fallback: Yerel dosyayı dene
           const localRes = await fetch('versions.json');
           if (localRes.ok) {
             const localData = await localRes.json();
             allApps = localData.apps || {};
           }
         }
-      } catch (e) { 
-        console.error("LoadApps Critical Error:", e);
-      }
+      } catch (e) { console.error("LoadApps Error:", e); }
       updateStats(); 
       renderGrid(currentFilter);
     }
+
     function updateStats() {
       const list = Object.values(allApps);
-      document.getElementById('s-total').textContent = list.length;
-      document.getElementById('s-game').textContent = list.filter(a => a.category === 'game').length;
-      document.getElementById('s-app').textContent = list.filter(a => a.category === 'app').length;
-      document.getElementById('s-force').textContent = list.filter(a => a.force_update).length;
+      const totalEl = document.getElementById('s-total');
+      if(totalEl) totalEl.textContent = list.length;
+      const gameEl = document.getElementById('s-game');
+      if(gameEl) gameEl.textContent = list.filter(a => a.category === 'game').length;
+      const appEl = document.getElementById('s-app');
+      if(appEl) appEl.textContent = list.filter(a => a.category === 'app').length;
+      const forceEl = document.getElementById('s-force');
+      if(forceEl) forceEl.textContent = list.filter(a => a.force_update).length;
     }
+
     function renderGrid(filter) {
       const grid = document.getElementById('app-grid');
+      if (!grid) return;
       const entries = Object.entries(allApps).filter(([id, app]) => filter === 'all' ? true : filter === 'force' ? app.force_update : app.category === filter);
       if (!entries.length) { grid.innerHTML = `<div style="color:var(--muted);grid-column:1/-1;text-align:center;padding:48px 0">Bu filtrede uygulama yok.</div>`; return; }
       grid.innerHTML = entries.map(([id, app], i) => {
@@ -4077,99 +4082,49 @@
     </div>`;
       }).join('');
     }
+
     function filterApps(filter, btn) {
       currentFilter = filter;
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      if(btn) btn.classList.add('active');
       renderGrid(filter);
-    }
-
-    // ════════════════════════════════════════════════
-    //  DETAY SAYFASI
-    // ════════════════════════════════════════════════
-    async function showDetail(id) {
-      const app = allApps[id], extra = appExtras[id] || {};
-      if (!app) return;
-      document.getElementById('d-nav-title').textContent = app.name;
-      const iconEl = document.getElementById('d-icon');
-      if (app.image) {
-        iconEl.innerHTML = '<img src="' + app.image + '" style="width:100%;height:100%;object-fit:cover;border-radius:22px;">';
-      } else {
-        iconEl.textContent = app.icon || '📦';
-      }
-      document.getElementById('d-name').textContent = app.name;
-      document.getElementById('d-dev').textContent = '👤 ' + (extra.developer || 'judy658');
-      document.getElementById('d-ver').textContent = 'v' + app.version;
-      document.getElementById('d-minver').textContent = 'v' + app.min_version;
-      document.getElementById('d-avg-rating').textContent = '—';
-      document.getElementById('d-category').textContent = app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama';
-      document.getElementById('d-badges').innerHTML = `<span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama'}</span>${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu Güncelleme</span>' : ''}${extra && extra.platform === 'windows' ? '<span class="badge badge-windows">🖥️ Sadece Windows</span>' : ''}`;
-      const dlBtn = document.getElementById('d-dl-btn');
-      dlBtn.href = app.download_url;
-      dlBtn.onclick = () => { incrementDownload(id); return true; };
-      // İndirme butonu metnini dosya türüne göre güncelle
-      const extra2 = appExtras[id] || {};
-      if (extra2.platform === 'windows' || app.download_url.endsWith('.zip') || app.download_url.endsWith('.rar')) {
-        dlBtn.innerHTML = '⬇ ZIP İndir';
-      } else {
-        dlBtn.innerHTML = '⬇ APK İndir';
-      }
-      document.getElementById('d-dl-count').textContent = '...';
-      getDownloads(id).then(c => { document.getElementById('d-dl-count').textContent = c; });
-      const ssEl = document.getElementById('d-screenshots');
-      const screenshots = extra.screenshots || [];
-      ssEl.innerHTML = screenshots.length ? screenshots.map(url => `<div class="ss-item"><img src="${url}" alt="" onclick="openLightbox('${url}')"/></div>`).join('') : ['📱', '📱', '📱'].map(e => `<div class="ss-item">${e}<span style="color:var(--muted);font-size:0.75rem">Yakında</span></div>`).join('');
-      const desc = extra.description || app.changelog;
-      document.getElementById('d-desc').innerHTML = desc.split('\n').map(p => p ? `<p style="margin-bottom:10px">${p}</p>` : '').join('');
-      const jsonHistory = app.history ? app.history.map(h => ({ version: h.version, text: h.note })) : null;
-      const history = jsonHistory || extra.changelog_history || [{ version: 'V' + app.version, text: app.changelog }];
-      document.getElementById('d-changelog').innerHTML = history.map(h => `<div class="cl-item"><div class="cl-ver">${h.version}</div><div class="cl-text">${h.text}</div></div>`).join('');
-      loadComments(id);
-      document.getElementById('home-page').style.display = 'none';
-      const dp = document.getElementById('detail-page');
-      dp.classList.add('active'); dp.scrollTop = 0;
     }
 
     async function loadComments(appId) {
       currentAppId = appId;
-      const { data: { session } } = await supa.auth.getSession();
-      currentUserId = session ? session.user.id : null;
-      currentUserEmail = session ? session.user.email : null;
-      document.getElementById('comment-form').style.display = session ? 'block' : 'none';
-      document.getElementById('comment-login-note').style.display = session ? 'none' : 'block';
-      const { data } = await supa.from('comments').select('*').eq('app_id', appId).order('created_at', { ascending: false });
-      const list = document.getElementById('comment-list');
-      const countEl = document.getElementById('comment-count');
-      if (!data || !data.length) { countEl.textContent = ''; list.innerHTML = '<div class="no-comments">Henüz yorum yok. İlk yorumu sen yap! 🎉</div>'; return; }
-      const avg = calcAvgRating(data);
-      countEl.textContent = '(' + data.length + ' yorum' + (avg ? ' · ★ ' + avg : '') + ')';
-      const avgEl = document.getElementById('d-avg-rating');
-      if (avgEl) avgEl.textContent = avg ? '★ ' + avg : '—';
-      const isAdmin = currentUserEmail === ADMIN_EMAIL;
-      list.innerHTML = data.map(c => {
-        const stars = '★'.repeat(c.rating || 0) + '☆'.repeat(5 - (c.rating || 0));
-        const date = new Date(c.created_at).toLocaleDateString('tr-TR');
-        const isOwn = currentUserId && c.user_id === currentUserId;
-        const replyHtml = c.reply ? `<div class="comment-reply"><div class="comment-reply-header">👨‍💻 Geliştirici Yanıtı ${isAdmin ? `<button onclick="deleteReply('${c.id}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.72rem;margin-left:8px">🗑 Yanıtı Sil</button>` : ''}</div><div class="comment-reply-text">${c.reply}</div></div>` : '';
-        const adminReplyBtn = (isAdmin && !c.reply) ? `<button onclick="postReply('${c.id}')" class="comment-btn reply-btn">Yanıtla</button>` : '';
-        const deleteBtn = (isAdmin || isOwn) ? `<button onclick="deleteComment('${c.id}')" class="comment-btn delete-btn">Sil</button>` : '';
-
-        return `
-          <div class="comment-card">
-            <div class="comment-header">
-              <span class="comment-user">${maskEmail(c.user_email)}</span>
-              <span class="comment-stars">${stars}</span>
-              <span class="comment-date">${date}</span>
-            </div>
-            <div class="comment-text">${c.content}</div>
-            ${replyHtml}
-            <div class="comment-actions">
-              ${adminReplyBtn}
-              ${deleteBtn}
-            </div>
-          </div>
-        `;
-      }).join('');
+      try {
+        const { data: { session } } = await supa.auth.getSession();
+        currentUserId = session ? session.user.id : null;
+        currentUserEmail = session ? session.user.email : null;
+        const form = document.getElementById('comment-form');
+        const note = document.getElementById('comment-login-note');
+        if(form) form.style.display = session ? 'block' : 'none';
+        if(note) note.style.display = session ? 'none' : 'block';
+        
+        const { data } = await supa.from('comments').select('*').eq('app_id', appId).order('created_at', { ascending: false });
+        const list = document.getElementById('comment-list');
+        const countEl = document.getElementById('comment-count');
+        if (!list) return;
+        if (!data || !data.length) { 
+          if(countEl) countEl.textContent = ''; 
+          list.innerHTML = '<div class="no-comments">Henüz yorum yok. İlk yorumu sen yap! 🎉</div>'; 
+          return; 
+        }
+        const avg = calcAvgRating(data);
+        if(countEl) countEl.textContent = '(' + data.length + ' yorum' + (avg ? ' · ★ ' + avg : '') + ')';
+        const avgEl = document.getElementById('d-avg-rating');
+        if (avgEl) avgEl.textContent = avg ? '★ ' + avg : '—';
+        const isAdmin = currentUserEmail === ADMIN_EMAIL;
+        list.innerHTML = data.map(c => {
+          const stars = '★'.repeat(c.rating || 0) + '☆'.repeat(5 - (c.rating || 0));
+          const date = new Date(c.created_at).toLocaleDateString('tr-TR');
+          const isOwn = currentUserId && c.user_id === currentUserId;
+          const replyHtml = c.reply ? `<div class="comment-reply"><div class="comment-reply-header">👨‍💻 Geliştirici Yanıtı ${isAdmin ? `<button onclick="deleteReply('${c.id}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.72rem;margin-left:8px">🗑 Yanıtı Sil</button>` : ''}</div><div class="comment-reply-text">${c.reply}</div></div>` : '';
+          const adminReplyBtn = (isAdmin && !c.reply) ? `<button onclick="postReply('${c.id}')" class="comment-btn reply-btn">Yanıtla</button>` : '';
+          const deleteBtn = (isAdmin || isOwn) ? `<button onclick="deleteComment('${c.id}')" class="comment-btn delete-btn">Sil</button>` : '';
+          return `<div class="comment-card"><div class="comment-header"><span class="comment-user">${maskEmail(c.user_email)}</span><span class="comment-stars">${stars}</span><span class="comment-date">${date}</span></div><div class="comment-text">${c.content}</div>${replyHtml}<div class="comment-actions">${adminReplyBtn}${deleteBtn}</div></div>`;
+        }).join('');
+      } catch (e) { console.warn("Yorumlar yüklenemedi."); }
     }
 
     async function submitComment(e) {
@@ -4211,21 +4166,6 @@
       loadComments(currentAppId);
     }
 
-    // --- LIGHTBOX ---
-    function openLightbox(url) {
-      const lb = document.getElementById('lightbox');
-      const img = document.getElementById('lightbox-img');
-      if(!lb || !img) return;
-      img.src = url;
-      lb.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    }
-    function closeLightbox() {
-      const lb = document.getElementById('lightbox');
-      if(lb) lb.style.display = 'none';
-      document.body.style.overflow = 'auto';
-    }
-
     // --- AUTH & SESSION ---
     async function checkSession() {
       try {
@@ -4263,84 +4203,50 @@
       location.reload();
     }
 
-    // --- J.A.R.V.I.S VOICE ENGINE ---
-    let jarvisRecognition = null;
-    let isJarvisListening = false;
-    let jarvisStartupTime = 0;
-
-    function initJarvisEngine() {
-      try {
-        const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!Speech) return;
-        jarvisRecognition = new Speech();
-        jarvisRecognition.continuous = false;
-        jarvisRecognition.lang = 'tr-TR';
-        jarvisRecognition.interimResults = false;
-
-        jarvisRecognition.onstart = () => {
-          isJarvisListening = true;
-          jarvisStartupTime = Date.now();
-          updateJarvisMicUI(true);
-        };
-
-        jarvisRecognition.onresult = (e) => {
-          const text = e.results[0][0].transcript;
-          const inputEl = document.getElementById('jarvis-input');
-          if (inputEl) {
-            inputEl.value = text;
-            sendToJarvis();
-          }
-        };
-
-        jarvisRecognition.onerror = (e) => {
-          console.error("J.A.R.V.I.S Engine Error:", e.error);
-          isJarvisListening = false;
-          updateJarvisMicUI(false);
-        };
-
-        jarvisRecognition.onend = () => {
-          isJarvisListening = false;
-          updateJarvisMicUI(false);
-        };
-      } catch (err) { console.error("Jarvis Init Error:", err); }
-    }
-
-    function updateJarvisMicUI(active) {
-      const micBtn = document.getElementById('jarvis-mic-btn');
-      if (!micBtn) return;
-      micBtn.style.animation = active ? 'pulseJarvisMic 0.8s infinite alternate' : 'none';
-      micBtn.innerHTML = active ? '🎙️' : '🎤';
-    }
-
-    function startJarvisVoice() {
-      if (!jarvisRecognition) initJarvisEngine();
-      if (!jarvisRecognition) return;
-      if (isJarvisListening) { jarvisRecognition.stop(); return; }
-      try { jarvisRecognition.start(); } catch (e) { console.error("Voice Start Error:", e); }
-    }
-
-    // --- J.A.R.V.I.S AI CHAT ---
-    const JARVIS_SYSTEM = `Sen J.A.R.V.I.S.'sin. DevStore'un akilli bekcisisin. Kaptan judy658'e hizmet ediyorsun. Bilgin dahilinde DevStore, Sportify ve diger uygulamalar var.`;
-    const DEV_CLUSTER_NODES = ["https://judy658-devstore.hf.space"];
-    let _jarvisHistory = [];
-
-    function toggleJarvis() {
-      const p = document.getElementById('jarvis-panel');
-      if(!p) { console.warn("Jarvis Panel Not Found"); return; }
-      p.classList.toggle('active');
-      if (p.classList.contains('active')) {
-        const inp = document.getElementById('jarvis-input');
-        if(inp) inp.focus();
-        sessionStorage.setItem('jarvisSeen', '1');
-        hideBubble();
+    async function showDetail(id) {
+      const app = allApps[id], extra = appExtras[id] || {};
+      if (!app) return;
+      document.getElementById('d-nav-title').textContent = app.name;
+      const iconEl = document.getElementById('d-icon');
+      if (app.image) {
+        iconEl.innerHTML = '<img src="' + app.image + '" style="width:100%;height:100%;object-fit:cover;border-radius:22px;">';
+      } else {
+        iconEl.textContent = app.icon || '📦';
       }
+      document.getElementById('d-name').textContent = app.name;
+      document.getElementById('d-dev').textContent = '👤 ' + (extra.developer || 'judy658');
+      document.getElementById('d-ver').textContent = 'v' + app.version;
+      document.getElementById('d-minver').textContent = 'v' + app.min_version;
+      document.getElementById('d-avg-rating').textContent = '—';
+      document.getElementById('d-category').textContent = app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama';
+      document.getElementById('d-badges').innerHTML = `<span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama'}</span>${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu Güncelleme</span>' : ''}${extra && extra.platform === 'windows' ? '<span class="badge badge-windows">🖥️ Sadece Windows</span>' : ''}`;
+      const dlBtn = document.getElementById('d-dl-btn');
+      dlBtn.href = app.download_url;
+      dlBtn.onclick = () => { incrementDownload(id); return true; };
+      
+      const extra2 = appExtras[id] || {};
+      dlBtn.innerHTML = (extra2.platform === 'windows' || app.download_url.endsWith('.zip') || app.download_url.endsWith('.rar')) ? '⬇ ZIP İndir' : '⬇ APK İndir';
+
+      document.getElementById('d-dl-count').textContent = '...';
+      getDownloads(id).then(c => { document.getElementById('d-dl-count').textContent = c; });
+      
+      const ssEl = document.getElementById('d-screenshots');
+      const screenshots = extra.screenshots || [];
+      ssEl.innerHTML = screenshots.length ? screenshots.map(url => `<div class="ss-item"><img src="${url}" alt="" onclick="openLightbox('${url}')"/></div>`).join('') : ['📱', '📱', '📱'].map(e => `<div class="ss-item">${e}<span style="color:var(--muted);font-size:0.75rem">Yakında</span></div>`).join('');
+      
+      const desc = extra.description || app.changelog;
+      document.getElementById('d-desc').innerHTML = desc.split('\n').map(p => p ? `<p style="margin-bottom:10px">${p}</p>` : '').join('');
+      const jsonHistory = app.history ? app.history.map(h => ({ version: h.version, text: h.note })) : null;
+      const history = jsonHistory || extra.changelog_history || [{ version: 'V' + app.version, text: app.changelog }];
+      document.getElementById('d-changelog').innerHTML = history.map(h => `<div class="cl-item"><div class="cl-ver">${h.version}</div><div class="cl-text">${h.text}</div></div>`).join('');
+      
+      loadComments(id);
+      document.getElementById('home-page').style.display = 'none';
+      const dp = document.getElementById('detail-page');
+      dp.classList.add('active'); dp.scrollTop = 0;
     }
 
-    function hideBubble() {
-      const b = document.getElementById('jarvis-bubble');
-      if (b) { b.classList.add('hide'); setTimeout(() => b.style.display = 'none', 500); }
-    }
-
+    // --- JARVIS CHAT UPDATE ---
     async function sendToJarvis() {
       const input = document.getElementById('jarvis-input');
       const chat = document.getElementById('jarvis-chat');
@@ -4357,16 +4263,19 @@
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
+            'Accept': 'application/json'
           },
           body: JSON.stringify({ 
             model: "qwen2.5:0.5b", 
-            messages: [{ role: "system", content: JARVIS_SYSTEM }, ..._jarvisHistory],
-            stream: false
+            messages: [{ role: "system", content: JARVIS_SYSTEM }, ..._jarvisHistory]
           })
         });
         
-        if (resp.status === 403) throw new Error("Erişim reddedildi (403). Sunucu yapılandırması değişmiş olabilir.");
+        if (!resp.ok) {
+           const errText = await resp.text();
+           if (resp.status === 403) throw new Error("HF 403: Erişim kısıtlı. Space sahibi tarafından API anahtarı veya CORS izni gerekebilir.");
+           throw new Error("HTTP " + resp.status);
+        }
         
         const data = await resp.json();
         const res = data.message?.content || data.response || "Anlaşılamadı.";
@@ -4376,7 +4285,7 @@
       } catch (e) { 
         console.error("Jarvis Chat Error:", e);
         typing.style.display = 'none'; 
-        chat.innerHTML += `<div class="jarvis-msg ai" style="color:var(--accent2)">Bağlantı hatası: ${e.message}</div>`; 
+        chat.innerHTML += `<div class="jarvis-msg ai" style="color:var(--accent2)">Hata: ${e.message}</div>`; 
       }
       chat.scrollTop = chat.scrollHeight;
     }
