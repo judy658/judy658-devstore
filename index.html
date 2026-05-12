@@ -4246,6 +4246,79 @@
       dp.classList.add('active'); dp.scrollTop = 0;
     }
 
+    // --- J.A.R.V.I.S VOICE ENGINE ---
+    let jarvisRecognition = null;
+    let isJarvisListening = false;
+    let jarvisStartupTime = 0;
+
+    function initJarvisEngine() {
+      try {
+        const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!Speech) return;
+        jarvisRecognition = new Speech();
+        jarvisRecognition.continuous = false;
+        jarvisRecognition.lang = 'tr-TR';
+        jarvisRecognition.interimResults = false;
+
+        jarvisRecognition.onstart = () => {
+          isJarvisListening = true;
+          jarvisStartupTime = Date.now();
+          updateJarvisMicUI(true);
+        };
+
+        jarvisRecognition.onresult = (e) => {
+          const text = e.results[0][0].transcript;
+          const inputEl = document.getElementById('jarvis-input');
+          if (inputEl) {
+            inputEl.value = text;
+            sendToJarvis();
+          }
+        };
+
+        jarvisRecognition.onerror = (e) => {
+          console.error("J.A.R.V.I.S Engine Error:", e.error);
+          isJarvisListening = false;
+          updateJarvisMicUI(false);
+        };
+
+        jarvisRecognition.onend = () => {
+          isJarvisListening = false;
+          updateJarvisMicUI(false);
+        };
+      } catch (err) { console.error("Jarvis Init Error:", err); }
+    }
+
+    function updateJarvisMicUI(active) {
+      const micBtn = document.getElementById('jarvis-mic-btn');
+      if (!micBtn) return;
+      micBtn.style.animation = active ? 'pulseJarvisMic 0.8s infinite alternate' : 'none';
+      micBtn.innerHTML = active ? '🎙️' : '🎤';
+    }
+
+    function startJarvisVoice() {
+      if (!jarvisRecognition) initJarvisEngine();
+      if (!jarvisRecognition) return;
+      if (isJarvisListening) { jarvisRecognition.stop(); return; }
+      try { jarvisRecognition.start(); } catch (e) { console.error("Voice Start Error:", e); }
+    }
+
+    function toggleJarvis() {
+      const p = document.getElementById('jarvis-panel');
+      if(!p) { console.warn("Jarvis Panel Not Found"); return; }
+      p.classList.toggle('active');
+      if (p.classList.contains('active')) {
+        const inp = document.getElementById('jarvis-input');
+        if(inp) inp.focus();
+        sessionStorage.setItem('jarvisSeen', '1');
+        hideBubble();
+      }
+    }
+
+    function hideBubble() {
+      const b = document.getElementById('jarvis-bubble');
+      if (b) { b.classList.add('hide'); setTimeout(() => b.style.display = 'none', 500); }
+    }
+
     // --- JARVIS CHAT UPDATE ---
     async function sendToJarvis() {
       const input = document.getElementById('jarvis-input');
