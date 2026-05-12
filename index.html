@@ -4329,8 +4329,8 @@ Asistan: Sistemlerim optimize edildi, her şey yolunda Kaptan!`;
       if (b) { b.classList.add('hide'); setTimeout(() => b.style.display = 'none', 500); }
     }
 
-    let JARVIS_MODEL = "qwen2.5:0.5b"; // Varsayılan (hızlı ama cahil)
-    const PREFERRED_MODEL = "qwen2.5:1.5b"; // Hedef (zeki)
+    let JARVIS_MODEL = "qwen2.5:0.5b"; 
+    const PREFERRED_MODEL = "llama3.2:1b"; 
 
     async function checkAndUpgradeJarvis() {
       console.log("J.A.R.V.I.S: Sistem kontrol ediliyor...");
