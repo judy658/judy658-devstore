@@ -4122,32 +4122,35 @@
           const userIdent = c.email ? c.email.split('@')[0] : 'Misafir';
           
           const replyHtml = c.reply ? `
-            <div class="comment-reply">
-              <div class="comment-reply-header">
-                <span>👨‍💻 Geliştirici Yanıtı</span>
-                ${isAdmin ? `<button onclick="deleteReply('${c.id}')" class="reply-del-btn">🗑 Sil</button>` : ''}
+            <div style="margin-top:15px; padding:12px; background:rgba(100,100,255,0.05); border-left:3px solid var(--accent); border-radius:8px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                <span style="font-size:0.8rem; font-weight:700; color:var(--accent);">👨‍💻 Geliştirici Yanıtı</span>
+                ${isAdmin ? `<button onclick="deleteReply('${c.id}')" style="background:none; border:none; color:#ff4646; cursor:pointer; font-size:0.8rem;">🗑 Sil</button>` : ''}
               </div>
-              <div class="comment-reply-text">${c.reply}</div>
+              <div style="font-size:0.85rem; color:var(--text); line-height:1.4;">${c.reply}</div>
             </div>` : '';
             
-          const adminReplyBtn = (isAdmin && !c.reply) ? `<button onclick="postReply('${c.id}')" class="comment-btn reply-btn">💬 Yanıtla</button>` : '';
-          const deleteBtn = (isAdmin || isOwn) ? `<button onclick="deleteComment('${c.id}')" class="comment-btn delete-btn">🗑 Sil</button>` : '';
+          const adminReplyBtn = (isAdmin && !c.reply) ? `<button onclick="postReply('${c.id}')" style="padding:6px 12px; border-radius:6px; border:1px solid var(--accent); background:none; color:var(--accent); cursor:pointer; font-size:0.75rem;">💬 Yanıtla</button>` : '';
+          const deleteBtn = (isAdmin || isOwn) ? `<button onclick="deleteComment('${c.id}')" style="padding:6px 12px; border-radius:6px; border:1px solid #ff4646; background:none; color:#ff4646; cursor:pointer; font-size:0.75rem;">🗑 Sil</button>` : '';
           
           return `
-            <div class="comment-card">
-              <div class="comment-header">
-                <div class="comment-user-info">
-                  <div class="comment-avatar">${userIdent[0].toUpperCase()}</div>
+            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:20px; margin-bottom:15px; position:relative; transition:all 0.3s hover; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, var(--accent), var(--accent2)); display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:1.1rem;">${userIdent[0].toUpperCase()}</div>
                   <div>
-                    <div class="comment-user-name">${userIdent}</div>
-                    <div class="comment-stars">${stars}</div>
+                    <div style="font-weight:700; font-size:0.95rem; color:var(--text);">${userIdent}</div>
+                    <div style="color:var(--yellow); font-size:0.8rem; letter-spacing:1px;">${stars}</div>
                   </div>
                 </div>
-                <span class="comment-date">${date}</span>
+                <span style="font-size:0.75rem; color:var(--muted);">${date}</span>
               </div>
-              <div class="comment-text">${c.content}</div>
+              <div style="font-size:0.9rem; color:var(--text); line-height:1.6; margin-bottom:15px; color:rgba(255,255,255,0.85);">${c.content}</div>
               ${replyHtml}
-              <div class="comment-actions">${adminReplyBtn}${deleteBtn}</div>
+              <div style="display:flex; gap:10px; margin-top:15px; justify-content:flex-end;">
+                ${adminReplyBtn}
+                ${deleteBtn}
+              </div>
             </div>`;
         }).join('');
       } catch (e) { console.warn("Yorumlar yüklenemedi."); }
