@@ -3992,6 +3992,31 @@
     }
 
     // ════════════════════════════════════════════════
+    //  YARDIMCI FONKSİYONLAR
+    // ════════════════════════════════════════════════
+    function maskEmail(email) {
+      if (!email) return 'Gizli Kullanıcı';
+      const [u, d] = email.split('@');
+      return u.slice(0, 3) + '***@' + d;
+    }
+    function calcAvgRating(comments) {
+      if (!comments || !comments.length) return 0;
+      const sum = comments.reduce((acc, c) => acc + (c.rating || 0), 0);
+      return (sum / comments.length).toFixed(1);
+    }
+    async function getDownloads(appId) {
+      const { data } = await supa.from('apps').select('download_count').eq('id', appId).maybeSingle();
+      return data ? data.download_count : 0;
+    }
+    async function incrementDownload(appId) {
+      const { data } = await supa.from('apps').select('download_count').eq('id', appId).maybeSingle();
+      const count = (data ? data.download_count : 0) + 1;
+      await supa.from('apps').upsert({ id: appId, download_count: count });
+      const el = document.getElementById('d-dl-count');
+      if (el) el.textContent = count;
+    }
+
+    // ════════════════════════════════════════════════
     //  UYGULAMA LİSTESİ
     // ════════════════════════════════════════════════
     async function loadApps() {
@@ -4295,7 +4320,7 @@
     }
 
     // --- J.A.R.V.I.S AI CHAT ---
-    const JARVIS_SYSTEM = `Sen J.A.R.V.I.S.'sin. DevStore'un akilli bekcisisin. Kaptan judy658'e hizmet ediyorsun.`;
+    const JARVIS_SYSTEM = `Sen J.A.R.V.I.S.'sin. DevStore'un akilli bekcisisin. Kaptan judy658'e hizmet ediyorsun. Bilgin dahilinde DevStore, Sportify ve diger uygulamalar var.`;
     const DEV_CLUSTER_NODES = ["https://judy658-devstore.hf.space"];
     let _jarvisHistory = [];
 
@@ -4330,17 +4355,28 @@
       try {
         const resp = await fetch(`${DEV_CLUSTER_NODES[0]}/api/chat`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ model: "qwen2.5:0.5b", messages: [{ role: "system", content: JARVIS_SYSTEM }, ..._jarvisHistory] })
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: JSON.stringify({ 
+            model: "qwen2.5:0.5b", 
+            messages: [{ role: "system", content: JARVIS_SYSTEM }, ..._jarvisHistory],
+            stream: false
+          })
         });
+        
+        if (resp.status === 403) throw new Error("Erişim reddedildi (403). Sunucu yapılandırması değişmiş olabilir.");
+        
         const data = await resp.json();
-        const res = data.message?.content || "Anlaşılamadı.";
+        const res = data.message?.content || data.response || "Anlaşılamadı.";
         typing.style.display = 'none';
         chat.innerHTML += `<div class="jarvis-msg ai">${res.replace(/\n/g, '<br>')}</div>`;
         _jarvisHistory.push({ role: 'assistant', content: res });
       } catch (e) { 
+        console.error("Jarvis Chat Error:", e);
         typing.style.display = 'none'; 
-        chat.innerHTML += `<div class="jarvis-msg ai" style="color:var(--accent2)">Bağlantı hatası: Jarvis sunucusu şu an meşgul.</div>`; 
+        chat.innerHTML += `<div class="jarvis-msg ai" style="color:var(--accent2)">Bağlantı hatası: ${e.message}</div>`; 
       }
       chat.scrollTop = chat.scrollHeight;
     }
