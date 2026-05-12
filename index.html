@@ -3272,17 +3272,30 @@
     }
 
     async function saveNickname() {
-      if(!currentUserEmail) return;
+      const { data: { session } } = await supa.auth.getSession();
+      if(!session) { alert('Oturumun süresi dolmuş, lütfen tekrar giriş yap!'); return; }
+      
       const nick = document.getElementById('profile-nickname-input').value.trim();
       if(!nick) { alert('Lütfen geçerli bir takma ad gir!'); return; }
+      
       const btn = document.getElementById('nick-save-btn');
       btn.disabled = true; btn.textContent = '⏳...';
+      
       try {
-        const { error } = await supa.from('user_presence').update({ nickname: nick }).eq('email', currentUserEmail);
-        if(error) throw error;
+        console.log('[Nickname] Güncelleniyor:', nick, 'Kullanıcı:', session.user.email);
+        const { error } = await supa.from('user_presence').update({ nickname: nick }).eq('email', session.user.email);
+        
+        if(error) {
+          console.error('[Supabase Error]', error);
+          throw error;
+        }
+        
         alert('Takma ad başarıyla güncellendi! ✓');
-        showUserLoggedIn(currentUserEmail);
-      } catch(e) { alert('Hata: ' + e.message); }
+        await showUserLoggedIn(session.user.email);
+      } catch(e) { 
+        console.error('[Nickname Save Fail]', e);
+        alert('Hata: ' + (e.message || 'Veritabanına kaydedilemedi. Sütun eksik olabilir mi?')); 
+      }
       finally { btn.disabled = false; btn.textContent = 'Kaydet'; }
     }
 
