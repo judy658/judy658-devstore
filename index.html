@@ -3996,10 +3996,26 @@
     // ════════════════════════════════════════════════
     async function loadApps() {
       try {
-        const res = await fetch('versions.json');
-        if (res.ok) { const data = await res.json(); allApps = data.apps || {}; }
-      } catch (e) { }
-      updateStats(); renderGrid(currentFilter);
+        // Garantili çekim için GitHub Raw linki kullanılıyor
+        const res = await fetch('https://raw.githubusercontent.com/judy658/judy658-devstore/main/versions.json?v=' + Date.now());
+        if (res.ok) { 
+          const data = await res.json(); 
+          allApps = data.apps || {}; 
+          console.log("Apps loaded:", Object.keys(allApps).length);
+        } else {
+          console.error("Uygulama listesi alınamadı:", res.status);
+          // Fallback: Yerel dosyayı dene
+          const localRes = await fetch('versions.json');
+          if (localRes.ok) {
+            const localData = await localRes.json();
+            allApps = localData.apps || {};
+          }
+        }
+      } catch (e) { 
+        console.error("LoadApps Critical Error:", e);
+      }
+      updateStats(); 
+      renderGrid(currentFilter);
     }
     function updateStats() {
       const list = Object.values(allApps);
