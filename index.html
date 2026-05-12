@@ -4187,30 +4187,34 @@
 
     // --- AUTH & SESSION ---
     async function checkSession() {
-      const { data: { session } } = await supa.auth.getSession();
-      const loginBtn = document.getElementById('login-btn');
-      const userInfo = document.getElementById('user-info');
-      const shortEmail = document.getElementById('user-email-short');
-      if (session) {
-        currentUserEmail = session.user.email;
-        currentUserId = session.user.id;
-        if (loginBtn) loginBtn.style.display = 'none';
-        if (userInfo) userInfo.style.display = 'flex';
-        if (shortEmail) shortEmail.textContent = currentUserEmail.split('@')[0];
-        const profileDisplay = document.getElementById('profile-email-display');
-        if(profileDisplay) profileDisplay.textContent = currentUserEmail;
-        const loginNote = document.getElementById('contact-login-note');
-        if(loginNote) loginNote.style.display = 'none';
-        const formInner = document.getElementById('contact-form-inner');
-        if(formInner) formInner.style.display = 'block';
-      } else {
-        if (loginBtn) loginBtn.style.display = 'flex';
-        if (userInfo) userInfo.style.display = 'none';
-        const loginNote = document.getElementById('contact-login-note');
-        if(loginNote) loginNote.style.display = 'block';
-        const formInner = document.getElementById('contact-form-inner');
-        if(formInner) formInner.style.display = 'none';
-      }
+      try {
+        const { data: { session } } = await supa.auth.getSession();
+        const loginBtn = document.getElementById('login-btn');
+        const userInfo = document.getElementById('user-info');
+        const shortEmail = document.getElementById('user-email-short');
+        if (session) {
+          currentUserEmail = session.user.email;
+          currentUserId = session.user.id;
+          if (loginBtn) loginBtn.style.display = 'none';
+          if (userInfo) userInfo.style.display = 'flex';
+          if (shortEmail) shortEmail.textContent = currentUserEmail.split('@')[0];
+          const profileDisplay = document.getElementById('profile-email-display');
+          if(profileDisplay) profileDisplay.textContent = currentUserEmail;
+          const loginNote = document.getElementById('contact-login-note');
+          if(loginNote) loginNote.style.display = 'none';
+          const formInner = document.getElementById('contact-form-inner');
+          if(formInner) formInner.style.display = 'block';
+          startPresence();
+        } else {
+          if (loginBtn) loginBtn.style.display = 'flex';
+          if (userInfo) userInfo.style.display = 'none';
+          const loginNote = document.getElementById('contact-login-note');
+          if(loginNote) loginNote.style.display = 'block';
+          const formInner = document.getElementById('contact-form-inner');
+          if(formInner) formInner.style.display = 'none';
+          stopPresence();
+        }
+      } catch (e) { console.error("Session Error:", e); }
     }
 
     async function doSignOut() {
@@ -4218,14 +4222,70 @@
       location.reload();
     }
 
-    // --- J.A.R.V.I.S ---
-    const JARVIS_SYSTEM = `Sen J.A.R.V.I.S.'sin. DevStore'un akilli bekcisisin.`;
+    // --- J.A.R.V.I.S VOICE ENGINE ---
+    let jarvisRecognition = null;
+    let isJarvisListening = false;
+    let jarvisStartupTime = 0;
+
+    function initJarvisEngine() {
+      try {
+        const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!Speech) return;
+        jarvisRecognition = new Speech();
+        jarvisRecognition.continuous = false;
+        jarvisRecognition.lang = 'tr-TR';
+        jarvisRecognition.interimResults = false;
+
+        jarvisRecognition.onstart = () => {
+          isJarvisListening = true;
+          jarvisStartupTime = Date.now();
+          updateJarvisMicUI(true);
+        };
+
+        jarvisRecognition.onresult = (e) => {
+          const text = e.results[0][0].transcript;
+          const inputEl = document.getElementById('jarvis-input');
+          if (inputEl) {
+            inputEl.value = text;
+            sendToJarvis();
+          }
+        };
+
+        jarvisRecognition.onerror = (e) => {
+          console.error("J.A.R.V.I.S Engine Error:", e.error);
+          isJarvisListening = false;
+          updateJarvisMicUI(false);
+        };
+
+        jarvisRecognition.onend = () => {
+          isJarvisListening = false;
+          updateJarvisMicUI(false);
+        };
+      } catch (err) { console.error("Jarvis Init Error:", err); }
+    }
+
+    function updateJarvisMicUI(active) {
+      const micBtn = document.getElementById('jarvis-mic-btn');
+      if (!micBtn) return;
+      micBtn.style.animation = active ? 'pulseJarvisMic 0.8s infinite alternate' : 'none';
+      micBtn.innerHTML = active ? '🎙️' : '🎤';
+    }
+
+    function startJarvisVoice() {
+      if (!jarvisRecognition) initJarvisEngine();
+      if (!jarvisRecognition) return;
+      if (isJarvisListening) { jarvisRecognition.stop(); return; }
+      try { jarvisRecognition.start(); } catch (e) { console.error("Voice Start Error:", e); }
+    }
+
+    // --- J.A.R.V.I.S AI CHAT ---
+    const JARVIS_SYSTEM = `Sen J.A.R.V.I.S.'sin. DevStore'un akilli bekcisisin. Kaptan judy658'e hizmet ediyorsun.`;
     const DEV_CLUSTER_NODES = ["https://judy658-devstore.hf.space"];
     let _jarvisHistory = [];
 
     function toggleJarvis() {
       const p = document.getElementById('jarvis-panel');
-      if(!p) return;
+      if(!p) { console.warn("Jarvis Panel Not Found"); return; }
       p.classList.toggle('active');
       if (p.classList.contains('active')) {
         const inp = document.getElementById('jarvis-input');
@@ -4234,10 +4294,12 @@
         hideBubble();
       }
     }
+
     function hideBubble() {
       const b = document.getElementById('jarvis-bubble');
       if (b) { b.classList.add('hide'); setTimeout(() => b.style.display = 'none', 500); }
     }
+
     async function sendToJarvis() {
       const input = document.getElementById('jarvis-input');
       const chat = document.getElementById('jarvis-chat');
@@ -4256,11 +4318,14 @@
           body: JSON.stringify({ model: "qwen2.5:0.5b", messages: [{ role: "system", content: JARVIS_SYSTEM }, ..._jarvisHistory] })
         });
         const data = await resp.json();
-        const res = data.message?.content || "Anlasilmadi.";
+        const res = data.message?.content || "Anlaşılamadı.";
         typing.style.display = 'none';
         chat.innerHTML += `<div class="jarvis-msg ai">${res.replace(/\n/g, '<br>')}</div>`;
         _jarvisHistory.push({ role: 'assistant', content: res });
-      } catch (e) { typing.style.display = 'none'; }
+      } catch (e) { 
+        typing.style.display = 'none'; 
+        chat.innerHTML += `<div class="jarvis-msg ai" style="color:var(--accent2)">Bağlantı hatası: Jarvis sunucusu şu an meşgul.</div>`; 
+      }
       chat.scrollTop = chat.scrollHeight;
     }
 
@@ -4272,9 +4337,42 @@
         const b = document.getElementById('jarvis-bubble');
         if (b && !sessionStorage.getItem('jarvisSeen')) b.style.display = 'block';
       }, 1500);
+      initJarvisEngine();
     });
 
     document.getElementById('jarvis-input')?.addEventListener('keypress', e => { if (e.key === 'Enter') sendToJarvis(); });
   </script>
+
+  <!-- J.A.R.V.I.S UI COMPONENTS -->
+  <div id="jarvis-trigger" onclick="toggleJarvis()">
+    <div class="core"></div>
+  </div>
+
+  <div id="jarvis-bubble" onclick="toggleJarvis()">
+    Kaptan, yeni bir güncelleme var mı? 🚀
+  </div>
+
+  <div id="jarvis-panel" class="jarvis-sidebar">
+    <div class="jarvis-header">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="jarvis-core-mini"></div>
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:#00d2ff">J.A.R.V.I.S</div>
+          <div style="font-size:0.65rem;color:rgba(0,210,255,0.6);text-transform:uppercase;letter-spacing:1px">Neural Link Active</div>
+        </div>
+      </div>
+      <button onclick="toggleJarvis()" style="background:none;border:none;color:#00d2ff;cursor:pointer;font-size:1.4rem">&times;</button>
+    </div>
+    <div class="jarvis-chat" id="jarvis-chat">
+      <div class="jarvis-msg ai">Sisteme hoş geldin Kaptan. Tüm modüller aktif. Size nasıl yardımcı olabilirim?</div>
+    </div>
+    <div id="jarvis-typing" class="jarvis-typing" style="display:none">Düşünüyor...</div>
+    <div class="jarvis-input-area">
+      <button id="jarvis-mic-btn" class="jarvis-mic" onclick="startJarvisVoice()">🎤</button>
+      <input type="text" id="jarvis-input" class="jarvis-input" placeholder="Komut ver..." />
+      <button class="jarvis-send" onclick="sendToJarvis()">⚡</button>
+    </div>
+  </div>
+
 </body>
 </html>
