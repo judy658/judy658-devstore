@@ -4375,14 +4375,12 @@ KONUŞMA STİLİN:
       typing.style.display = 'block';
       _jarvisHistory.push({ role: 'user', content: msg });
       
-      // Dinamik Uygulama Bilgisi Oluşturma
-      const appListText = Object.values(allApps).map(a => `- ${a.name} (v${a.version}): ${a.changelog}`).join('\n');
+      // Dinamik Uygulama Listesi (Sadece İsim ve Versiyon)
+      const appListText = Object.values(allApps).map(a => `- ${a.name} (v${a.version})`).join('\n');
       const DYNAMIC_SYSTEM = `${JARVIS_SYSTEM}
-DIKKAT: Sadece asagidaki listedeki uygulamalari taniyorsun. 
-Eger bir uygulama bu listede yoksa 'Bilmiyorum' de. 
-ASLA UYDURMA BILGI VERME. SPORTIFY BIR SPOR UYGULAMASI DEGILDIR, MUZIK UYGULAMASIDIR.
-
-DEVSTORE LISTESI:
+      
+ÖNEMLİ: Sadece sana verilen bilgileri kullan. Tarih uydurma. Eğer bir bilgi sisteminde yoksa 'Bu konuda bilgim yok' de.
+Şu an DevStore'da bulunan uygulamalar:
 ${appListText}`;
 
       try {
