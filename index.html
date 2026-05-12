@@ -2886,18 +2886,24 @@
         </h3>
         <div id="comment-login-note" class="comment-login-note" style="display:none">Yorum yapmak için <button
             onclick="openAuth()">giriş yap</button> veya hesap oluştur.</div>
-        <div id="comment-form" class="comment-form" style="display:none">
-          <div class="stars-row" id="stars-row">
-            <span class="star" data-v="1" onclick="setRating(1)">★</span><span class="star" data-v="2"
-              onclick="setRating(2)">★</span>
-            <span class="star" data-v="3" onclick="setRating(3)">★</span><span class="star" data-v="4"
-              onclick="setRating(4)">★</span>
-            <span class="star" data-v="5" onclick="setRating(5)">★</span>
+        <div id="comment-form" style="display:none; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:24px; margin-bottom:30px; box-shadow:0 8px 32px rgba(0,0,0,0.15); backdrop-filter:blur(8px);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <span style="font-weight:800; font-family:Syne,sans-serif; font-size:1.1rem; color:var(--text);">✍️ Deneyimini Paylaş</span>
+            <div id="stars-row" style="display:flex; gap:6px;">
+              <span class="star-select" onclick="setRating(1)" style="font-size:1.6rem; cursor:pointer; color:var(--muted); transition:all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">★</span>
+              <span class="star-select" onclick="setRating(2)" style="font-size:1.6rem; cursor:pointer; color:var(--muted); transition:all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">★</span>
+              <span class="star-select" onclick="setRating(3)" style="font-size:1.6rem; cursor:pointer; color:var(--muted); transition:all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">★</span>
+              <span class="star-select" onclick="setRating(4)" style="font-size:1.6rem; cursor:pointer; color:var(--muted); transition:all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">★</span>
+              <span class="star-select" onclick="setRating(5)" style="font-size:1.6rem; cursor:pointer; color:var(--muted); transition:all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">★</span>
+            </div>
+            <input type="hidden" id="comment-rating" value="5">
           </div>
-          <textarea id="comment-input" placeholder="Bu uygulama hakkında ne düşünüyorsun?" maxlength="500"></textarea>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-            <span style="font-size:0.75rem;color:var(--muted)" id="comment-char">0/500</span>
-            <button class="comment-submit" onclick="submitComment()">Yorum Gönder</button>
+          <textarea id="comment-input" placeholder="Bu uygulama hakkında ne düşünüyorsun? Görüşlerin topluluk için çok değerli..." maxlength="500" 
+            style="width:100%; min-height:110px; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.1); border-radius:14px; color:white; padding:18px; font-family:inherit; font-size:0.95rem; outline:none; resize:none; transition:all 0.3s; margin-bottom:15px; box-sizing:border-box;"></textarea>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span id="comment-char" style="font-size:0.75rem; color:var(--muted); font-weight:500;">0 / 500 Karakter</span>
+            <button class="comment-submit" onclick="submitComment(event)" 
+              style="background:linear-gradient(135deg, var(--accent), var(--accent2)); color:white; border:none; padding:12px 28px; border-radius:12px; font-weight:700; cursor:pointer; font-family:inherit; font-size:0.9rem; transition:all 0.3s; box-shadow:0 10px 20px rgba(124, 92, 252, 0.3);">🚀 Yorumu Yayınla</button>
           </div>
         </div>
         <div class="comment-list" id="comment-list"></div>
@@ -4159,7 +4165,7 @@
     async function submitComment(e) {
       e.preventDefault();
       const content = document.getElementById('comment-input').value.trim();
-      const rating = parseInt(document.getElementById('comment-rating').value);
+      const rating = parseInt(document.getElementById('comment-rating').value || "5");
       if (!content || !currentAppId || !currentUserId) return;
       const btn = e.target.querySelector('button');
       btn.disabled = true;
@@ -4167,15 +4173,24 @@
         const { error } = await supa.from('comments').insert({
           app_id: currentAppId,
           user_id: currentUserId,
-          user_email: currentUserEmail,
+          email: currentUserEmail,
           content,
           rating
         });
         if (error) throw error;
         document.getElementById('comment-input').value = '';
+        setRating(5); // Reset to 5 stars
         loadComments(currentAppId);
       } catch (err) { alert('Hata: ' + err.message); }
       finally { btn.disabled = false; }
+    }
+
+    function setRating(n) {
+      const input = document.getElementById('comment-rating');
+      if(input) input.value = n;
+      document.querySelectorAll('.star-select').forEach((s, i) => {
+        s.style.color = i < n ? 'var(--yellow)' : 'var(--muted)';
+      });
     }
 
     async function deleteComment(id) {
