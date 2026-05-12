@@ -4362,8 +4362,14 @@ Asistan: Sistemlerim optimize edildi, her şey yolunda Kaptan!`;
       _jarvisHistory.push({ role: 'user', content: msg });
       
       // Dinamik Uygulama Bilgisi Oluşturma
-      const appListText = Object.values(allApps).map(a => `- ${a.name} (v${a.version}): ${a.changelog.substring(0, 50)}...`).join('\n');
-      const DYNAMIC_SYSTEM = `${JARVIS_SYSTEM}\n\nDevStore Güncel Uygulama Listesi:\n${appListText}\n\nKullanıcı sorusuna bu listedeki gerçek bilgilere dayanarak cevap ver.`;
+      const appListText = Object.values(allApps).map(a => `- ${a.name} (v${a.version}): ${a.changelog}`).join('\n');
+      const DYNAMIC_SYSTEM = `${JARVIS_SYSTEM}
+DIKKAT: Sadece asagidaki listedeki uygulamalari taniyorsun. 
+Eger bir uygulama bu listede yoksa 'Bilmiyorum' de. 
+ASLA UYDURMA BILGI VERME. SPORTIFY BIR SPOR UYGULAMASI DEGILDIR, MUZIK UYGULAMASIDIR.
+
+DEVSTORE LISTESI:
+${appListText}`;
 
       try {
         const resp = await fetch(`${DEV_CLUSTER_NODES[0]}/api/chat`, {
