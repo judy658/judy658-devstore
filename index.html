@@ -4361,13 +4361,17 @@ Asistan: Sistemlerim optimize edildi, her şey yolunda Kaptan!`;
       typing.style.display = 'block';
       _jarvisHistory.push({ role: 'user', content: msg });
       
+      // Dinamik Uygulama Bilgisi Oluşturma
+      const appListText = Object.values(allApps).map(a => `- ${a.name} (v${a.version}): ${a.changelog.substring(0, 50)}...`).join('\n');
+      const DYNAMIC_SYSTEM = `${JARVIS_SYSTEM}\n\nDevStore Güncel Uygulama Listesi:\n${appListText}\n\nKullanıcı sorusuna bu listedeki gerçek bilgilere dayanarak cevap ver.`;
+
       try {
         const resp = await fetch(`${DEV_CLUSTER_NODES[0]}/api/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
             model: JARVIS_MODEL, 
-            messages: [{ role: "system", content: JARVIS_SYSTEM }, ..._jarvisHistory],
+            messages: [{ role: "system", content: DYNAMIC_SYSTEM }, ..._jarvisHistory],
             stream: false
           })
         });
