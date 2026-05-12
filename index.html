@@ -4337,32 +4337,47 @@
       try {
         const resp = await fetch(`${DEV_CLUSTER_NODES[0]}/api/chat`, {
           method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
             model: "qwen2.5:0.5b", 
-            messages: [{ role: "system", content: JARVIS_SYSTEM }, ..._jarvisHistory]
+            messages: [{ role: "system", content: JARVIS_SYSTEM }, ..._jarvisHistory],
+            stream: false
           })
         });
         
-        if (!resp.ok) {
-           const errText = await resp.text();
-           if (resp.status === 403) throw new Error("HF 403: Erişim kısıtlı. Space sahibi tarafından API anahtarı veya CORS izni gerekebilir.");
-           throw new Error("HTTP " + resp.status);
+        if (!resp.ok) throw new Error("Sunucu Hatası: HTTP " + resp.status);
+        
+        const rawText = await resp.text();
+        let data;
+        try {
+          // Ollama NDJSON formatında (birden fazla JSON objesi) dönebilir.
+          // İlk geçerli JSON objesini ayıklıyoruz.
+          const cleanText = rawText.trim().split('\n')[0];
+          data = JSON.parse(cleanText);
+        } catch (parseErr) {
+          // Eğer basit ayıklama başarısız olursa, regex ile JSON bloğunu bul.
+          const match = rawText.match(/\{.*\}/s);
+          if (match) data = JSON.parse(match[0]);
+          else throw new Error("Yanıt formatı anlaşılamadı.");
         }
         
-        const data = await resp.json();
         const res = data.message?.content || data.response || "Anlaşılamadı.";
-        typing.style.display = 'none';
-        chat.innerHTML += `<div class="jarvis-msg ai">${res.replace(/\n/g, '<br>')}</div>`;
-        _jarvisHistory.push({ role: 'assistant', content: res });
+        renderJarvisAI(res);
       } catch (e) { 
         console.error("Jarvis Chat Error:", e);
         typing.style.display = 'none'; 
         chat.innerHTML += `<div class="jarvis-msg ai" style="color:var(--accent2)">Hata: ${e.message}</div>`; 
       }
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function renderJarvisAI(text) {
+      const chat = document.getElementById('jarvis-chat');
+      const typing = document.getElementById('jarvis-typing');
+      if(!chat || !typing) return;
+      typing.style.display = 'none';
+      chat.innerHTML += `<div class="jarvis-msg ai">${text.replace(/\n/g, '<br>')}</div>`;
+      _jarvisHistory.push({ role: 'assistant', content: text });
       chat.scrollTop = chat.scrollHeight;
     }
 
