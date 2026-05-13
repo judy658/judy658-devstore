@@ -3900,6 +3900,7 @@
       }
 
       document.getElementById('user-list').innerHTML = list.map(u => {
+        const isOnline = (now - new Date(u.last_seen).getTime()) / 1000 < 60;
         const isVerified = u.email === ADMIN_EMAIL;
         const isMe = u.email === ADMIN_EMAIL;
         const verifiedBadge = isVerified ? '<svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#00d2ff;margin-left:4px;vertical-align:middle"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zM10 17l-5-5 1.4-1.4 3.6 3.6 7.6-7.6L19 8l-9 9z"></path></svg>' : '';
