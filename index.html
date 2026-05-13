@@ -3253,11 +3253,19 @@
       info.style.display = 'flex';
       
       // Fetch nickname
-      const { data: presence } = await supa.from('user_presence').select('nickname').eq('email', email).maybeSingle();
-      const displayName = (presence && presence.nickname) ? presence.nickname : email.split('@')[0];
+      let displayName = email.split('@')[0];
+      try {
+        const { data: presence } = await supa.from('user_presence').select('nickname').eq('email', email).maybeSingle();
+        if (presence && presence.nickname) {
+          displayName = presence.nickname;
+        }
+      } catch (e) {
+        console.warn('[Nickname] Fetch error (is column missing?):', e);
+      }
+      
       document.getElementById('user-email-short').textContent = displayName.length > 15 ? displayName.substring(0, 12) + '...' : displayName;
       const nickInput = document.getElementById('profile-nickname-input');
-      if(nickInput && presence && presence.nickname) nickInput.value = presence.nickname;
+      if(nickInput && displayName !== email.split('@')[0]) nickInput.value = displayName;
 
       if (email === ADMIN_EMAIL && !document.getElementById('admin-nav-btn')) {
         const btn = document.createElement('button');
@@ -3291,10 +3299,12 @@
         }
         
         alert('Takma ad başarıyla güncellendi! ✓');
+        // Refresh display immediately
         await showUserLoggedIn(session.user.email);
+        if (currentAppId) loadComments(currentAppId);
       } catch(e) { 
         console.error('[Nickname Save Fail]', e);
-        alert('Hata: ' + (e.message || 'Veritabanına kaydedilemedi. Sütun eksik olabilir mi?')); 
+        alert('Hata: ' + (e.message || 'Veritabanına kaydedilemedi. Sütun eksik olabilir mi? Lütfen SQL kodunu çalıştırdığınızdan emin olun.')); 
       }
       finally { btn.disabled = false; btn.textContent = 'Kaydet'; }
     }
@@ -3589,7 +3599,7 @@
     async function loadRcptUserList() {
       const box = document.getElementById('rcpt-user-checkboxes');
       box.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">Yükleniyor...</div>';
-      const { data: presence } = await supa.from('user_presence').select('email').order('email', { ascending: true });
+      const { data: presence } = await supa.from('user_presence').select('email, nickname').order('email', { ascending: true });
       if (!presence || !presence.length) { box.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">Kullanıcı bulunamadı.</div>'; return; }
       box.innerHTML = presence.map(u => `
     <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:7px 10px;border-radius:8px;transition:background 0.15s;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='transparent'">
@@ -3890,8 +3900,8 @@
         return `<div class="user-row ${isOnline ? 'online' : ''}" onclick="showUserDetail('${u.user_id}')">
       <div class="user-avatar">${u.email ? u.email[0].toUpperCase() : '?'}</div>
       <div class="user-info">
-        <div class="user-email-text">${u.email}${isMe ? ' 👑' : ''}</div>
-        <div class="user-meta">${isOnline ? '🟢 Şu an aktif' + (u.current_app ? ' · ' + (u.current_app === 'sportify' ? '🎵 Sportify' : '🌐 DevStore') : '') : '⚫ Son görülme: ' + _timeAgo(u.last_seen)}</div>
+        <div class="user-email-text">${u.nickname || u.email}${isMe ? ' 👑' : ''}</div>
+        <div class="user-meta">${u.nickname ? u.email + ' · ' : ''}${isOnline ? '🟢 Şu an aktif' + (u.current_app ? ' · ' + (u.current_app === 'sportify' ? '🎵 Sportify' : '🌐 DevStore') : '') : '⚫ Son görülme: ' + _timeAgo(u.last_seen)}</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px">
         <div class="online-dot ${isOnline ? 'active' : ''}"></div>
@@ -3911,7 +3921,7 @@
 
       const modal = document.getElementById('admin-user-modal');
       document.getElementById('m-user-avatar').textContent = user.email ? user.email[0].toUpperCase() : '?';
-      document.getElementById('m-user-email').textContent = user.email;
+      document.getElementById('m-user-email').innerHTML = user.nickname ? `<div>${user.nickname}</div><div style="font-size:0.8rem;opacity:0.7">${user.email}</div>` : user.email;
       document.getElementById('m-user-id').textContent = user.user_id;
 
       const isOnline = (Date.now() - new Date(user.last_seen).getTime()) / 1000 < 60;
