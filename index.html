@@ -2810,6 +2810,10 @@
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px">
         <div class="admin-card" style="padding:14px;background:var(--surface2);text-align:center">
+          <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">TAKMA AD</div>
+          <div id="m-user-nickname" style="font-size:0.85rem;font-weight:700;color:var(--accent)"></div>
+        </div>
+        <div class="admin-card" style="padding:14px;background:var(--surface2);text-align:center">
           <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">DURUM</div>
           <div id="m-user-status" style="font-size:0.85rem;font-weight:700"></div>
         </div>
@@ -3920,9 +3924,11 @@
       if (!user) return;
 
       const modal = document.getElementById('admin-user-modal');
-      document.getElementById('m-user-avatar').textContent = user.email ? user.email[0].toUpperCase() : '?';
-      document.getElementById('m-user-email').innerHTML = user.nickname ? `<div>${user.nickname}</div><div style="font-size:0.8rem;opacity:0.7">${user.email}</div>` : user.email;
+      const avatarText = user.nickname ? user.nickname[0].toUpperCase() : (user.email ? user.email[0].toUpperCase() : '?');
+      document.getElementById('m-user-avatar').textContent = avatarText;
+      document.getElementById('m-user-email').innerHTML = user.nickname ? `<div style="color:var(--accent)">${user.nickname}</div><div style="font-size:0.8rem;opacity:0.6">${user.email}</div>` : user.email;
       document.getElementById('m-user-id').textContent = user.user_id;
+      document.getElementById('m-user-nickname').textContent = user.nickname || '—';
 
       const isOnline = (Date.now() - new Date(user.last_seen).getTime()) / 1000 < 60;
       document.getElementById('m-user-status').innerHTML = isOnline ? '<span style="color:var(--green)">Online</span>' : '<span style="color:var(--muted)">Offline</span>';
