@@ -11,14 +11,13 @@
       "category": "app",
       "changelog": "sportify'ın en büyük güncellemesi geldi;optimizasyon güncellendi yeni labaratuvar özellikleri geldi indirme paylaşma mekanikleri eklenip bulut senkronizasyonu geldi.Bundan sonra uygulamayı sildiğinizde verileriniz bulutta durucak ve geri hesabınızı açtığınızda favorileriniz ile çalma listeleriniz kaybolmayacaktır.",
       "history": [
-        
-        { "version": "V20", "note": "sportify'ın en büyük güncellemesi geldi;optimizasyon güncellendi yeni labaratuvar özellikleri geldi indirme paylaşma mekanikleri eklenip bulut senkronizasyonu geldi.Bundan sonra uygulamayı sildiğinizde verileriniz bulutta durucak ve geri hesabınızı açtığınızda favorileriniz ile çalma listeleriniz kaybolmayacaktır."},
-        { "version": "V17", "note": "arayüz güncellendi,tasarım değişti."},
-        { "version": "V16", "note": "Yeni şarkılar eklendi,şarkı adları güncellendi bozuk olanlar düzeltildi."},
-        { "version": "V15", "note": "tasarım değiştirildi ve offline mod geldi.Artık şarkılar indirilebiliyor."},
-        { "version": "V14", "note": "buglar düzeltildi,teknik iyileştirmeler yapıldı."},
-        { "version": "V13", "note": "key sistemi kaldırıldı, oturum açılarak sportify'a girilebilir. En popüler şarkıları bulma sistemi geliştirildi." },
-        { "version": "V12", "note": "Yeni şarkılar eklendi (HITLER, Bir Baskedir). 6 dakika üzeri 5 şarkı kaldırıldı. Performans iyileştirmeleri yapıldı." },
+        { "version": "V20", "note": "sportify'ın en büyük güncellemesi geldi;optimizasyon güncellendi yeni labaratuvar özellikleri geldi indirme paylaşma mekanikleri eklenip bulut senkronizasyonu geldi." },
+        { "version": "V17", "note": "arayüz güncellendi,tasarım değişti." },
+        { "version": "V16", "note": "Yeni şarkılar eklendi,şarkı adları güncellendi bozuk olanlar düzeltildi." },
+        { "version": "V15", "note": "tasarım değiştirildi ve offline mod geldi.Artık şarkılar indirilebiliyor." },
+        { "version": "V14", "note": "buglar düzeltildi,teknik iyileştirmeler yapıldı." },
+        { "version": "V13", "note": "key sistemi kaldırıldı, oturum açılarak sportify'a girilebilir." },
+        { "version": "V12", "note": "Yeni şarkılar eklendi. Performans iyileştirmeleri yapıldı." },
         { "version": "V11", "note": "Şarkı listesi güncellendi, yeni özellikler eklendi." },
         { "version": "V10", "note": "İlk stabil sürüm yayınlandı." }
       ]
@@ -34,6 +33,19 @@
       "changelog": "İlk sürüm yayınlandı.",
       "history": [
         { "version": "V1", "note": "YouTube'dan MP3/MP4 indirme, playlist desteği, otomatik etiket düzenleme, kapak fotoğrafı gömme." }
+      ]
+    },
+    "kirosub": {
+      "name": "KiroSub",
+      "version": "2.3.0",
+      "min_version": "2.3.0",
+      "force_update": false,
+      "download_url": "https://huggingface.co/Judy658/kirosub-releases/resolve/main/KiroSub.zip",
+      "icon": "🎙",
+      "category": "app",
+      "changelog": "İlk sürüm yayınlandı. Whisper & faster-whisper ile altyazı, çeviri, dublaj, altyazı editörü.",
+      "history": [
+        { "version": "V2.3.0", "note": "İlk public sürüm. GPU desteği (NVIDIA CUDA), faster-whisper motoru, altyazı editörü, Chatterbox TTS dublaj, YouTube indirme, 20+ dil çevirisi." }
       ]
     }
   }
