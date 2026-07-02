@@ -355,6 +355,33 @@
       color: #4da6ff;
     }
 
+    .badge-guestsafe {
+      background: rgba(61, 220, 151, 0.12);
+      color: #3ddc97;
+    }
+
+    .dev-verified-tick {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 26px;
+      height: 26px;
+      background: #1877f2;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(24, 119, 242, 0.5);
+      z-index: 2;
+      flex-shrink: 0;
+    }
+
+    .dev-verified-tick svg {
+      width: 14px;
+      height: 14px;
+      fill: #fff;
+    }
+
     .card-changelog {
       font-size: 0.85rem;
       color: var(--muted);
@@ -2832,6 +2859,9 @@
               <label style="display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:0.85rem;transition:all 0.2s" id="tag-label-force">
                 <input type="checkbox" id="tag-force" style="accent-color:var(--accent2)"> ⚠️ Zorunlu Güncelleme
               </label>
+              <label style="display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:0.85rem;transition:all 0.2s" id="tag-label-guestsafe">
+                <input type="checkbox" id="tag-guestsafe" style="accent-color:#3ddc97"> 🔓 Oturumsuz
+              </label>
             </div>
           </div>
 
@@ -2851,6 +2881,12 @@
           <div style="margin-bottom:20px">
             <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Geliştirici</div>
             <input type="text" id="edit-developer" placeholder="örn. judy658" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+
+          <!-- DOSYA BOYUTU -->
+          <div style="margin-bottom:20px">
+            <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Dosya Boyutu <span style="opacity:0.5;font-weight:400">(boş bırakırsan otomatik tespit eder)</span></div>
+            <input type="text" id="edit-filesize" placeholder="örn. 142 MB" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
           </div>
 
           <!-- SON GÜNCELLEME NOTU (CHANGELOG) -->
@@ -2957,6 +2993,9 @@
         </div>
         <div class="detail-stat"><span class="detail-stat-val" id="d-category">—</span>
           <div class="detail-stat-label">Kategori</div>
+        </div>
+        <div class="detail-stat"><span class="detail-stat-val" id="d-filesize">—</span>
+          <div class="detail-stat-label">Dosya Boyutu</div>
         </div>
       </div>
       <div class="detail-section">
@@ -4204,6 +4243,7 @@
         else tags.push('<span class="badge badge-app">📱 Uygulama</span>');
         if (app.is_windows) tags.push('<span class="badge badge-windows">🖥️ Windows</span>');
         if (app.force_update) tags.push('<span class="badge badge-force">⚠️ Zorunlu</span>');
+        if (app.guest_safe) tags.push('<span class="badge badge-guestsafe">🔓 Oturumsuz</span>');
 
         return `
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
@@ -4230,9 +4270,11 @@
       document.getElementById('tag-app').checked = data.category === 'app';
       document.getElementById('tag-windows').checked = !!data.is_windows;
       document.getElementById('tag-force').checked = !!data.force_update;
+      document.getElementById('tag-guestsafe').checked = !!data.guest_safe;
       document.getElementById('edit-version').value = data.version || '';
       document.getElementById('edit-min-version').value = data.min_version || '';
       document.getElementById('edit-developer').value = data.developer || '';
+      document.getElementById('edit-filesize').value = data.filesize || '';
       document.getElementById('edit-changelog').value = data.changelog || '';
       document.getElementById('edit-description').value = data.description || '';
       document.getElementById('app-edit-status').textContent = '';
@@ -4264,9 +4306,11 @@
         category,
         is_windows: document.getElementById('tag-windows').checked,
         force_update: document.getElementById('tag-force').checked,
+        guest_safe: document.getElementById('tag-guestsafe').checked,
         version: document.getElementById('edit-version').value.trim(),
         min_version: document.getElementById('edit-min-version').value.trim(),
         developer: document.getElementById('edit-developer').value.trim(),
+        filesize: document.getElementById('edit-filesize').value.trim(),
         changelog: document.getElementById('edit-changelog').value.trim(),
         description: document.getElementById('edit-description').value.trim(),
         updated_at: new Date().toISOString()
@@ -4296,11 +4340,15 @@
         appExtras[_editingAppId].developer = updates.developer;
         appExtras[_editingAppId].description = updates.description;
         appExtras[_editingAppId].platform = updates.is_windows ? 'windows' : undefined;
+        appExtras[_editingAppId].guest_safe = updates.guest_safe;
+        appExtras[_editingAppId].filesize = updates.filesize || undefined;
       } else {
         appExtras[_editingAppId] = {
           developer: updates.developer,
           description: updates.description,
-          platform: updates.is_windows ? 'windows' : undefined
+          platform: updates.is_windows ? 'windows' : undefined,
+          guest_safe: updates.guest_safe,
+          filesize: updates.filesize || undefined
         };
       }
 
@@ -4347,6 +4395,8 @@
             if (!appExtras[id]) appExtras[id] = {};
             if (meta.developer) appExtras[id].developer = meta.developer;
             if (meta.description) appExtras[id].description = meta.description;
+            if (meta.filesize) appExtras[id].filesize = meta.filesize;
+            if (meta.guest_safe !== null && meta.guest_safe !== undefined) appExtras[id].guest_safe = meta.guest_safe;
             if (meta.is_windows !== null && meta.is_windows !== undefined) {
               appExtras[id].platform = meta.is_windows ? 'windows' : undefined;
             }
@@ -4377,8 +4427,10 @@
       if (!entries.length) { grid.innerHTML = `<div style="color:var(--muted);grid-column:1/-1;text-align:center;padding:48px 0">Bu filtrede uygulama yok.</div>`; return; }
       grid.innerHTML = entries.map(([id, app], i) => {
         const ex = appExtras[id] || {};
+        const isVerifiedDev = ex.developer === 'judy658' || !ex.developer;
         return `
     <div class="app-card" style="animation-delay:${i * 0.07}s" onclick="showDetail('${id}')">
+      ${isVerifiedDev ? `<div class="dev-verified-tick" title="judy658 tarafından geliştirildi"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></div>` : ''}
       <div class="card-header">
         <div class="app-icon">${app.image ? '<img src="' + app.image + '" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">' : (app.icon || '📦')}</div>
         <div>
@@ -4388,6 +4440,7 @@
             <span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama'}</span>
             ${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu</span>' : ''}
             ${ex.platform === 'windows' ? '<span class="badge badge-windows">🖥️ Sadece Windows</span>' : ''}
+            ${ex.guest_safe ? '<span class="badge badge-guestsafe">🔓 Oturumsuz</span>' : ''}
           </div>
         </div>
       </div>
@@ -4592,12 +4645,15 @@
         iconEl.textContent = app.icon || '📦';
       }
       document.getElementById('d-name').textContent = app.name;
-      document.getElementById('d-dev').textContent = '👤 ' + (extra.developer || 'judy658');
+      const devName = extra.developer || 'judy658';
+      const isVerifiedDev = devName === 'judy658';
+      const verifiedTickHtml = isVerifiedDev ? `<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#1877f2;vertical-align:middle;margin-left:5px;flex-shrink:0"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zM10 17l-5-5 1.4-1.4 3.6 3.6 7.6-7.6L19 8l-9 9z"/></svg>` : '';
+      document.getElementById('d-dev').innerHTML = '👤 ' + devName + verifiedTickHtml;
       document.getElementById('d-ver').textContent = 'v' + app.version;
       document.getElementById('d-minver').textContent = 'v' + app.min_version;
       document.getElementById('d-avg-rating').textContent = '—';
       document.getElementById('d-category').textContent = app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama';
-      document.getElementById('d-badges').innerHTML = `<span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama'}</span>${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu Güncelleme</span>' : ''}${extra && extra.platform === 'windows' ? '<span class="badge badge-windows">🖥️ Sadece Windows</span>' : ''}`;
+      document.getElementById('d-badges').innerHTML = `<span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama'}</span>${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu Güncelleme</span>' : ''}${extra && extra.platform === 'windows' ? '<span class="badge badge-windows">🖥️ Sadece Windows</span>' : ''}${extra && extra.guest_safe ? '<span class="badge badge-guestsafe">🔓 Oturumsuz</span>' : ''}`;
       const dlBtn = document.getElementById('d-dl-btn');
       dlBtn.href = app.download_url;
       dlBtn.onclick = () => { incrementDownload(id); return true; };
@@ -4607,6 +4663,27 @@
 
       document.getElementById('d-dl-count').textContent = '...';
       getDownloads(id).then(c => { document.getElementById('d-dl-count').textContent = c; });
+
+      // Dosya boyutu
+      const filesizeEl = document.getElementById('d-filesize');
+      if (filesizeEl) {
+        if (extra.filesize) {
+          filesizeEl.textContent = extra.filesize;
+        } else if (app.download_url) {
+          filesizeEl.textContent = '...';
+          fetch(app.download_url, { method: 'HEAD' }).then(r => {
+            const bytes = parseInt(r.headers.get('content-length') || '0');
+            if (bytes > 0) {
+              const mb = (bytes / (1024 * 1024)).toFixed(1);
+              filesizeEl.textContent = mb + ' MB';
+            } else {
+              filesizeEl.textContent = '—';
+            }
+          }).catch(() => { filesizeEl.textContent = '—'; });
+        } else {
+          filesizeEl.textContent = '—';
+        }
+      }
       
       const ssEl = document.getElementById('d-screenshots');
       const screenshots = extra.screenshots || [];
