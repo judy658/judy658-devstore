@@ -634,6 +634,126 @@
       animation: slideUp 0.3s ease both;
     }
 
+    #dev-page {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 200;
+      overflow-y: auto;
+    }
+
+    #dev-page.active {
+      display: block;
+      animation: slideUp 0.3s ease both;
+    }
+
+    .dev-panel-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .dev-section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 14px;
+      margin-top: 28px;
+    }
+
+    .dev-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .dev-field {
+      margin-bottom: 16px;
+    }
+
+    .dev-field label {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .dev-field input,
+    .dev-field textarea,
+    .dev-field select {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+
+    .dev-field input:focus,
+    .dev-field textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .dev-field input:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .dev-field textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .dev-save-btn {
+      background: linear-gradient(135deg, var(--accent), #9b7eff);
+      color: #fff;
+      border: none;
+      border-radius: 11px;
+      padding: 12px 28px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dev-save-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 24px rgba(124, 92, 252, 0.4);
+    }
+
+    .dev-save-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .dev-locked-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 209, 102, 0.1);
+      border: 1px solid rgba(255, 209, 102, 0.25);
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: 0.75rem;
+      color: var(--yellow);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
     #admin-page {
       display: none;
       position: fixed;
@@ -2578,6 +2698,97 @@
     </div>
   </div>
 
+  <!-- GELİŞTİRİCİ PANELİ -->
+  <div id="dev-page">
+    <div class="detail-nav">
+      <div class="detail-nav-inner">
+        <button class="back-btn" onclick="showHome()">← Geri</button>
+        <span class="detail-nav-title">🧑‍💻 Geliştirici Paneli</span>
+      </div>
+    </div>
+    <div class="dev-panel-wrap">
+
+      <!-- Karşılama -->
+      <div style="margin-bottom:28px">
+        <div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:6px">
+          Merhaba, <span id="dev-welcome-name" style="background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent"></span> 👋
+        </div>
+        <div style="color:var(--muted);font-size:0.9rem">Uygulamanın görünümünü buradan yönetebilirsin. İndirme linki yalnızca admin tarafından değiştirilebilir.</div>
+      </div>
+
+      <!-- Uygulama seçici (birden fazla uygulaması olabilir ileride) -->
+      <div id="dev-app-selector" style="margin-bottom:24px;display:none">
+        <div class="dev-section-title">Uygulaman</div>
+        <select id="dev-app-select" onchange="loadDevApp(this.value)" style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;width:100%;cursor:pointer">
+        </select>
+      </div>
+
+      <!-- Düzenleme formu -->
+      <div id="dev-edit-form" style="display:none">
+
+        <!-- Kilitli alanlar (sadece görüntüleme) -->
+        <div class="dev-section-title">🔒 Admin Tarafından Yönetilir</div>
+        <div class="dev-card">
+          <div class="dev-locked-badge">🔒 Salt Okunur</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="dev-field">
+              <label>İndirme Linki</label>
+              <input type="text" id="dev-dl-url-display" disabled placeholder="Admin tarafından belirlenir">
+            </div>
+            <div class="dev-field">
+              <label>Uygulama ID</label>
+              <input type="text" id="dev-app-id-display" disabled>
+            </div>
+          </div>
+        </div>
+
+        <!-- Düzenlenebilir alanlar -->
+        <div class="dev-section-title">✏️ Düzenleyebileceklerin</div>
+        <div class="dev-card">
+          <div class="dev-field">
+            <label>Uygulama Adı</label>
+            <input type="text" id="dev-name" placeholder="Uygulamanın adı">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="dev-field">
+              <label>İkon (Emoji veya URL)</label>
+              <input type="text" id="dev-icon" placeholder="örn. 🎮">
+            </div>
+            <div class="dev-field">
+              <label>Versiyon</label>
+              <input type="text" id="dev-version" placeholder="örn. 1.0.0">
+            </div>
+          </div>
+          <div class="dev-field">
+            <label>Son Güncelleme Notu (Kart'ta görünür)</label>
+            <input type="text" id="dev-changelog" placeholder="Bu sürümde neler değişti?">
+          </div>
+          <div class="dev-field">
+            <label>Uygulama Açıklaması</label>
+            <textarea id="dev-description" rows="5" placeholder="Uygulamanı anlat..."></textarea>
+          </div>
+          <div class="dev-field">
+            <label>Ekran Görüntüsü URL'leri (her satıra bir tane)</label>
+            <textarea id="dev-screenshots" rows="4" placeholder="https://...&#10;https://..."></textarea>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:8px">
+            <button class="dev-save-btn" onclick="saveDevApp()" id="dev-save-btn">💾 Kaydet</button>
+            <span id="dev-save-status" style="font-size:0.83rem"></span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Uygulama yok mesajı -->
+      <div id="dev-no-app" style="display:none;text-align:center;padding:60px 24px;color:var(--muted)">
+        <div style="font-size:3rem;margin-bottom:16px">📭</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:8px">Henüz uygulamanız yok</div>
+        <div style="font-size:0.88rem">Admin sana uygulama atadığında burada görünecek.</div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ADMİN SAYFASI -->
   <div id="admin-page">
     <div class="detail-nav">
@@ -2621,6 +2832,7 @@
           Hesaplar</button>
         <button class="admin-tab" onclick="switchAdminTab('banned',this)"><i class="fas fa-ban"></i> Banlılar</button>
         <button class="admin-tab" onclick="switchAdminTab('appmanager',this)"><i class="fas fa-boxes"></i> Uygulamalar</button>
+        <button class="admin-tab" onclick="switchAdminTab('developers',this)"><i class="fas fa-code"></i> Developerlar</button>
       </div>
 
       <!-- Dashboard Content -->
@@ -2838,6 +3050,91 @@
       </div>
 
       <!-- UYGULAMA DÜZENLEME MODAL -->
+
+      <!-- ═══ DEVELOPER YÖNETİMİ ═══ -->
+      <div class="admin-section" id="admin-developers">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px">🧑‍💻 Developer Yönetimi</div>
+            <div style="font-size:0.8rem;color:var(--muted)">Kullanıcılara developer yetkisi ver, uygulama oluştur ve ata.</div>
+          </div>
+          <button onclick="openCreateDevModal()" style="background:linear-gradient(135deg,var(--accent),#9b7eff);color:#fff;border:none;border-radius:11px;padding:10px 22px;font-family:DM Sans,sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer">➕ Developer Oluştur</button>
+        </div>
+
+        <!-- Mevcut developerlar listesi -->
+        <div id="dev-list" style="display:flex;flex-direction:column;gap:12px">
+          <div class="admin-empty">Yükleniyor...</div>
+        </div>
+      </div>
+
+      <!-- DEVELOPER OLUŞTUR MODAL -->
+      <div id="create-dev-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1001;align-items:center;justify-content:center;backdrop-filter:blur(8px)" onclick="if(event.target===this)closeCreateDevModal()">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:32px;width:100%;max-width:560px;margin:20px;max-height:90vh;overflow-y:auto">
+          <div style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;margin-bottom:4px">➕ Developer Oluştur</div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:24px">DevStore hesabı olan bir kullanıcıya developer yetkisi ver ve uygulama ata.</div>
+
+          <!-- Kullanıcı seç -->
+          <div style="margin-bottom:16px">
+            <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Kullanıcı E-postası</div>
+            <div style="position:relative">
+              <input type="text" id="dev-user-search" placeholder="E-posta ara..." oninput="searchDevUser()" autocomplete="off"
+                style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;transition:border-color 0.2s"
+                onfocus="this.style.borderColor='var(--accent)'" onblur="setTimeout(()=>{document.getElementById('dev-user-dropdown').style.display='none'},200)">
+              <div id="dev-user-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-top:4px;max-height:180px;overflow-y:auto;z-index:10"></div>
+            </div>
+            <div id="dev-selected-user" style="display:none;margin-top:8px;background:rgba(124,92,252,0.1);border:1px solid rgba(124,92,252,0.3);border-radius:8px;padding:8px 14px;font-size:0.85rem;color:var(--accent)"></div>
+          </div>
+
+          <!-- Uygulama bilgileri -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <div>
+              <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Uygulama ID <span style="opacity:0.5">(küçük harf, boşluksuz)</span></div>
+              <input type="text" id="new-app-id" placeholder="örn. mygame"
+                style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box"
+                oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_]/g,'')">
+            </div>
+            <div>
+              <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Uygulama Adı</div>
+              <input type="text" id="new-app-name" placeholder="örn. My Awesome Game"
+                style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box">
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <div>
+              <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Kategori</div>
+              <select id="new-app-category" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;cursor:pointer">
+                <option value="app">📱 Uygulama</option>
+                <option value="game">🎮 Oyun</option>
+              </select>
+            </div>
+            <div>
+              <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Versiyon</div>
+              <input type="text" id="new-app-version" placeholder="örn. 1.0.0"
+                style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box">
+            </div>
+          </div>
+
+          <div style="margin-bottom:16px">
+            <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">İndirme Linki <span style="color:var(--accent2)">*</span></div>
+            <input type="text" id="new-app-dlurl" placeholder="https://github.com/..."
+              style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box">
+          </div>
+
+          <div style="margin-bottom:24px">
+            <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Developer Adı (Kart'ta görünür)</div>
+            <input type="text" id="new-dev-name" placeholder="örn. cooldev123"
+              style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box">
+          </div>
+
+          <div style="display:flex;align-items:center;gap:12px">
+            <button onclick="createDeveloper()" id="create-dev-btn"
+              style="background:linear-gradient(135deg,var(--accent),#9b7eff);color:#fff;border:none;border-radius:11px;padding:12px 32px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s">✅ Oluştur & Yetki Ver</button>
+            <button onclick="closeCreateDevModal()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:11px;padding:12px 20px;font-family:DM Sans,sans-serif;font-size:0.9rem;cursor:pointer">İptal</button>
+            <span id="create-dev-status" style="font-size:0.83rem"></span>
+          </div>
+        </div>
+      </div>
       <div id="app-edit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(8px)" onclick="if(event.target===this)closeAppEditModal()">
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:32px;width:100%;max-width:560px;margin:20px;max-height:90vh;overflow-y:auto;position:relative">
           <div style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;margin-bottom:4px">✏️ Uygulamayı Düzenle</div>
@@ -3165,6 +3462,7 @@
       document.getElementById('detail-page').classList.remove('active');
       document.getElementById('profile-page').classList.remove('active');
       document.getElementById('admin-page').classList.remove('active');
+      document.getElementById('dev-page').classList.remove('active');
       document.getElementById('home-page').style.display = 'block';
     }
 
@@ -3405,6 +3703,18 @@
         btn.style.cssText = 'background:rgba(124,92,252,0.15);border-color:rgba(124,92,252,0.4);color:var(--accent)';
         btn.textContent = '🛡️ Admin'; btn.onclick = showAdminPanel;
         document.getElementById('nav-user-area').prepend(btn);
+      }
+
+      // Developer butonu kontrolü
+      if (email !== ADMIN_EMAIL && !document.getElementById('dev-nav-btn')) {
+        const { data: presence } = await supa.from('user_presence').select('is_developer').eq('email', email).maybeSingle();
+        if (presence && presence.is_developer) {
+          const btn = document.createElement('button');
+          btn.id = 'dev-nav-btn'; btn.className = 'user-btn';
+          btn.style.cssText = 'background:rgba(61,220,151,0.12);border-color:rgba(61,220,151,0.3);color:var(--green)';
+          btn.textContent = '🧑‍💻 Panel'; btn.onclick = showDevPanel;
+          document.getElementById('nav-user-area').prepend(btn);
+        }
       }
       startPresence();
       checkContactAuth();
@@ -3871,6 +4181,7 @@
       if (tab === 'notifications') loadNotifData();
       if (tab === 'banned') loadBannedUsers();
       if (tab === 'appmanager') loadAppManager();
+      if (tab === 'developers') loadDeveloperList();
     }
 
     // ═══════════════════════════════════════
@@ -4223,6 +4534,314 @@
     }
 
     // ════════════════════════════════════════════════
+    //  DEVELOPER SİSTEMİ
+    // ════════════════════════════════════════════════
+
+    let _devUserSearchCache = [];
+    let _selectedDevUserEmail = null;
+
+    async function showDevPanel() {
+      const { data: { session } } = await supa.auth.getSession();
+      if (!session) { openAuth(); return; }
+      document.getElementById('home-page').style.display = 'none';
+      document.getElementById('detail-page').classList.remove('active');
+      document.getElementById('profile-page').classList.remove('active');
+      document.getElementById('admin-page').classList.remove('active');
+      document.getElementById('dev-page').classList.add('active');
+      document.getElementById('dev-page').scrollTop = 0;
+
+      const email = session.user.email;
+      const namePart = email.split('@')[0];
+      document.getElementById('dev-welcome-name').textContent = namePart;
+
+      // Bu developer'ın uygulamalarını yükle
+      const { data: apps } = await supa.from('app_meta').select('*').eq('owner_email', email);
+
+      const formEl = document.getElementById('dev-edit-form');
+      const noAppEl = document.getElementById('dev-no-app');
+      const selectorEl = document.getElementById('dev-app-selector');
+      const selectEl = document.getElementById('dev-app-select');
+
+      if (!apps || !apps.length) {
+        formEl.style.display = 'none';
+        noAppEl.style.display = 'block';
+        selectorEl.style.display = 'none';
+        return;
+      }
+
+      noAppEl.style.display = 'none';
+      formEl.style.display = 'block';
+
+      if (apps.length > 1) {
+        selectorEl.style.display = 'block';
+        selectEl.innerHTML = apps.map(a => `<option value="${a.app_id}">${a.name || a.app_id}</option>`).join('');
+      } else {
+        selectorEl.style.display = 'none';
+      }
+
+      loadDevApp(apps[0].app_id);
+    }
+
+    async function loadDevApp(appId) {
+      const { data } = await supa.from('app_meta').select('*').eq('app_id', appId).maybeSingle();
+      if (!data) return;
+
+      document.getElementById('dev-app-id-display').value = data.app_id;
+      document.getElementById('dev-dl-url-display').value = data.download_url || '(Admin tarafından belirlenir)';
+      document.getElementById('dev-name').value = data.name || '';
+      document.getElementById('dev-icon').value = data.icon || '';
+      document.getElementById('dev-version').value = data.version || '';
+      document.getElementById('dev-changelog').value = data.changelog || '';
+      document.getElementById('dev-description').value = data.description || '';
+
+      // Screenshots array → textarea'ya satır satır
+      const ssField = document.getElementById('dev-screenshots');
+      if (data.screenshots && Array.isArray(data.screenshots)) {
+        ssField.value = data.screenshots.join('\n');
+      } else {
+        ssField.value = '';
+      }
+
+      document.getElementById('dev-save-btn').dataset.appId = appId;
+      document.getElementById('dev-save-status').textContent = '';
+    }
+
+    async function saveDevApp() {
+      const btn = document.getElementById('dev-save-btn');
+      const status = document.getElementById('dev-save-status');
+      const appId = btn.dataset.appId;
+      if (!appId) return;
+
+      btn.disabled = true; btn.textContent = '⏳ Kaydediliyor...';
+      status.textContent = '';
+
+      const screenshotsRaw = document.getElementById('dev-screenshots').value.trim();
+      const screenshots = screenshotsRaw ? screenshotsRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
+
+      const updates = {
+        name: document.getElementById('dev-name').value.trim(),
+        icon: document.getElementById('dev-icon').value.trim(),
+        version: document.getElementById('dev-version').value.trim(),
+        changelog: document.getElementById('dev-changelog').value.trim(),
+        description: document.getElementById('dev-description').value.trim(),
+        screenshots: screenshots,
+        updated_at: new Date().toISOString()
+        // download_url ve owner_email kasıtlı olarak burada YOK
+      };
+
+      const { data: { session } } = await supa.auth.getSession();
+      const { error } = await supa.from('app_meta')
+        .update(updates)
+        .eq('app_id', appId)
+        .eq('owner_email', session.user.email); // ekstra güvenlik
+
+      if (error) {
+        status.textContent = '❌ ' + error.message;
+        status.style.color = 'var(--accent2)';
+        btn.disabled = false; btn.textContent = '💾 Kaydet';
+        return;
+      }
+
+      status.textContent = '✅ Kaydedildi!';
+      status.style.color = 'var(--green)';
+      btn.textContent = '✅ Kaydedildi';
+
+      // Lokal cache güncelle
+      if (appExtras[appId]) {
+        appExtras[appId].description = updates.description;
+        appExtras[appId].screenshots = screenshots;
+      }
+      if (allApps[appId]) {
+        allApps[appId].version = updates.version;
+        allApps[appId].changelog = updates.changelog;
+        allApps[appId].icon = updates.icon;
+      }
+
+      setTimeout(() => { btn.disabled = false; btn.textContent = '💾 Kaydet'; }, 2000);
+    }
+
+    // ─── Admin: Developer Listesi ───
+    async function loadDeveloperList() {
+      const el = document.getElementById('dev-list');
+      el.innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
+
+      const { data: devs } = await supa.from('user_presence')
+        .select('email, nickname, is_developer, is_online, last_seen')
+        .eq('is_developer', true)
+        .order('email', { ascending: true });
+
+      if (!devs || !devs.length) {
+        el.innerHTML = '<div class="admin-empty">Henüz hiç developer yok.</div>';
+        return;
+      }
+
+      // Her developer'ın uygulamalarını da çek
+      const emails = devs.map(d => d.email);
+      const { data: devApps } = await supa.from('app_meta')
+        .select('app_id, name, owner_email')
+        .in('owner_email', emails);
+
+      el.innerHTML = devs.map(dev => {
+        const apps = (devApps || []).filter(a => a.owner_email === dev.email);
+        const appBadges = apps.map(a => `<span style="background:rgba(124,92,252,0.12);color:var(--accent);border-radius:7px;padding:2px 10px;font-size:0.72rem;font-weight:600">${a.name || a.app_id}</span>`).join(' ');
+        const initial = (dev.nickname || dev.email)[0].toUpperCase();
+        const isOnline = dev.is_online;
+
+        return `
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--green),#2ab574);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:#fff;font-family:Syne,sans-serif;flex-shrink:0">${initial}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:0.9rem;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px">
+              ${dev.email}
+              <span style="width:8px;height:8px;border-radius:50%;background:${isOnline ? 'var(--green)' : 'var(--muted)'};display:inline-block;flex-shrink:0"></span>
+            </div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">${appBadges || '<span style="font-size:0.75rem;color:var(--muted)">Uygulama yok</span>'}</div>
+          </div>
+          <button onclick="revokeDevAccess('${dev.email}')" style="background:rgba(252,92,125,0.1);border:1px solid rgba(252,92,125,0.25);color:var(--accent2);border-radius:9px;padding:7px 16px;font-family:DM Sans,sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.2s">🚫 Yetkiyi Al</button>
+        </div>`;
+      }).join('');
+    }
+
+    // ─── Admin: Developer kullanıcı arama (dropdown) ───
+    async function searchDevUser() {
+      const query = document.getElementById('dev-user-search').value.trim().toLowerCase();
+      const dropdown = document.getElementById('dev-user-dropdown');
+      if (query.length < 2) { dropdown.style.display = 'none'; return; }
+
+      if (!_devUserSearchCache.length) {
+        const { data } = await supa.from('user_presence').select('email, nickname').eq('is_banned', false).eq('is_dead', false);
+        _devUserSearchCache = data || [];
+      }
+
+      const filtered = _devUserSearchCache.filter(u =>
+        u.email && u.email.toLowerCase().includes(query)
+      ).slice(0, 8);
+
+      if (!filtered.length) { dropdown.style.display = 'none'; return; }
+
+      dropdown.style.display = 'block';
+      dropdown.innerHTML = filtered.map(u => `
+        <div onclick="selectDevUser('${u.email}')" style="padding:10px 14px;cursor:pointer;font-size:0.88rem;border-bottom:1px solid var(--border);transition:background 0.15s" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='transparent'">
+          ${u.email} ${u.nickname ? `<span style="color:var(--muted);font-size:0.78rem">(${u.nickname})</span>` : ''}
+        </div>`).join('');
+    }
+
+    function selectDevUser(email) {
+      _selectedDevUserEmail = email;
+      document.getElementById('dev-user-search').value = email;
+      document.getElementById('dev-user-dropdown').style.display = 'none';
+      document.getElementById('dev-selected-user').style.display = 'block';
+      document.getElementById('dev-selected-user').textContent = '✓ Seçildi: ' + email;
+      // Developer adını otomatik doldur
+      if (!document.getElementById('new-dev-name').value) {
+        document.getElementById('new-dev-name').value = email.split('@')[0];
+      }
+    }
+
+    function openCreateDevModal() {
+      _selectedDevUserEmail = null;
+      _devUserSearchCache = [];
+      document.getElementById('dev-user-search').value = '';
+      document.getElementById('dev-user-dropdown').style.display = 'none';
+      document.getElementById('dev-selected-user').style.display = 'none';
+      document.getElementById('new-app-id').value = '';
+      document.getElementById('new-app-name').value = '';
+      document.getElementById('new-app-version').value = '1.0.0';
+      document.getElementById('new-app-dlurl').value = '';
+      document.getElementById('new-dev-name').value = '';
+      document.getElementById('create-dev-status').textContent = '';
+      document.getElementById('create-dev-btn').disabled = false;
+      document.getElementById('create-dev-btn').textContent = '✅ Oluştur & Yetki Ver';
+      document.getElementById('create-dev-modal').style.display = 'flex';
+    }
+
+    function closeCreateDevModal() {
+      document.getElementById('create-dev-modal').style.display = 'none';
+    }
+
+    async function createDeveloper() {
+      const btn = document.getElementById('create-dev-btn');
+      const status = document.getElementById('create-dev-status');
+
+      if (!_selectedDevUserEmail) {
+        status.textContent = '⚠️ Bir kullanıcı seç!';
+        status.style.color = 'var(--accent2)'; return;
+      }
+      const appId = document.getElementById('new-app-id').value.trim();
+      const appName = document.getElementById('new-app-name').value.trim();
+      const dlUrl = document.getElementById('new-app-dlurl').value.trim();
+      const devName = document.getElementById('new-dev-name').value.trim() || _selectedDevUserEmail.split('@')[0];
+
+      if (!appId || !appName || !dlUrl) {
+        status.textContent = '⚠️ Uygulama ID, adı ve indirme linki zorunlu!';
+        status.style.color = 'var(--accent2)'; return;
+      }
+
+      btn.disabled = true; btn.textContent = '⏳ İşleniyor...';
+      status.textContent = '';
+
+      try {
+        // 1) app_meta'ya yeni uygulama ekle
+        const { error: appErr } = await supa.from('app_meta').insert({
+          app_id: appId,
+          name: appName,
+          category: document.getElementById('new-app-category').value,
+          version: document.getElementById('new-app-version').value.trim() || '1.0.0',
+          min_version: '1.0.0',
+          developer: devName,
+          download_url: dlUrl,
+          owner_email: _selectedDevUserEmail,
+          changelog: 'İlk sürüm.',
+          description: appName + ' uygulaması.',
+          is_windows: false,
+          force_update: false,
+          guest_safe: false,
+          updated_at: new Date().toISOString()
+        });
+
+        if (appErr) {
+          if (appErr.code === '23505') {
+            status.textContent = '❌ Bu uygulama ID zaten var!';
+          } else {
+            status.textContent = '❌ ' + appErr.message;
+          }
+          status.style.color = 'var(--accent2)';
+          btn.disabled = false; btn.textContent = '✅ Oluştur & Yetki Ver';
+          return;
+        }
+
+        // 2) Kullanıcıya developer yetkisi ver
+        const { error: presErr } = await supa.from('user_presence')
+          .update({ is_developer: true })
+          .eq('email', _selectedDevUserEmail);
+
+        if (presErr) console.warn('Developer flag set error:', presErr);
+
+        status.textContent = '✅ Developer oluşturuldu!';
+        status.style.color = 'var(--green)';
+        btn.textContent = '✅ Tamamlandı';
+
+        setTimeout(() => {
+          closeCreateDevModal();
+          loadDeveloperList();
+          loadApps(); // ana sayfayı güncelle
+        }, 1500);
+
+      } catch (e) {
+        status.textContent = '❌ Hata: ' + e.message;
+        status.style.color = 'var(--accent2)';
+        btn.disabled = false; btn.textContent = '✅ Oluştur & Yetki Ver';
+      }
+    }
+
+    async function revokeDevAccess(email) {
+      if (!confirm(email + ' kullanıcısının developer yetkisini almak istediğinden emin misin?')) return;
+      const { error } = await supa.from('user_presence').update({ is_developer: false }).eq('email', email);
+      if (error) { alert('Hata: ' + error.message); return; }
+      loadDeveloperList();
+    }
+
+    // ════════════════════════════════════════════════
     //  UYGULAMA YÖNETİCİSİ (ADMİN)
     // ════════════════════════════════════════════════
     let _editingAppId = null;
@@ -4397,8 +5016,22 @@
             if (meta.description) appExtras[id].description = meta.description;
             if (meta.filesize) appExtras[id].filesize = meta.filesize;
             if (meta.guest_safe !== null && meta.guest_safe !== undefined) appExtras[id].guest_safe = meta.guest_safe;
+            if (meta.screenshots && meta.screenshots.length) appExtras[id].screenshots = meta.screenshots;
             if (meta.is_windows !== null && meta.is_windows !== undefined) {
               appExtras[id].platform = meta.is_windows ? 'windows' : undefined;
+            }
+            // Eğer bu uygulama sadece Supabase'de var (versions.json'da yok) ekle
+            if (!allApps[id] && meta.name) {
+              allApps[id] = {
+                name: meta.name,
+                version: meta.version || '1.0.0',
+                min_version: meta.min_version || '1.0.0',
+                category: meta.category || 'app',
+                force_update: !!meta.force_update,
+                changelog: meta.changelog || '',
+                download_url: meta.download_url || '#',
+                icon: meta.icon || '📦'
+              };
             }
           });
         }
@@ -4655,11 +5288,12 @@
       document.getElementById('d-category').textContent = app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama';
       document.getElementById('d-badges').innerHTML = `<span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama'}</span>${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu Güncelleme</span>' : ''}${extra && extra.platform === 'windows' ? '<span class="badge badge-windows">🖥️ Sadece Windows</span>' : ''}${extra && extra.guest_safe ? '<span class="badge badge-guestsafe">🔓 Oturumsuz</span>' : ''}`;
       const dlBtn = document.getElementById('d-dl-btn');
-      dlBtn.href = app.download_url;
+      const dlUrl = app.download_url || '#';
+      dlBtn.href = dlUrl;
       dlBtn.onclick = () => { incrementDownload(id); return true; };
       
       const extra2 = appExtras[id] || {};
-      dlBtn.innerHTML = (extra2.platform === 'windows' || app.download_url.endsWith('.zip') || app.download_url.endsWith('.rar')) ? '⬇ ZIP İndir' : '⬇ APK İndir';
+      dlBtn.innerHTML = (extra2.platform === 'windows' || dlUrl.endsWith('.zip') || dlUrl.endsWith('.rar') || dlUrl.endsWith('.exe')) ? '⬇ ZIP İndir' : '⬇ APK İndir';
 
       document.getElementById('d-dl-count').textContent = '...';
       getDownloads(id).then(c => { document.getElementById('d-dl-count').textContent = c; });
@@ -4686,7 +5320,7 @@
       }
       
       const ssEl = document.getElementById('d-screenshots');
-      const screenshots = extra.screenshots || [];
+      const screenshots = extra.screenshots || (appExtras[id] && appExtras[id].screenshots) || [];
       ssEl.innerHTML = screenshots.length ? screenshots.map(url => `<div class="ss-item"><img src="${url}" alt="" onclick="openLightbox('${url}')"/></div>`).join('') : ['📱', '📱', '📱'].map(e => `<div class="ss-item">${e}<span style="color:var(--muted);font-size:0.75rem">Yakında</span></div>`).join('');
       
       const desc = extra.description || app.changelog;
