@@ -2764,6 +2764,10 @@
             <input type="text" id="dev-changelog" placeholder="Bu sürümde neler değişti?">
           </div>
           <div class="dev-field">
+            <label>Dosya Boyutu <span style="opacity:0.5;font-weight:400">(örn. 142 MB)</span></label>
+            <input type="text" id="dev-filesize" placeholder="örn. 142 MB">
+          </div>
+          <div class="dev-field">
             <label>Uygulama Açıklaması</label>
             <textarea id="dev-description" rows="5" placeholder="Uygulamanı anlat..."></textarea>
           </div>
@@ -4593,6 +4597,7 @@
       document.getElementById('dev-version').value = data.version || '';
       document.getElementById('dev-changelog').value = data.changelog || '';
       document.getElementById('dev-description').value = data.description || '';
+      document.getElementById('dev-filesize').value = data.filesize || '';
 
       // Screenshots array → textarea'ya satır satır
       const ssField = document.getElementById('dev-screenshots');
@@ -4623,6 +4628,7 @@
         icon: document.getElementById('dev-icon').value.trim(),
         version: document.getElementById('dev-version').value.trim(),
         changelog: document.getElementById('dev-changelog').value.trim(),
+        filesize: document.getElementById('dev-filesize').value.trim(),
         description: document.getElementById('dev-description').value.trim(),
         screenshots: screenshots,
         updated_at: new Date().toISOString()
@@ -4650,6 +4656,7 @@
       if (appExtras[appId]) {
         appExtras[appId].description = updates.description;
         appExtras[appId].screenshots = screenshots;
+        appExtras[appId].filesize = updates.filesize;
       }
       if (allApps[appId]) {
         allApps[appId].version = updates.version;
@@ -4867,7 +4874,7 @@
         return `
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
           <div style="display:flex;align-items:center;gap:14px;flex:1;min-width:200px">
-            <div style="font-size:2rem;width:52px;height:52px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${app.icon || '📦'}</div>
+            <div style="font-size:2rem;width:52px;height:52px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${app.icon && app.icon.startsWith('http') ? '<img src="'+app.icon+'" style="width:100%;height:100%;object-fit:cover;border-radius:11px;">' : (app.icon || '📦')}</div>
             <div>
               <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:4px">${app.name || app.app_id}</div>
               <div style="font-size:0.75rem;color:var(--muted);margin-bottom:8px;font-family:monospace">${app.app_id} · v${app.version || '?'} · min v${app.min_version || '?'}</div>
@@ -5065,7 +5072,7 @@
     <div class="app-card" style="animation-delay:${i * 0.07}s" onclick="showDetail('${id}')">
       ${isVerifiedDev ? `<div class="dev-verified-tick" title="judy658 tarafından geliştirildi"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></div>` : ''}
       <div class="card-header">
-        <div class="app-icon">${app.image ? '<img src="' + app.image + '" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">' : (app.icon || '📦')}</div>
+        <div class="app-icon">${app.image ? '<img src="' + app.image + '" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">' : (app.icon && app.icon.startsWith('http') ? '<img src="' + app.icon + '" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">' : (app.icon || '📦'))}</div>
         <div>
           <div class="app-name">${app.name}</div>
           <div class="app-version">Versiyon <span class="ver-num">v${app.version}</span></div>
@@ -5274,6 +5281,8 @@
       const iconEl = document.getElementById('d-icon');
       if (app.image) {
         iconEl.innerHTML = '<img src="' + app.image + '" style="width:100%;height:100%;object-fit:cover;border-radius:22px;">';
+      } else if (app.icon && app.icon.startsWith('http')) {
+        iconEl.innerHTML = '<img src="' + app.icon + '" style="width:100%;height:100%;object-fit:cover;border-radius:22px;">';
       } else {
         iconEl.textContent = app.icon || '📦';
       }
