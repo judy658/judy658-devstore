@@ -81,6 +81,13 @@
       document.getElementById('dev-description').value = data.description || '';
       document.getElementById('dev-filesize').value = data.filesize || '';
 
+      // Tags
+      document.getElementById('dev-tag-game').checked = data.category === 'game';
+      document.getElementById('dev-tag-app').checked = data.category === 'app';
+      document.getElementById('dev-tag-windows').checked = !!data.is_windows;
+      document.getElementById('dev-tag-force').checked = !!data.force_update;
+      document.getElementById('dev-tag-guestsafe').checked = !!data.guest_safe;
+
       // Screenshots array → textarea'ya satır satır
       const ssField = document.getElementById('dev-screenshots');
       if (data.screenshots && Array.isArray(data.screenshots)) {
@@ -105,6 +112,14 @@
       const screenshotsRaw = document.getElementById('dev-screenshots').value.trim();
       const screenshots = screenshotsRaw ? screenshotsRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
 
+      const isGame = document.getElementById('dev-tag-game').checked;
+      const isApp = document.getElementById('dev-tag-app').checked;
+      const hasWindows = document.getElementById('dev-tag-windows').checked;
+      const hasForce = document.getElementById('dev-tag-force').checked;
+      const hasGuest = document.getElementById('dev-tag-guestsafe').checked;
+
+      const category = isGame ? 'game' : (isApp ? 'app' : null);
+
       const updates = {
         name: document.getElementById('dev-name').value.trim(),
         icon: document.getElementById('dev-icon').value.trim(),
@@ -113,6 +128,10 @@
         filesize: document.getElementById('dev-filesize').value.trim(),
         description: document.getElementById('dev-description').value.trim(),
         screenshots: screenshots,
+        category,
+        is_windows: hasWindows,
+        force_update: hasForce,
+        guest_safe: hasGuest,
         updated_at: new Date().toISOString()
         // download_url ve owner_email kasıtlı olarak burada YOK
       };
@@ -139,11 +158,15 @@
         appExtras[appId].description = updates.description;
         appExtras[appId].screenshots = screenshots;
         appExtras[appId].filesize = updates.filesize;
+        appExtras[appId].platform = hasWindows ? 'windows' : undefined;
+        appExtras[appId].guest_safe = hasGuest;
       }
       if (allApps[appId]) {
         allApps[appId].version = updates.version;
         allApps[appId].changelog = updates.changelog;
         allApps[appId].icon = updates.icon;
+        allApps[appId].category = category;
+        allApps[appId].force_update = hasForce;
       }
 
       setTimeout(() => { btn.disabled = false; btn.textContent = '💾 Kaydet'; }, 2000);
@@ -374,6 +397,14 @@
         if (appId) loadDevApp(appId);
       });
       document.getElementById('dev-save-btn')?.addEventListener('click', saveDevApp);
+
+      // Oyun/Uygulama checkbox'ları — yalnızca biri seçilebilir
+      document.getElementById('dev-tag-game')?.addEventListener('change', function () {
+        if (this.checked) document.getElementById('dev-tag-app').checked = false;
+      });
+      document.getElementById('dev-tag-app')?.addEventListener('change', function () {
+        if (this.checked) document.getElementById('dev-tag-game').checked = false;
+      });
 
       document.getElementById('open-create-dev-btn')?.addEventListener('click', openCreateDevModal);
       document.getElementById('close-create-dev-btn')?.addEventListener('click', closeCreateDevModal);
