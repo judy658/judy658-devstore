@@ -22,7 +22,10 @@
 
   <nav>
     <div class="nav-inner">
-      <div class="logo">⬡ DevStore</div>
+      <div class="nav-left">
+        <div class="logo">⬡ DevStore</div>
+        <button class="vip-nav-btn" id="vip-nav-btn" title="VIP Hakkında">👑 VIP</button>
+      </div>
       <div id="nav-user-area">
         <button class="user-btn" id="login-btn">🔑 Giriş Yap</button>
         <button class="user-btn" id="user-info" style="display:none"><span
@@ -381,6 +384,7 @@
         <button class="admin-tab" data-tab="deadaccounts"><i class="fas fa-ghost"></i> Ölü
           Hesaplar</button>
         <button class="admin-tab" data-tab="banned"><i class="fas fa-ban"></i> Banlılar</button>
+        <button class="admin-tab" data-tab="vip"><i class="fas fa-crown"></i> VIP</button>
         <button class="admin-tab" data-tab="appmanager"><i class="fas fa-boxes"></i> Uygulamalar</button>
         <button class="admin-tab" data-tab="developers"><i class="fas fa-code"></i> Developerlar</button>
       </div>
@@ -585,6 +589,31 @@
         </div>
       </div>
 
+      <!-- ═══ VIP YÖNETİMİ ═══ -->
+      <div class="admin-section" id="admin-vip">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px">👑 VIP Yönetimi</div>
+            <div style="font-size:0.8rem;color:var(--muted)">VIP üyeleri ekle, çıkar ve yönet.</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="admin-refresh" style="margin:0" id="vip-refresh-btn">↻ Yenile</button>
+            <button id="open-add-vip-btn" style="background:linear-gradient(135deg,#f0b90b,#e69a00);color:#fff;border:none;border-radius:11px;padding:10px 22px;font-family:DM Sans,sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer">➕ VIP Ekle</button>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px">
+          <div style="flex:1;background:var(--surface);padding:14px;text-align:center">
+            <span style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;display:block;color:#f0b90b" id="vip-total-count">—</span>
+            <span style="font-size:0.7rem;color:var(--muted);margin-top:2px;display:block">Toplam VIP</span>
+          </div>
+        </div>
+
+        <div id="vip-member-list">
+          <div class="admin-empty">Yükleniyor...</div>
+        </div>
+      </div>
+
       <!-- ═══ UYGULAMA YÖNETİCİSİ ═══ -->
       <div class="admin-section" id="admin-appmanager">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
@@ -684,6 +713,38 @@
           </div>
         </div>
       </div>
+
+      <!-- VIP EKLEME MODAL -->
+      <div id="add-vip-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1001;align-items:center;justify-content:center;backdrop-filter:blur(8px)">
+        <div style="background:var(--surface);border:1px solid rgba(240,185,11,0.3);border-radius:24px;padding:32px;width:100%;max-width:520px;margin:20px;max-height:90vh;overflow-y:auto">
+          <div style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;margin-bottom:4px">👑 VIP Üye Ekle</div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:24px">Kullanıcıya VIP statüsü ver. VIP'ler özel içeriklere erişebilir.</div>
+
+          <div style="margin-bottom:16px">
+            <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Kullanıcı E-postası</div>
+            <div style="position:relative">
+              <input type="text" id="vip-user-search" placeholder="E-posta ara..." autocomplete="off"
+                style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box">
+              <div id="vip-user-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-top:4px;max-height:180px;overflow-y:auto;z-index:10"></div>
+            </div>
+            <div id="vip-selected-user" style="display:none;margin-top:8px;background:rgba(240,185,11,0.1);border:1px solid rgba(240,185,11,0.3);border-radius:8px;padding:8px 14px;font-size:0.85rem;color:#f0b90b"></div>
+          </div>
+
+          <div style="margin-bottom:20px">
+            <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Sebep <span style="opacity:0.5">(opsiyonel)</span></div>
+            <input type="text" id="vip-reason" placeholder="örn. Sportify uygulamasını yayınladı"
+              style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box">
+          </div>
+
+          <div style="display:flex;align-items:center;gap:12px">
+            <button id="add-vip-btn"
+              style="background:linear-gradient(135deg,#f0b90b,#e69a00);color:#fff;border:none;border-radius:11px;padding:12px 32px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s">👑 VIP Yap</button>
+            <button id="close-add-vip-btn" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:11px;padding:12px 20px;font-family:DM Sans,sans-serif;font-size:0.9rem;cursor:pointer">İptal</button>
+            <span id="add-vip-status" style="font-size:0.83rem"></span>
+          </div>
+        </div>
+      </div>
+
       <div id="app-edit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(8px)">
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:32px;width:100%;max-width:560px;margin:20px;max-height:90vh;overflow-y:auto;position:relative">
           <div style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;margin-bottom:4px">✏️ Uygulamayı Düzenle</div>
@@ -888,6 +949,43 @@
         </div>
         <div class="comment-list" id="comment-list"></div>
       </div>
+    </div>
+  </div>
+
+  <!-- VIP INFO MODAL -->
+  <div class="vip-overlay" id="vip-overlay">
+    <div class="vip-box">
+      <button class="vip-close-btn" id="vip-close-btn">&times;</button>
+      <div class="vip-crown">👑</div>
+      <div class="vip-title">VIP Üyelik</div>
+      <div class="vip-subtitle">Özel içeriklere erişim ve erken deneyim fırsatı</div>
+
+      <div class="vip-info-card">
+        <div class="vip-info-icon">💎</div>
+        <div>
+          <div class="vip-info-title">VIP Nasıl Olunur?</div>
+          <p>VIP üyelik <strong>satın alınamaz</strong>. Sadece aşağıdaki durumlarda tarafımızca verilir:</p>
+          <ul class="vip-list">
+            <li>DevStore'da uygulama yayınlayan <strong>developerlar</strong></li>
+            <li>DevStore'a katkıda bulunmuş veya uzun süredir destek veren <strong>kullanıcılar</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="vip-info-card">
+        <div class="vip-info-icon">🚀</div>
+        <div>
+          <div class="vip-info-title">VIP Ayrıcalıkları</div>
+          <ul class="vip-list">
+            <li>👑 <strong>VIP</strong> rozeti profilinizde görünür</li>
+            <li>🔓 VIP özel uygulamalara ve içeriklere erişim</li>
+            <li>🧪 Henüz yayınlanmamış uygulamaları <strong>önceden deneyimleme</strong></li>
+            <li>⭐ Öncelikli destek ve geri bildirim kanalı</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="vip-footer-note">VIP statüsü admin tarafından manuel olarak atanır. Başvuru yapılamaz.</div>
     </div>
   </div>
 

@@ -160,6 +160,7 @@
       if (tab === 'messages') loadAdminMessages();
       if (tab === 'notifications') loadNotifData();
       if (tab === 'banned') loadBannedUsers();
+      if (tab === 'vip') loadVipMembers();
       if (tab === 'appmanager') loadAppManager();
       if (tab === 'developers') loadDeveloperList();
     }
@@ -281,8 +282,13 @@
     async function loadAdminUsers() {
       const el = document.getElementById('user-list');
       el.innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
-      const { data: presence } = await supa.from('user_presence').select('*').eq('is_banned', false).eq('is_dead', false).order('is_online', { ascending: false }).order('last_seen', { ascending: false });
+      const [presRes, vipRes] = await Promise.all([
+        supa.from('user_presence').select('*').eq('is_banned', false).eq('is_dead', false).order('is_online', { ascending: false }).order('last_seen', { ascending: false }),
+        supa.from('vip_members').select('*')
+      ]);
 
+      const presence = presRes.data;
+      _vipMembers = vipRes.data || [];
       if (!presence || !presence.length) {
         el.innerHTML = '<div class="admin-empty">Henüz kayıtlı kullanıcı yok.</div>';
         document.getElementById('a-total-users').textContent = '0';
@@ -307,7 +313,7 @@
       renderUserList(filtered);
     }
 
-    function renderUserList(list) {
+    async function renderUserList(list) {
       const now = Date.now();
       const onlineCount = list.filter(u => (now - new Date(u.last_seen).getTime()) / 1000 < 60).length;
       document.getElementById('a-total-users').textContent = list.length;
@@ -318,15 +324,19 @@
         return;
       }
 
+      const vipEmails = new Set(_vipMembers.map(v => v.email));
+
       document.getElementById('user-list').innerHTML = list.map(u => {
         const isOnline = (now - new Date(u.last_seen).getTime()) / 1000 < 60;
         const isVerified = u.email === ADMIN_EMAIL;
         const isMe = u.email === ADMIN_EMAIL;
+        const isVip = vipEmails.has(u.email);
         const verifiedBadge = isVerified ? '<svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#00d2ff;margin-left:4px;vertical-align:middle"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zM10 17l-5-5 1.4-1.4 3.6 3.6 7.6-7.6L19 8l-9 9z"></path></svg>' : '';
+        const vipBadge = isVip ? '<span class="vip-badge-small">👑 VIP</span>' : '';
         return `<div class="user-row ${isOnline ? 'online' : ''}" data-user-id="${u.user_id}">
       <div class="user-avatar">${u.email ? u.email[0].toUpperCase() : '?'}</div>
       <div class="user-info">
-        <div class="user-email-text">${u.nickname || u.email}${verifiedBadge}${isMe ? ' 👑' : ''}</div>
+        <div class="user-email-text">${u.nickname || u.email}${verifiedBadge}${vipBadge}${isMe ? ' 👑' : ''}</div>
         <div class="user-meta">${u.nickname ? u.email + ' · ' : ''}${isOnline ? '🟢 Şu an aktif' + (u.current_app ? ' · ' + (u.current_app === 'sportify' ? '🎵 Sportify' : '🌐 DevStore') : '') : '⚫ Son görülme: ' + _timeAgo(u.last_seen)}</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px">
@@ -590,4 +600,166 @@
       document.getElementById('rcpt-online')?.addEventListener('click', () => selectRecipients('online'));
       document.getElementById('rcpt-select')?.addEventListener('click', () => selectRecipients('select'));
       document.getElementById('notif-send-btn')?.addEventListener('click', sendNotification);
+
+      // VIP event listeners
+      document.getElementById('vip-refresh-btn')?.addEventListener('click', loadVipMembers);
+      document.getElementById('open-add-vip-btn')?.addEventListener('click', openAddVipModal);
+      document.getElementById('close-add-vip-btn')?.addEventListener('click', closeAddVipModal);
+      document.getElementById('add-vip-btn')?.addEventListener('click', addVipMember);
+      document.getElementById('vip-user-search')?.addEventListener('input', searchVipUser);
+      document.getElementById('vip-user-dropdown')?.addEventListener('click', (e) => {
+        const item = e.target.closest('[data-action="select-vip-user"]');
+        if (!item) return;
+        selectVipUser(item.dataset.email);
+      });
+      document.getElementById('add-vip-modal')?.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('add-vip-modal')) closeAddVipModal();
+      });
+      document.getElementById('vip-member-list')?.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-action="remove-vip"]');
+        if (!btn) return;
+        removeVipMember(btn.dataset.email);
+      });
     });
+
+    // ═══════════════════════════════════════
+    // VIP YÖNETİMİ
+    // ═══════════════════════════════════════
+    let _vipSearchCache = [];
+    let _selectedVipEmail = null;
+    let _vipMembers = [];
+
+    async function loadVipMembers() {
+      const el = document.getElementById('vip-member-list');
+      el.innerHTML = '<div class="admin-empty">Yükleniyor...</div>';
+
+      const { data: members } = await supa.from('vip_members').select('*').order('granted_at', { ascending: false });
+      _vipMembers = members || [];
+      document.getElementById('vip-total-count').textContent = _vipMembers.length;
+
+      if (!_vipMembers.length) {
+        el.innerHTML = '<div class="admin-empty">Henüz VIP üye yok.</div>';
+        return;
+      }
+
+      el.innerHTML = _vipMembers.map(m => {
+        const date = new Date(m.granted_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
+        return `
+        <div style="background:var(--surface);border:1px solid rgba(240,185,11,0.2);border-radius:14px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#f0b90b,#e69a00);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:#fff;flex-shrink:0">👑</div>
+          <div style="flex:1;min-width:180px">
+            <div style="font-size:0.9rem;font-weight:600;margin-bottom:3px">${m.email}</div>
+            <div style="font-size:0.75rem;color:var(--muted)">${m.reason || 'Sebep belirtilmedi'} · ${date}</div>
+          </div>
+          <button data-action="remove-vip" data-email="${m.email}" style="background:rgba(252,92,125,0.1);border:1px solid rgba(252,92,125,0.25);color:var(--accent2);border-radius:9px;padding:7px 16px;font-family:DM Sans,sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.2s">👑 VIP'yi Kaldır</button>
+        </div>`;
+      }).join('');
+    }
+
+    function openAddVipModal() {
+      _selectedVipEmail = null;
+      _vipSearchCache = [];
+      document.getElementById('vip-user-search').value = '';
+      document.getElementById('vip-user-dropdown').style.display = 'none';
+      document.getElementById('vip-selected-user').style.display = 'none';
+      document.getElementById('vip-reason').value = '';
+      document.getElementById('add-vip-status').textContent = '';
+      document.getElementById('add-vip-btn').disabled = false;
+      document.getElementById('add-vip-btn').textContent = '👑 VIP Yap';
+      document.getElementById('add-vip-modal').style.display = 'flex';
+    }
+
+    function closeAddVipModal() {
+      document.getElementById('add-vip-modal').style.display = 'none';
+    }
+
+    async function searchVipUser() {
+      const query = document.getElementById('vip-user-search').value.trim().toLowerCase();
+      const dropdown = document.getElementById('vip-user-dropdown');
+      if (query.length < 2) { dropdown.style.display = 'none'; return; }
+
+      if (!_vipSearchCache.length) {
+        const { data } = await supa.from('user_presence').select('email, nickname').eq('is_banned', false);
+        _vipSearchCache = data || [];
+      }
+
+      const filtered = _vipSearchCache.filter(u =>
+        u.email && u.email.toLowerCase().includes(query) && !_vipMembers.some(v => v.email === u.email)
+      ).slice(0, 8);
+
+      if (!filtered.length) { dropdown.style.display = 'none'; return; }
+
+      dropdown.style.display = 'block';
+      dropdown.innerHTML = filtered.map(u => `
+        <div data-action="select-vip-user" data-email="${u.email}" style="padding:10px 14px;cursor:pointer;font-size:0.88rem;border-bottom:1px solid var(--border);transition:background 0.15s">
+          ${u.email} ${u.nickname ? `<span style="color:var(--muted);font-size:0.78rem">(${u.nickname})</span>` : ''}
+        </div>`).join('');
+    }
+
+    function selectVipUser(email) {
+      _selectedVipEmail = email;
+      document.getElementById('vip-user-search').value = email;
+      document.getElementById('vip-user-dropdown').style.display = 'none';
+      document.getElementById('vip-selected-user').style.display = 'block';
+      document.getElementById('vip-selected-user').textContent = '✓ Seçildi: ' + email;
+    }
+
+    async function addVipMember() {
+      const btn = document.getElementById('add-vip-btn');
+      const status = document.getElementById('add-vip-status');
+
+      if (!_selectedVipEmail) {
+        status.textContent = '⚠️ Bir kullanıcı seç!';
+        status.style.color = 'var(--accent2)'; return;
+      }
+
+      btn.disabled = true; btn.textContent = '⏳ Ekleniyor...';
+      status.textContent = '';
+
+      try {
+        const { data: { session } } = await supa.auth.getSession();
+        const reason = document.getElementById('vip-reason').value.trim() || 'DevStore destekçisi';
+
+        const { data: pres } = await supa.from('user_presence').select('user_id').eq('email', _selectedVipEmail).maybeSingle();
+        const userId = pres ? pres.user_id : 'unknown';
+
+        const { error } = await supa.from('vip_members').insert({
+          user_id: userId,
+          email: _selectedVipEmail,
+          granted_by: session.user.email,
+          reason: reason
+        });
+
+        if (error) {
+          if (error.code === '23505') {
+            status.textContent = '❌ Bu kullanıcı zaten VIP!';
+          } else {
+            status.textContent = '❌ ' + error.message;
+          }
+          status.style.color = 'var(--accent2)';
+          btn.disabled = false; btn.textContent = '👑 VIP Yap';
+          return;
+        }
+
+        status.textContent = '✅ VIP eklendi!';
+        status.style.color = 'var(--green)';
+        btn.textContent = '✅ Tamamlandı';
+
+        setTimeout(() => {
+          closeAddVipModal();
+          loadVipMembers();
+        }, 1200);
+
+      } catch (e) {
+        status.textContent = '❌ Hata: ' + e.message;
+        status.style.color = 'var(--accent2)';
+        btn.disabled = false; btn.textContent = '👑 VIP Yap';
+      }
+    }
+
+    async function removeVipMember(email) {
+      if (!confirm(email + ' kullanıcısının VIP üyeliğini kaldırmak istediğine emin misin?')) return;
+      const { error } = await supa.from('vip_members').delete().eq('email', email);
+      if (error) { alert('Hata: ' + error.message); return; }
+      loadVipMembers();
+    }

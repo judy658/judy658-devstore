@@ -16,6 +16,7 @@
     let currentAppId = null;
     let selectedRating = 0;
     let _presenceTimer = null;
+    let isVIP = false;
 
     // ════════════════════════════════════════════════
     //  UYGULAMA EKSTRA BİLGİLERİ
@@ -321,6 +322,18 @@
           document.getElementById('nav-user-area').prepend(btn);
         }
       }
+      // VIP kontrolü
+      const { data: vipRow } = await supa.from('vip_members').select('email').eq('email', email).maybeSingle();
+      isVIP = !!vipRow;
+      const vipBtn = document.getElementById('vip-nav-btn');
+      if (isVIP && vipBtn) {
+        vipBtn.classList.add('vip-active');
+        vipBtn.title = 'VIP Üyesin! 👑';
+      } else if (vipBtn) {
+        vipBtn.classList.remove('vip-active');
+        vipBtn.title = 'VIP Hakkında';
+      }
+
       startPresence();
       checkContactAuth();
       if (typeof initJarvisMemory === 'function') initJarvisMemory(email, false);
@@ -358,9 +371,13 @@
 
     function showUserLoggedOut() {
       currentUserEmail = null; currentUserId = null;
+      isVIP = false;
       document.getElementById('login-btn').style.display = 'flex';
       document.getElementById('user-info').style.display = 'none';
       document.getElementById('admin-nav-btn')?.remove();
+      document.getElementById('dev-nav-btn')?.remove();
+      const vipBtn = document.getElementById('vip-nav-btn');
+      if (vipBtn) { vipBtn.classList.remove('vip-active'); vipBtn.title = 'VIP Hakkında'; }
       stopPresence();
       checkContactAuth();
       if (typeof initJarvisMemory === 'function') initJarvisMemory(null, true);
@@ -382,6 +399,18 @@
       });
       document.getElementById('signout-btn')?.addEventListener('click', () => {
         if (typeof doSignOut === 'function') doSignOut();
+      });
+
+      document.getElementById('vip-nav-btn')?.addEventListener('click', () => {
+        document.getElementById('vip-overlay').classList.add('open');
+      });
+      document.getElementById('vip-close-btn')?.addEventListener('click', () => {
+        document.getElementById('vip-overlay').classList.remove('open');
+      });
+      document.getElementById('vip-overlay')?.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('vip-overlay')) {
+          document.getElementById('vip-overlay').classList.remove('open');
+        }
       });
     });
 
