@@ -57,6 +57,16 @@
         changelog_history: [
           { version: "V2.3.0", text: "İlk public sürüm. GPU desteği (NVIDIA CUDA), faster-whisper motoru, altyazı editörü, Chatterbox TTS dublaj, YouTube indirme, 20+ dil çevirisi." }
         ]
+      },
+      pixelforge: {
+        developer: "judy658",
+        platform: "windows",
+        guest_safe: true,
+        description: "PixelForge, toplu resim işlemleri için geliştirilmiş ücretsiz bir Windows masaüstü uygulamasıdır.\n\nTek seferde onlarca fotoğrafı boyutlandırabilir, formatlarını değiştirebilir ve watermark ekleyebilirsiniz.\n\nÖzellikler:\n• Toplu boyutlandırma — piksel veya yüzde ile, en-boy oranı korumalı veya serbest\n• Format dönüştürme — PNG, JPG, WebP, BMP arası geçiş\n• Watermark — özel metin filigranı, ayarlanabilir boyut/konum/opaklık\n• Drag & drop — resimleri sürükle bırak\n• Kalite kontrolü — JPG/WebP için sıkıştırma ayarı\n\nKurulum gerektirmez. Tek başına çalışır, hesap açmaya gerek yok.",
+        screenshots: [],
+        changelog_history: [
+          { version: "V1.0.0", text: "Toplu boyutlandırma, format dönüştürme, watermark ekleme, drag-drop desteği." }
+        ]
       }
     };
 

@@ -47,6 +47,19 @@
       "history": [
         { "version": "V2.3.0", "note": "İlk public sürüm. GPU desteği (NVIDIA CUDA), faster-whisper motoru, altyazı editörü, Chatterbox TTS dublaj, YouTube indirme, 20+ dil çevirisi." }
       ]
+    },
+    "pixelforge": {
+      "name": "PixelForge",
+      "version": "1.0.0",
+      "min_version": "1.0.0",
+      "force_update": false,
+      "download_url": "#",
+      "icon": "🛠️",
+      "category": "app",
+      "changelog": "İlk sürüm. Toplu boyutlandırma, format dönüştürme ve watermark özellikleri.",
+      "history": [
+        { "version": "V1.0.0", "note": "Toplu boyutlandırma (px/%), format dönüştürme (PNG/JPG/WebP/BMP), watermark ekleme, drag-drop desteği." }
+      ]
     }
   }
 }
