@@ -63,7 +63,11 @@
         platform: "windows",
         guest_safe: true,
         description: "PixelForge, toplu resim işlemleri için geliştirilmiş ücretsiz bir Windows masaüstü uygulamasıdır.\n\nTek seferde onlarca fotoğrafı boyutlandırabilir, formatlarını değiştirebilir ve watermark ekleyebilirsiniz.\n\nÖzellikler:\n• Toplu boyutlandırma — piksel veya yüzde ile, en-boy oranı korumalı veya serbest\n• Format dönüştürme — PNG, JPG, WebP, BMP arası geçiş\n• Watermark — özel metin filigranı, ayarlanabilir boyut/konum/opaklık\n• Drag & drop — resimleri sürükle bırak\n• Kalite kontrolü — JPG/WebP için sıkıştırma ayarı\n\nKurulum gerektirmez. Tek başına çalışır, hesap açmaya gerek yok.",
-        screenshots: [],
+        screenshots: [
+          "./assets/media/pixsel1.png",
+          "./assets/media/pixsel2.png",
+          "./assets/media/pixsel3.png"
+        ],
         changelog_history: [
           { version: "V1.0.0", text: "Toplu boyutlandırma, format dönüştürme, watermark ekleme, drag-drop desteği." }
         ]
