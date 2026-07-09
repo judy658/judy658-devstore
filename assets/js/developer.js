@@ -87,6 +87,7 @@
       document.getElementById('dev-tag-windows').checked = !!data.is_windows;
       document.getElementById('dev-tag-force').checked = !!data.force_update;
       document.getElementById('dev-tag-guestsafe').checked = !!data.guest_safe;
+      document.getElementById('dev-tag-vip').checked = !!data.is_vip;
 
       // Screenshots array → textarea'ya satır satır
       const ssField = document.getElementById('dev-screenshots');
@@ -117,6 +118,7 @@
       const hasWindows = document.getElementById('dev-tag-windows').checked;
       const hasForce = document.getElementById('dev-tag-force').checked;
       const hasGuest = document.getElementById('dev-tag-guestsafe').checked;
+      const hasVip = document.getElementById('dev-tag-vip').checked;
 
       const category = isGame ? 'game' : (isApp ? 'app' : null);
 
@@ -132,6 +134,7 @@
         is_windows: hasWindows,
         force_update: hasForce,
         guest_safe: hasGuest,
+        is_vip: hasVip,
         updated_at: new Date().toISOString()
         // download_url ve owner_email kasıtlı olarak burada YOK
       };
@@ -167,6 +170,7 @@
         allApps[appId].icon = updates.icon;
         allApps[appId].category = category;
         allApps[appId].force_update = hasForce;
+        allApps[appId].is_vip = hasVip;
       }
 
       setTimeout(() => { btn.disabled = false; btn.textContent = '💾 Kaydet'; }, 2000);
@@ -452,6 +456,7 @@
       document.getElementById('tag-windows').checked = !!data.is_windows;
       document.getElementById('tag-force').checked = !!data.force_update;
       document.getElementById('tag-guestsafe').checked = !!data.guest_safe;
+      document.getElementById('tag-vip').checked = !!data.is_vip;
       document.getElementById('edit-version').value = data.version || '';
       document.getElementById('edit-min-version').value = data.min_version || '';
       document.getElementById('edit-developer').value = data.developer || '';
@@ -488,6 +493,7 @@
         is_windows: document.getElementById('tag-windows').checked,
         force_update: document.getElementById('tag-force').checked,
         guest_safe: document.getElementById('tag-guestsafe').checked,
+        is_vip: document.getElementById('tag-vip').checked,
         version: document.getElementById('edit-version').value.trim(),
         min_version: document.getElementById('edit-min-version').value.trim(),
         developer: document.getElementById('edit-developer').value.trim(),
@@ -515,6 +521,7 @@
         allApps[_editingAppId].version = updates.version;
         allApps[_editingAppId].min_version = updates.min_version;
         allApps[_editingAppId].force_update = updates.force_update;
+        allApps[_editingAppId].is_vip = updates.is_vip;
         allApps[_editingAppId].changelog = updates.changelog;
       }
       if (appExtras[_editingAppId]) {

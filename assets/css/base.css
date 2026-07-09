@@ -349,6 +349,11 @@
       color: #3ddc97;
     }
 
+    .badge-vip {
+      background: rgba(240, 185, 11, 0.15);
+      color: #f0b90b;
+    }
+
     .dev-verified-tick {
       position: absolute;
       top: 14px;

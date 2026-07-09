@@ -19,16 +19,33 @@
       document.getElementById('d-minver').textContent = 'v' + app.min_version;
       document.getElementById('d-avg-rating').textContent = '—';
       document.getElementById('d-category').textContent = app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama';
-      document.getElementById('d-badges').innerHTML = `<span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama'}</span>${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu Güncelleme</span>' : ''}${extra && extra.platform === 'windows' ? '<span class="badge badge-windows">🖥️ Sadece Windows</span>' : ''}${extra && extra.guest_safe ? '<span class="badge badge-guestsafe">🔓 Oturumsuz</span>' : ''}`;
+      document.getElementById('d-badges').innerHTML = `<span class="badge ${app.category === 'game' ? 'badge-game' : 'badge-app'}">${app.category === 'game' ? '🎮 Oyun' : '📱 Uygulama'}</span>${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu Güncelleme</span>' : ''}${extra && extra.platform === 'windows' ? '<span class="badge badge-windows">🖥️ Sadece Windows</span>' : ''}${extra && extra.guest_safe ? '<span class="badge badge-guestsafe">🔓 Oturumsuz</span>' : ''}${app.is_vip ? '<span class="badge badge-vip">👑 VIP</span>' : ''}`;
       const dlBtn = document.getElementById('d-dl-btn');
       const dlUrl = app.download_url || '#';
-      dlBtn.href = dlUrl;
-      if (dlBtn._incHandler) dlBtn.removeEventListener('click', dlBtn._incHandler);
-      dlBtn._incHandler = () => incrementDownload(id);
-      dlBtn.addEventListener('click', dlBtn._incHandler);
+      const isVipApp = app.is_vip === true;
+      if (isVipApp && !isVIP) {
+        dlBtn.href = 'javascript:void(0)';
+        dlBtn.style.opacity = '0.4';
+        dlBtn.style.cursor = 'not-allowed';
+        dlBtn.style.pointerEvents = 'none';
+        dlBtn.innerHTML = '👑 VIP Gerekli';
+        dlBtn.title = 'Bu uygulamayı indirmek için VIP üye olmalısın';
+        if (dlBtn._incHandler) dlBtn.removeEventListener('click', dlBtn._incHandler);
+      } else {
+        dlBtn.href = dlUrl;
+        dlBtn.style.opacity = '';
+        dlBtn.style.cursor = '';
+        dlBtn.style.pointerEvents = '';
+        dlBtn.title = '';
+        if (dlBtn._incHandler) dlBtn.removeEventListener('click', dlBtn._incHandler);
+        dlBtn._incHandler = () => incrementDownload(id);
+        dlBtn.addEventListener('click', dlBtn._incHandler);
+      }
       
       const extra2 = appExtras[id] || {};
-      dlBtn.innerHTML = (extra2.platform === 'windows' || dlUrl.endsWith('.zip') || dlUrl.endsWith('.rar') || dlUrl.endsWith('.exe')) ? '⬇ ZIP İndir' : '⬇ APK İndir';
+      if (!(isVipApp && !isVIP)) {
+        dlBtn.innerHTML = (extra2.platform === 'windows' || dlUrl.endsWith('.zip') || dlUrl.endsWith('.rar') || dlUrl.endsWith('.exe')) ? '⬇ ZIP İndir' : '⬇ APK İndir';
+      }
 
       document.getElementById('d-dl-count').textContent = '...';
       getDownloads(id).then(c => { document.getElementById('d-dl-count').textContent = c; });

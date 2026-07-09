@@ -16,6 +16,9 @@
         const nickMap = {};
         if(profiles) profiles.forEach(p => { if(p.nickname) nickMap[p.email] = p.nickname; });
 
+        const { data: vipData } = await supa.from('vip_members').select('email').in('email', emails);
+        const vipSet = new Set(vipData ? vipData.map(v => v.email) : []);
+
         const hasCommented = data && currentUserId && data.some(c => c.user_id === currentUserId);
         
         if(form) form.style.display = (session && !hasCommented) ? 'block' : 'none';
@@ -43,6 +46,8 @@
           const displayName = nickMap[c.email] || (c.email ? c.email.split('@')[0] : 'Misafir');
           const isVerified = c.email === ADMIN_EMAIL;
           const verifiedBadge = isVerified ? '<svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#00d2ff;margin-left:4px;vertical-align:middle"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zM10 17l-5-5 1.4-1.4 3.6 3.6 7.6-7.6L19 8l-9 9z"></path></svg>' : '';
+          const isVipCommenter = vipSet.has(c.email);
+          const vipBadgeHtml = isVipCommenter ? '<span style="display:inline-flex;align-items:center;font-size:0.7rem;background:linear-gradient(135deg,#f0b90b,#e69a00);color:#fff;border-radius:6px;padding:1px 6px;margin-left:5px;vertical-align:middle;font-weight:700">👑 VIP</span>' : '';
           
           const replyHtml = c.reply ? `
             <div style="margin-top:15px; padding:12px; background:rgba(100,100,255,0.05); border-left:3px solid var(--accent); border-radius:8px;">
@@ -62,7 +67,7 @@
                 <div style="display:flex; align-items:center; gap:12px;">
                   <div style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, var(--accent), var(--accent2)); display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:1.1rem;">${displayName[0].toUpperCase()}</div>
                   <div>
-                    <div style="font-weight:700; font-size:0.95rem; color:var(--text);">${displayName}${verifiedBadge}</div>
+                    <div style="font-weight:700; font-size:0.95rem; color:var(--text);">${displayName}${verifiedBadge}${vipBadgeHtml}</div>
                     <div style="color:var(--yellow); font-size:0.8rem; letter-spacing:1px;">${stars}</div>
                   </div>
                 </div>

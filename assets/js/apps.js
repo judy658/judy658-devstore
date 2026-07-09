@@ -22,6 +22,7 @@
             // allApps'e force_update, category override vs. uygula
             if (allApps[id]) {
               if (meta.force_update !== null && meta.force_update !== undefined) allApps[id].force_update = meta.force_update;
+              if (meta.is_vip !== null && meta.is_vip !== undefined) allApps[id].is_vip = meta.is_vip;
               if (meta.category) allApps[id].category = meta.category;
               if (meta.version) allApps[id].version = meta.version;
               if (meta.min_version) allApps[id].min_version = meta.min_version;
@@ -91,6 +92,7 @@
             ${app.force_update ? '<span class="badge badge-force">⚠️ Zorunlu</span>' : ''}
             ${ex.platform === 'windows' ? '<span class="badge badge-windows">🖥️ Sadece Windows</span>' : ''}
             ${ex.guest_safe ? '<span class="badge badge-guestsafe">🔓 Oturumsuz</span>' : ''}
+            ${app.is_vip ? '<span class="badge badge-vip">👑 VIP</span>' : ''}
           </div>
         </div>
       </div>
