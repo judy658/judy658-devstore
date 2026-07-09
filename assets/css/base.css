@@ -2192,8 +2192,233 @@
       transform: scale(1.01);
     }
 
-    @media (max-width: 580px) {
+    @media (max-width: 768px) {
+      .admin-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 6px;
+        padding-bottom: 8px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
 
+      .admin-tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .admin-tab {
+        white-space: nowrap;
+        flex-shrink: 0;
+        padding: 8px 14px;
+        font-size: 0.78rem;
+      }
+
+      .admin-wrap {
+        padding: 24px 14px 80px;
+      }
+
+      .admin-stats-row {
+        flex-direction: column;
+      }
+
+      .admin-stat {
+        padding: 14px 16px;
+      }
+
+      .admin-stat-val {
+        font-size: 1.3rem;
+      }
+
+      .user-row {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 14px 16px;
+      }
+
+      .user-row .online-badge {
+        display: none;
+      }
+
+      .user-row .online-dot {
+        order: -1;
+      }
+
+      .user-info {
+        min-width: 140px;
+      }
+
+      .user-email-text {
+        font-size: 0.82rem;
+      }
+
+      .user-meta {
+        font-size: 0.7rem;
+      }
+
+      .admin-user-modal .admin-user-modal-content {
+        max-width: 95vw;
+        margin: 10px;
+        padding: 20px;
+      }
+
+      .admin-user-modal .admin-user-modal-content > div:first-child {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      #dead-account-list > div,
+      #banned-user-list > div {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 10px;
+      }
+
+      #dead-account-list button,
+      #banned-user-list button {
+        flex-shrink: 0;
+      }
+
+      .admin-section {
+        padding: 0;
+      }
+
+      #admin-dashboard > div:first-of-type {
+        grid-template-columns: 1fr;
+      }
+
+      #admin-dashboard canvas {
+        max-height: 180px;
+      }
+
+      #admin-notifications .notif-tag-btn {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+      }
+
+      #app-manager-list > div {
+        flex-direction: column;
+        align-items: flex-start !important;
+      }
+
+      #app-manager-list button {
+        width: 100%;
+        text-align: center;
+      }
+
+      #dev-list > div {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 8px;
+      }
+
+      #dev-list button {
+        width: 100%;
+      }
+
+      #app-edit-modal > div {
+        width: 95vw !important;
+        max-width: none !important;
+        margin: 10px;
+        padding: 20px;
+        border-radius: 16px;
+      }
+
+      #app-edit-modal .notif-tag-btn,
+      #app-edit-modal label {
+        font-size: 0.75rem;
+        padding: 6px 10px;
+      }
+
+      #create-dev-modal > div {
+        width: 95vw !important;
+        max-width: none !important;
+        margin: 10px;
+        padding: 20px;
+      }
+
+      #create-dev-modal > div > div[style*="grid-template-columns:1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+      }
+
+      .dev-panel-wrap {
+        padding: 24px 14px 80px;
+      }
+
+      .dev-card label {
+        font-size: 0.73rem;
+        padding: 5px 8px;
+      }
+
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #reset-system-btn {
+        width: 100%;
+        text-align: center;
+        padding: 10px 16px;
+        font-size: 0.82rem;
+      }
+
+      .admin-title {
+        font-size: 1.4rem;
+      }
+
+      #dead-account-list > div > div:first-of-type {
+        flex-direction: column;
+        align-items: flex-start !important;
+      }
+
+      #dead-account-list > div > div:last-child {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      #dead-account-list button {
+        flex: 1;
+        min-width: 80px;
+        font-size: 0.72rem;
+        padding: 6px 8px;
+      }
+
+      .notif-tag-btn {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+      }
+
+      #notif-tags {
+        gap: 4px;
+      }
+
+      #rcpt-user-list {
+        max-height: 180px;
+      }
+
+      .msg-header {
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .msg-card {
+        padding: 14px 16px;
+      }
+
+      #admin-users > div:first-of-type {
+        flex-direction: column;
+      }
+
+      #admin-users .admin-refresh {
+        width: 100%;
+        text-align: center;
+        margin-left: 0;
+        margin-bottom: 0;
+      }
+    }
+
+    @media (max-width: 580px) {
       .stats-bar,
       .detail-stats,
       .admin-stats-row {
