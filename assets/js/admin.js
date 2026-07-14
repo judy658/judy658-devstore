@@ -763,3 +763,45 @@
       if (error) { alert('Hata: ' + error.message); return; }
       loadVipMembers();
     }
+
+    // ═══════════════════════════════════
+    // Nexsus'u app_meta'ya ekle
+    // ═══════════════════════════════════
+    document.getElementById('add-nexsus-btn')?.addEventListener('click', async () => {
+      const btn = document.getElementById('add-nexsus-btn');
+      if (!confirm('Nexsus uygulamasını veritabanına eklemek istediğine emin misin?')) return;
+      btn.disabled = true; btn.textContent = '⏳ Ekleniyor...';
+      try {
+        const { error } = await supa.from('app_meta').insert({
+          app_id: 'nexsus',
+          name: 'Nexsus',
+          icon: '⬡',
+          category: 'app',
+          version: '1.0.0',
+          min_version: '1.0.0',
+          download_url: 'https://huggingface.co/Judy658/nexsus/resolve/main/nexsus.zip',
+          developer: 'judy658',
+          is_windows: true,
+          force_update: false,
+          guest_safe: false,
+          is_vip: false,
+          filesize: '4.1 GB',
+          changelog: 'Fooocus 2.5.5 tabanlı ilk sürüm. Mor/siyah tema, Türkçe dil desteği, kullanıcı sözleşmesi, Supabase kimlik doğrulama, VIP üyelik sistemi, online durum takibi, model yöneticisi.',
+          description: 'Nexsus, Fooocus 2.5.5 tabanlı gelişmiş bir görsel üretim aracıdır. SDXL/SD1.5 desteği, LoRA, ControlNet, mor/siyah tema ve Supabase entegrasyonu ile gelişmiş görsel üretim deneyimi.',
+          updated_at: new Date().toISOString()
+        });
+        if (error) {
+          if (error.code === '23505') {
+            alert('✅ Nexsus zaten veritabanında mevcut! Sayfayı yenile.');
+          } else {
+            alert('❌ Hata: ' + error.message);
+          }
+        } else {
+          alert('✅ Nexsus başarıyla eklendi! Sayfayı yeniliyorum...');
+          location.reload();
+        }
+      } catch (e) {
+        alert('❌ Hata: ' + e.message);
+      }
+      btn.disabled = false; btn.textContent = '⬡ Nexsus Ekle';
+    });
