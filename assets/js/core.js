@@ -272,7 +272,7 @@
         window.chart1 = new Chart(ctx1, {
           type: 'doughnut',
           data: {
-            labels: ['Sportify', 'DevStore', 'Nexsus'],
+            labels: ['Sportify', 'DevStore', '⬡ Nexsus'],
             datasets: [{ data: [sportify, devstore, nexsus], backgroundColor: ['#7c5cfc', '#fc5c7d', '#8b3dff'], borderWidth: 0, hoverOffset: 4 }]
           },
           options: chartConfig
