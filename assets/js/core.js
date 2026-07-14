@@ -71,6 +71,20 @@
         changelog_history: [
           { version: "V1.0.0", text: "Toplu boyutlandırma, format dönüştürme, watermark ekleme, drag-drop desteği." }
         ]
+      },
+      nexsus: {
+        developer: "judy658",
+        platform: "windows",
+        description: "Nexsus, Fooocus 2.5.5 tabanlı gelişmiş bir görsel üretim aracıdır. Mor/siyah temalı arayüzü, Türkçe dil desteği ve Supabase ile entegre kullanıcı sistemi sayesinde yapay zeka görsel üretimini herkes için erişilebilir kılar.\n\nÖzellikler:\n• SDXL ve SD 1.5/2.x destekli çoklu mimari\n• Gelişmiş maskeleme ve inpaint/outpaint araçları\n• LoRA, ControlNet ve IP-Adapter desteği\n• Model yöneticisi ile tek tıkla model indirme\n• Supabase ile kullanıcı girişi ve VIP yönetimi\n• Mor/siyah özel tema\n\nKurulum gerektirmez. ZIP'i aç, Nexsus.exe'yi çalıştır.",
+        screenshots: [
+          "./assets/media/nexsus1.png",
+          "./assets/media/nexsus2.png",
+          "./assets/media/nexsus3.png",
+          "./assets/media/nexsus4.png"
+        ],
+        changelog_history: [
+          { version: "V1.0.0", text: "Fooocus 2.5.5 tabanlı ilk sürüm. Mor/siyah tema, Türkçe dil desteği, kullanıcı sözleşmesi, Supabase kimlik doğrulama, VIP üyelik sistemi, online durum takibi, model yöneticisi." }
+        ]
       }
     };
 
