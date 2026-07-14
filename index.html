@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DevStore</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/css/base.css" />
+  <link rel="stylesheet" href="./assets/css/weekly-banner.css" />
+  <link rel="stylesheet" href="./assets/css/jarvis-player.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <div class="glow1"></div>
+  <div class="glow2"></div>
+
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-left">
+        <div class="logo">⬡ DevStore</div>
+        <button class="vip-nav-btn" id="vip-nav-btn" title="VIP Hakkında">👑 VIP</button>
+      </div>
+      <div id="nav-user-area">
+        <button class="user-btn" id="login-btn">🔑 Giriş Yap</button>
+        <button class="user-btn" id="user-info" style="display:none"><span
+            class="user-dot"></span><span id="user-email-short"></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ANA SAYFA -->
+  <div id="home-page">
+    <div class="wrap">
+      <div class="hero">
+        <div class="hero-tag">🚀 Kişisel Uygulama Mağazası</div>
+        <h1>Tüm oyunların &<br /><em>uygulamalar</em> burada</h1>
+        <p>Her uygulama otomatik güncelleme sistemiyle korunur. Yeni sürüm yayınlandığında kullanıcılar anında haberdar
+          olur.</p>
+      </div>
+
+      <!-- ═══ HAFTANIN ŞARKISI PANOSU ═══ -->
+
+      <div class="weekly-banner">
+        <div class="weekly-inner" id="weekly-banner-box">
+          <div class="weekly-video-wrap">
+            <video id="weekly-video"
+              src="./assets/media/passobemsalto.mp4" autoplay muted
+              loop playsinline preload="auto"></video>
+            <div class="weekly-badge">Haftanın Şarkısı</div>
+          </div>
+          <div class="weekly-info">
+            <div class="weekly-left">
+              <div class="weekly-icon">🎵</div>
+              <div>
+                <div class="weekly-label">Bu hafta en çok dinlenen</div>
+                <div class="weekly-song" id="weekly-song-name">Passo</div>
+                <div class="weekly-artist" id="weekly-artist-name">ATLXS</div>
+              </div>
+            </div>
+            <div class="weekly-right">
+              <button class="weekly-mute-btn" id="weekly-mute-btn">🔇 Ses</button>
+              <button class="weekly-play-btn" id="weekly-play-btn">🎵
+                Sportify'da Dinle</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- J.A.R.V.I.S AUDIO PLAYER UI -->
+      <div id="jarvis-audio-player" class="jarvis-audio-player"
+        style="display:none; position:fixed; bottom:20px; right:20px; z-index:999999; width: 320px; background: rgba(0, 15, 30, 0.85); border: 1px solid rgba(0, 210, 255, 0.4); border-radius: 12px; backdrop-filter: blur(12px); box-shadow: 0 0 20px rgba(0, 210, 255, 0.2); flex-direction: column; padding: 15px; font-family: 'Courier New', monospace; box-sizing: border-box;">
+
+        <!-- Header -->
+        <div
+          style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(0, 210, 255, 0.2); padding-bottom: 8px;">
+          <div style="display:flex; align-items: center; gap: 8px;">
+            <div
+              style="width:8px; height:8px; background:#00d2ff; border-radius:50%; box-shadow: 0 0 8px #00d2ff; animation: pulseJarvis 1.5s infinite;">
+            </div>
+            <span
+              style="color:#00d2ff; font-weight:bold; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Audio
+              Engine</span>
+          </div>
+          <button id="jarvis-audio-close-btn"
+            style="background:transparent; border:none; color:rgba(0, 210, 255, 0.6); cursor:pointer; font-size:16px; padding:0; line-height:1;">&times;</button>
+        </div>
+
+        <!-- Track Info -->
+        <div style="margin-bottom: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+          <span id="jarvis-audio-title"
+            style="color:#ffffff; font-size: 14px; font-weight: bold; text-shadow: 0 0 5px rgba(255,255,255,0.3);">Track
+            Name</span>
+        </div>
+
+        <!-- Controls -->
+        <div style="display:flex; align-items: center; gap: 10px;">
+          <button id="jarvis-audio-playbtn"
+            style="background:rgba(0, 210, 255, 0.1); border: 1px solid rgba(0, 210, 255, 0.4); border-radius: 50%; color: #00d2ff; width: 36px; height: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 0 10px rgba(0, 210, 255, 0.2); transition: all 0.2s;">▶</button>
+
+          <div style="flex: 1; display:flex; flex-direction:column; gap:4px;">
+            <input type="range" id="jarvis-audio-progress" min="0" max="100" value="0"
+              style="width: 100%; height: 4px; border-radius: 2px; -webkit-appearance: none; background: rgba(0, 210, 255, 0.2); outline: none;">
+            <div style="display:flex; justify-content: flex-end;">
+              <span id="jarvis-audio-time" style="color:rgba(0, 210, 255, 0.7); font-size: 10px;">0:00</span>
+            </div>
+          </div>
+        </div>
+
+        <audio id="jarvis-audio" style="display:none;"></audio>
+      </div>
+      <script src="./assets/js/weekly-banner.js"></script>
+      <!-- ═══ HAFTANIN ŞARKISI PANOSU BİTİŞİ ═══ -->
+
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">Tümü</button>
+        <button class="filter-btn" data-filter="game">🎮 Oyunlar</button>
+        <button class="filter-btn" data-filter="app">📱 Uygulamalar</button>
+        <button class="filter-btn" data-filter="force">⚠️ Zorunlu Güncelleme</button>
+      </div>
+      <div class="stats-bar">
+        <div class="stat"><span class="stat-num" id="s-total">—</span>
+          <div class="stat-label">Toplam Uygulama</div>
+        </div>
+        <div class="stat"><span class="stat-num" id="s-game">—</span>
+          <div class="stat-label">Oyun</div>
+        </div>
+        <div class="stat"><span class="stat-num" id="s-app">—</span>
+          <div class="stat-label">Uygulama</div>
+        </div>
+        <div class="stat"><span class="stat-num" id="s-force">—</span>
+          <div class="stat-label">Zorunlu Güncelleme</div>
+        </div>
+      </div>
+      <div class="section-title">Uygulamalar & Oyunlar</div>
+      <div class="app-grid" id="app-grid"></div>
+      <div class="api-box">
+        <h3>🔌 Versiyon Kontrol API</h3>
+        <p>Godot oyunlarında bu URL'yi kullan — güncel sürüm bilgisini JSON olarak döner.</p>
+        <div class="api-url-row">
+          <code id="api-url-text">—</code>
+          <button class="copy-btn" id="copy-api-btn">Kopyala</button>
+        </div>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="contact-box">
+        <h3>📬 İletişim</h3>
+        <p>Öneri, geri bildirim veya hata bildirimi için aşağıdaki formu doldur!</p>
+        <div id="contact-login-note"
+          style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px 20px;text-align:center;color:var(--muted);font-size:0.88rem;display:none">
+          Mesaj göndermek için <button class="open-auth-btn"
+            style="background:none;border:none;color:var(--accent);cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.88rem;font-weight:600">giriş
+            yap</button> veya hesap oluştur.
+        </div>
+        <div id="contact-form-inner">
+          <div class="contact-grid">
+            <div class="contact-field full"><label>Ad Soyad</label><input type="text" id="c-name"
+                placeholder="Adın Soyadın" /></div>
+            <div class="contact-field full"><label>Konu</label>
+              <select id="c-subject">
+                <option value="suggest">💡 Öneri</option>
+                <option value="bug">🐛 Hata Bildirimi</option>
+                <option value="song">🎵 Yeni Şarkı İsteği</option>
+                <option value="general">💬 Genel</option>
+              </select>
+            </div>
+            <div class="contact-field full"><label>Mesaj</label><textarea id="c-message"
+                placeholder="Mesajını yaz..."></textarea></div>
+          </div>
+          <button class="contact-send-btn" id="contact-btn">📨 Gönder</button>
+          <div class="contact-success" id="contact-success">✅ Mesajın iletildi! En kısa sürede dönüş yapacağım.</div>
+        </div>
+      </div>
+    </div>
+    <footer>DevStore — Kişisel uygulama mağazası. Veriler <code>versions.json</code> dosyasından okunur.</footer>
+  </div>
+
+  <!-- PROFİL SAYFASI -->
+  <div id="profile-page">
+    <div class="detail-nav">
+      <div class="detail-nav-inner">
+        <button class="back-btn">← Geri</button>
+        <span class="detail-nav-title">Profilim</span>
+      </div>
+    </div>
+    <div class="profile-wrap">
+      <div class="profile-avatar">👤</div>
+      <div class="profile-email" id="profile-email-display"></div>
+      <div class="profile-since" id="profile-since"></div>
+      <div class="profile-card">
+        <h3>📋 Hesap Bilgileri</h3>
+        <div class="profile-field">
+          <label>Takma Ad (Yorumlarda Görünür)</label>
+          <div style="display:flex; gap:10px;">
+            <input type="text" id="profile-nickname-input" placeholder="Havalı bir isim seç..." style="flex:1; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:12px 14px; color:var(--text); font-family:DM Sans,sans-serif; font-size:0.9rem; outline:none;" />
+            <button class="profile-save-btn" id="nick-save-btn" style="width:auto; padding:0 20px;">Kaydet</button>
+          </div>
+        </div>
+        <div class="profile-field"><label>E-posta Adresi</label><input type="email" id="profile-email-input" disabled />
+        </div>
+        <div style="font-size:0.78rem;color:var(--muted)">E-posta adresi değiştirilemez.</div>
+      </div>
+      <div class="profile-card">
+        <h3>🔒 Şifre Değiştir</h3>
+        <p style="color:var(--muted);font-size:0.86rem;margin-bottom:16px">E-posta adresine şifre sıfırlama bağlantısı
+          gönderilecek.</p>
+        <div style="display:flex;align-items:center;gap:12px">
+          <button class="profile-save-btn" id="pass-reset-btn">📧 Sıfırlama Maili
+            Gönder</button>
+          <span class="profile-msg" id="pass-msg"></span>
+        </div>
+      </div>
+      <div class="profile-card profile-danger">
+        <h3>⚠️ Oturum</h3>
+        <p style="color:var(--muted);font-size:0.86rem;margin-bottom:16px">Tüm cihazlardan çıkış yapar.</p>
+        <button class="signout-btn" id="signout-btn">🚪 Çıkış Yap</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GELİŞTİRİCİ PANELİ -->
+  <div id="dev-page">
+    <div class="detail-nav">
+      <div class="detail-nav-inner">
+        <button class="back-btn">← Geri</button>
+        <span class="detail-nav-title">🧑‍💻 Geliştirici Paneli</span>
+      </div>
+    </div>
+    <div class="dev-panel-wrap">
+
+      <!-- Karşılama -->
+      <div style="margin-bottom:28px">
+        <div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:6px">
+          Merhaba, <span id="dev-welcome-name" style="background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent"></span> 👋
+        </div>
+        <div style="color:var(--muted);font-size:0.9rem">Uygulamanın görünümünü buradan yönetebilirsin. İndirme linki yalnızca admin tarafından değiştirilebilir.</div>
+      </div>
+
+      <!-- Uygulama seçici (birden fazla uygulaması olabilir ileride) -->
+      <div id="dev-app-selector" style="margin-bottom:24px;display:none">
+        <div class="dev-section-title">Uygulaman</div>
+        <select id="dev-app-select" style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;width:100%;cursor:pointer">
+        </select>
+      </div>
+
+      <!-- Düzenleme formu -->
+      <div id="dev-edit-form" style="display:none">
+
+        <!-- Kilitli alanlar (sadece görüntüleme) -->
+        <div class="dev-section-title">🔒 Admin Tarafından Yönetilir</div>
+        <div class="dev-card">
+          <div class="dev-locked-badge">🔒 Salt Okunur</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="dev-field">
+              <label>İndirme Linki</label>
+              <input type="text" id="dev-dl-url-display" disabled placeholder="Admin tarafından belirlenir">
+            </div>
+            <div class="dev-field">
+              <label>Uygulama ID</label>
+              <input type="text" id="dev-app-id-display" disabled>
+            </div>
+          </div>
+        </div>
+
+        <!-- Etiketler -->
+        <div class="dev-section-title">🏷️ Etiketler</div>
+        <div class="dev-card">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+            <label style="display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:0.85rem;transition:all 0.2s" id="dev-tag-label-game">
+              <input type="checkbox" id="dev-tag-game" style="accent-color:var(--accent)"> 🎮 Oyun
+            </label>
+            <label style="display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:0.85rem;transition:all 0.2s" id="dev-tag-label-app">
+              <input type="checkbox" id="dev-tag-app" style="accent-color:var(--accent)"> 📱 Uygulama
+            </label>
+            <label style="display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:0.85rem;transition:all 0.2s" id="dev-tag-label-windows">
+              <input type="checkbox" id="dev-tag-windows" style="accent-color:#4da6ff"> 🖥️ Sadece Windows
+            </label>
+            <label style="display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:0.85rem;transition:all 0.2s" id="dev-tag-label-force">
+              <input type="checkbox" id="dev-tag-force" style="accent-color:var(--accent2)"> ⚠️ Zorunlu Güncelleme
+            </label>
+            <label style="display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:0.85rem;transition:all 0.2s" id="dev-tag-label-guestsafe">
+              <input type="checkbox" id="dev-tag-guestsafe" style="accent-color:#3ddc97"> 🔓 Oturumsuz
+            </label>
+            <label style="display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid rgba(240,185,11,0.25);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:0.85rem;transition:all 0.2s" id="dev-tag-label-vip">
+              <input type="checkbox" id="dev-tag-vip" style="accent-color:#f0b90b"> 👑 VIP Özel
+            </label>
+          </div>
+          <div style="font-size:0.75rem;color:var(--muted)">📱/🎮 kategorilerinden yalnızca birini seç. Diğer etiketler opsiyonel.</div>
+        </div>
+
+        <!-- Düzenlenebilir alanlar -->
+        <div class="dev-section-title">✏️ Düzenleyebileceklerin</div>
+        <div class="dev-card">
+          <div class="dev-field">
+            <label>Uygulama Adı</label>
+            <input type="text" id="dev-name" placeholder="Uygulamanın adı">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="dev-field">
+              <label>İkon (Emoji veya URL)</label>
+              <input type="text" id="dev-icon" placeholder="örn. 🎮">
+            </div>
+            <div class="dev-field">
+              <label>Versiyon</label>
+              <input type="text" id="dev-version" placeholder="örn. 1.0.0">
+            </div>
+          </div>
+          <div class="dev-field">
+            <label>Son Güncelleme Notu (Kart'ta görünür)</label>
+            <input type="text" id="dev-changelog" placeholder="Bu sürümde neler değişti?">
+          </div>
+          <div class="dev-field">
+            <label>Dosya Boyutu <span style="opacity:0.5;font-weight:400">(örn. 142 MB)</span></label>
+            <input type="text" id="dev-filesize" placeholder="örn. 142 MB">
+          </div>
+          <div class="dev-field">
+            <label>Uygulama Açıklaması</label>
+            <textarea id="dev-description" rows="5" placeholder="Uygulamanı anlat..."></textarea>
+          </div>
+          <div class="dev-field">
+            <label>Ekran Görüntüsü URL'leri (her satıra bir tane)</label>
+            <textarea id="dev-screenshots" rows="4" placeholder="https://...&#10;https://..."></textarea>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:8px">
+            <button class="dev-save-btn" id="dev-save-btn">💾 Kaydet</button>
+            <span id="dev-save-status" style="font-size:0.83rem"></span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Uygulama yok mesajı -->
+      <div id="dev-no-app" style="display:none;text-align:center;padding:60px 24px;color:var(--muted)">
+        <div style="font-size:3rem;margin-bottom:16px">📭</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:8px">Henüz uygulamanız yok</div>
+        <div style="font-size:0.88rem">Admin sana uygulama atadığında burada görünecek.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ADMİN SAYFASI -->
+  <div id="admin-page">
+    <div class="detail-nav">
+      <div class="detail-nav-inner">
+        <button class="back-btn">← Geri</button>
+        <span class="detail-nav-title">🛡️ Admin Paneli</span>
+      </div>
+    </div>
+    <div class="admin-wrap">
+      <div
+        style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px">
+        <div>
+          <div class="admin-title">Admin <span>Paneli</span></div>
+          <div style="color:var(--muted);font-size:0.85rem;margin-top:4px">📧 geceninhakimistudio@gmail.com</div>
+        </div>
+        <button id="reset-system-btn"
+          style="background:rgba(124,92,252,0.1);color:var(--accent);border:1px solid var(--accent);border-radius:10px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s">🔄
+          Tüm Sistemi Sıfırla (Arındır)</button>
+      </div>
+      <div class="admin-stats-row">
+        <div class="admin-stat"><span class="admin-stat-val" id="a-total-users">—</span>
+          <div class="admin-stat-label">Toplam Kullanıcı</div>
+        </div>
+        <div class="admin-stat"><span class="admin-stat-val" id="a-online-users" style="color:var(--green)">—</span>
+          <div class="admin-stat-label">Şu An Online</div>
+        </div>
+        <div class="admin-stat"><span class="admin-stat-val" id="a-total-msgs">—</span>
+          <div class="admin-stat-label">Toplam Mesaj</div>
+        </div>
+      </div>
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="dashboard"><i class="fas fa-chart-line"></i>
+          Dashboard</button>
+        <button class="admin-tab" data-tab="users"><i class="fas fa-users"></i>
+          Kullanıcılar</button>
+        <button class="admin-tab" data-tab="messages"><i class="fas fa-envelope"></i>
+          Mesajlar</button>
+        <button class="admin-tab" data-tab="notifications"><i class="fas fa-bell"></i> Bildirim
+          Gönder</button>
+        <button class="admin-tab" data-tab="deadaccounts"><i class="fas fa-ghost"></i> Ölü
+          Hesaplar</button>
+        <button class="admin-tab" data-tab="banned"><i class="fas fa-ban"></i> Banlılar</button>
+        <button class="admin-tab" data-tab="vip"><i class="fas fa-crown"></i> VIP</button>
+        <button class="admin-tab" data-tab="appmanager"><i class="fas fa-boxes"></i> Uygulamalar</button>
+        <button class="admin-tab" data-tab="developers"><i class="fas fa-code"></i> Developerlar</button>
+      </div>
+
+      <!-- Dashboard Content -->
+      <div id="admin-dashboard" class="admin-section active">
+        <div
+          style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:20px;margin-bottom:24px">
+          <div class="admin-card"
+            style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px">
+            <div style="font-weight:600;margin-bottom:16px;color:var(--text);display:flex;align-items:center;gap:8px">
+              <i class="fas fa-chart-pie" style="color:var(--accent)"></i> Uygulama Dağılımı
+            </div>
+            <div style="height:200px;display:flex;align-items:center;justify-content:center">
+              <canvas id="app-dist-chart"></canvas>
+            </div>
+          </div>
+          <div class="admin-card"
+            style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px">
+            <div style="font-weight:600;margin-bottom:16px;color:var(--text);display:flex;align-items:center;gap:8px">
+              <i class="fas fa-user-shield" style="color:var(--yellow)"></i> Hesap Durumları
+            </div>
+            <div style="height:200px;display:flex;align-items:center;justify-content:center">
+              <canvas id="status-dist-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-card"
+          style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px">
+          <div style="font-weight:600;margin-bottom:16px;color:var(--text);display:flex;align-items:center;gap:8px">
+            <i class="fas fa-stream" style="color:var(--green)"></i> Canlı Aktivite Akışı
+          </div>
+          <div id="admin-live-feed" style="max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:8px">
+            <div class="admin-empty" style="padding:20px">Aktivite bekleniyor...</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="admin-users" class="admin-section">
+        <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+          <div style="flex:1;min-width:200px;position:relative">
+            <i class="fas fa-search"
+              style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);z-index:2"></i>
+            <input type="text" id="admin-user-search" placeholder="E-posta veya ID ara..."
+              style="width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:12px;padding:12px 12px 12px 40px;color:var(--text);font-family:inherit;outline:none;transition:all 0.2s">
+          </div>
+          <select id="admin-app-filter"
+            style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;color:var(--text);outline:none;cursor:pointer">
+            <option value="all">Tüm Uygulamalar</option>
+            <option value="sportify">🎵 Sportify</option>
+            <option value="nexsus">⬡ Nexsus</option>
+            <option value="devstore">🌐 DevStore</option>
+          </select>
+          <button class="admin-refresh" id="admin-users-refresh">↻ Yenile</button>
+        </div>
+        <div class="user-list" id="user-list">
+          <div class="admin-empty">Yükleniyor...</div>
+        </div>
+      </div>
+      <div class="admin-section" id="admin-messages">
+        <button class="admin-refresh" id="admin-messages-refresh">↻ Yenile</button>
+        <div class="msg-list" id="msg-list">
+          <div class="admin-empty">Yükleniyor...</div>
+        </div>
+      </div>
+      <div class="admin-section" id="admin-notifications">
+        <div style="display:flex;flex-direction:column;gap:16px">
+
+          <!-- Tag seçici -->
+          <div>
+            <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:500">Bildirim Türü</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap" id="notif-tags">
+              <button class="notif-tag-btn active" data-tag="🆕 Yeni Uygulama">🆕 Yeni
+                Uygulama</button>
+              <button class="notif-tag-btn" data-tag="🔄 Yeni Güncelleme">🔄 Yeni
+                Güncelleme</button>
+              <button class="notif-tag-btn" data-tag="📣 Duyuru">📣 Duyuru</button>
+              <button class="notif-tag-btn" data-tag="🎁 Özel Teklif">🎁 Özel Teklif</button>
+              <button class="notif-tag-btn" data-tag="🔧 Bakım">🔧 Bakım</button>
+            </div>
+          </div>
+
+          <!-- Başlık -->
+          <div>
+            <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:500">Başlık</div>
+            <input type="text" id="notif-title" placeholder="Bildirim başlığı..."
+              style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box" />
+          </div>
+
+          <!-- İçerik -->
+          <div>
+            <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:500">İçerik</div>
+            <textarea id="notif-content" placeholder="Bildirim içeriği..." rows="4"
+              style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;resize:none;box-sizing:border-box"></textarea>
+          </div>
+
+          <!-- Alıcılar -->
+          <div>
+            <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:500">Alıcılar</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="notif-tag-btn active" id="rcpt-all">👥 Tüm
+                Kullanıcılar</button>
+              <button class="notif-tag-btn" id="rcpt-online">🟢 Sadece
+                Online</button>
+              <button class="notif-tag-btn" id="rcpt-select">☑️ Seç</button>
+            </div>
+            <div style="font-size:0.75rem;color:var(--muted);margin-top:6px" id="notif-rcpt-count">Yükleniyor...</div>
+            <div id="rcpt-user-list"
+              style="display:none;margin-top:12px;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:12px;max-height:220px;overflow-y:auto;">
+              <div style="font-size:0.75rem;color:var(--muted);margin-bottom:8px">Bildirim göndermek istediğin
+                kullanıcıları seç:</div>
+              <div id="rcpt-user-checkboxes" style="display:flex;flex-direction:column;gap:8px;"></div>
+            </div>
+          </div>
+
+          <!-- Gönder butonu -->
+          <div style="display:flex;align-items:center;gap:14px">
+            <button id="notif-send-btn"
+              style="background:linear-gradient(135deg,var(--accent),#9b7eff);color:#fff;border:none;border-radius:11px;padding:13px 32px;font-family:DM Sans,sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer;transition:all 0.2s">
+              📢 Bildirimi Gönder
+            </button>
+            <span id="notif-status" style="font-size:0.85rem"></span>
+          </div>
+
+          <!-- Geçmiş -->
+          <div>
+            <div style="font-size:0.78rem;color:var(--muted);margin-bottom:10px;font-weight:500;margin-top:8px">Gönderim
+              Geçmişi</div>
+            <div id="notif-history">
+              <div class="admin-empty">Henüz bildirim gönderilmedi.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-section" id="admin-deadaccounts">
+        <div
+          style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px">💀 Ölü Hesap
+              Yönetimi</div>
+            <div style="font-size:0.8rem;color:var(--muted)">7 gündür aktif olmayan hesaplar. Cron her gece 02:00 UTC'de
+              çalışır.</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="admin-refresh" style="margin:0" id="dead-refresh-btn">↻ Yenile</button>
+            <button id="run-cleaner-btn"
+              style="background:linear-gradient(135deg,var(--accent2),#ff6b9d);color:#fff;border:none;border-radius:10px;padding:8px 18px;font-family:'DM Sans',sans-serif;font-size:0.83rem;font-weight:600;cursor:pointer;transition:all 0.2s">▶
+              Şimdi Çalıştır</button>
+          </div>
+        </div>
+        <div
+          style="display:flex;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px">
+          <div style="flex:1;background:var(--surface);padding:16px;text-align:center">
+            <span
+              style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;display:block;color:var(--accent2)"
+              id="da-warn-count">—</span>
+            <div style="font-size:0.72rem;color:var(--muted);margin-top:3px">Uyarı Bekleyen</div>
+          </div>
+          <div style="flex:1;background:var(--surface);padding:16px;text-align:center">
+            <span
+              style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;display:block;color:var(--yellow)"
+              id="da-warned-count">—</span>
+            <div style="font-size:0.72rem;color:var(--muted);margin-top:3px">Uyarıldı</div>
+          </div>
+          <div style="flex:1;background:var(--surface);padding:16px;text-align:center">
+            <span
+              style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;display:block;color:var(--green)"
+              id="da-safe-count">—</span>
+            <div style="font-size:0.72rem;color:var(--muted);margin-top:3px">Aktif</div>
+          </div>
+        </div>
+        <div id="da-last-run"
+          style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:20px;font-size:0.83rem;color:var(--muted);display:none">
+          <span style="color:var(--green);font-weight:600">✅ Son çalışma:</span> <span id="da-last-run-text"></span>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+          <button class="notif-tag-btn active" id="da-filter-all" data-filter="all">Tümü</button>
+          <button class="notif-tag-btn" id="da-filter-warn" data-filter="warn">⚠️ Uyarı
+            Bekleyen</button>
+          <button class="notif-tag-btn" id="da-filter-warned" data-filter="warned">📧
+            Uyarıldı</button>
+        </div>
+        <div id="dead-account-list">
+          <div class="admin-empty">Yükleniyor...</div>
+        </div>
+      </div>
+
+      <div class="admin-section" id="admin-banned">
+        <div
+          style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px">🚫 Banlı
+              Kullanıcılar</div>
+            <div style="font-size:0.8rem;color:var(--muted)">Kalıcı olarak yasaklanmış hesaplar. Yasağı kaldırabilirsin.
+            </div>
+          </div>
+          <button class="admin-refresh" style="margin:0" id="banned-refresh-btn">↻ Yenile</button>
+        </div>
+        <div id="banned-user-list">
+          <div class="admin-empty">Yükleniyor...</div>
+        </div>
+      </div>
+
+      <!-- ═══ VIP YÖNETİMİ ═══ -->
+      <div class="admin-section" id="admin-vip">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px">👑 VIP Yönetimi</div>
+            <div style="font-size:0.8rem;color:var(--muted)">VIP üyeleri ekle, çıkar ve yönet.</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="admin-refresh" style="margin:0" id="vip-refresh-btn">↻ Yenile</button>
+            <button id="open-add-vip-btn" style="background:linear-gradient(135deg,#f0b90b,#e69a00);color:#fff;border:none;border-radius:11px;padding:10px 22px;font-family:DM Sans,sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer">➕ VIP Ekle</button>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px">
+          <div style="flex:1;background:var(--surface);padding:14px;text-align:center">
+            <span style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;display:block;color:#f0b90b" id="vip-total-count">—</span>
+            <span style="font-size:0.7rem;color:var(--muted);margin-top:2px;display:block">Toplam VIP</span>
+          </div>
+        </div>
+
+        <div id="vip-member-list">
+          <div class="admin-empty">Yükleniyor...</div>
+        </div>
+      </div>
+
+      <!-- ═══ UYGULAMA YÖNETİCİSİ ═══ -->
+      <div class="admin-section" id="admin-appmanager">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px">📦 Uygulama Yöneticisi</div>
+            <div style="font-size:0.8rem;color:var(--muted)">Tag, versiyon, changelog ve daha fazlasını buradan yönet.</div>
+          </div>
+          <button class="admin-refresh" style="margin:0" id="appmanager-refresh-btn">↻ Yenile</button>
+        </div>
+        <div id="app-manager-list" style="display:flex;flex-direction:column;gap:14px">
+          <div class="admin-empty">Yükleniyor...</div>
+        </div>
+      </div>
+
+      <!-- UYGULAMA DÜZENLEME MODAL -->
+
+      <!-- ═══ DEVELOPER YÖNETİMİ ═══ -->
+      <div class="admin-section" id="admin-developers">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px">🧑‍💻 Developer Yönetimi</div>
+            <div style="font-size:0.8rem;color:var(--muted)">Kullanıcılara developer yetkisi ver, uygulama oluştur ve ata.</div>
+          </div>
+          <button id="open-create-dev-btn" style="background:linear-gradient(135deg,var(--accent),#9b7eff);color:#fff;border:none;border-radius:11px;padding:10px 22px;font-family:DM Sans,sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer">➕ Developer Oluştur</button>
+        </div>
+
+        <!-- Mevcut developerlar listesi -->
+        <div id="dev-list" style="display:flex;flex-direction:column;gap:12px">
+          <div class="admin-empty">Yükleniyor...</div>
+        </div>
+      </div>
+
+      <!-- DEVELOPER OLUŞTUR MODAL -->
+      <div id="create-dev-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1001;align-items:center;justify-content:center;backdrop-filter:blur(8px)">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:32px;width:100%;max-width:560px;margin:20px;max-height:90vh;overflow-y:auto">
+          <div style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;margin-bottom:4px">➕ Developer Oluştur</div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:24px">DevStore hesabı olan bir kullanıcıya developer yetkisi ver ve uygulama ata.</div>
+
+          <!-- Kullanıcı seç -->
+          <div style="margin-bottom:16px">
+            <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Kullanıcı E-postası</div>
+            <div style="position:relative">
+              <input type="text" id="dev-user-search" placeholder="E-posta ara..." autocomplete="off"
+                style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;transition:border-color 0.2s"
+                >
+              <div id="dev-user-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-top:4px;max-height:180px;overflow-y:auto;z-index:10"></div>
+            </div>
+            <div id="dev-selected-user" style="display:none;margin-top:8px;background:rgba(124,92,252,0.1);border:1px solid rgba(124,92,252,0.3);border-radius:8px;padding:8px 14px;font-size:0.85rem;color:var(--accent)"></div>
+          </div>
+
+          <!-- Uygulama bilgileri -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <div>
+              <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Uygulama ID <span style="opacity:0.5">(küçük harf, boşluksuz)</span></div>
+              <input type="text" id="new-app-id" placeholder="örn. mygame"
+                style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box">
+            </div>
+            <div>
+              <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Uygulama Adı</div>
+              <input type="text" id="new-app-name" placeholder="örn. My Awesome Game"
+                style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box">
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <div>
+              <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Kategori</div>
+              <select id="new-app-category" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;cursor:pointer">
+                <option value="app">📱 Uygulama</option>
+                <option value="game">🎮 Oyun</option>
+              </select>
+            </div>
+            <div>
+              <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Versiyon</div>
+              <input type="text" id="new-app-version" placeholder="örn. 1.0.0"
+                style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box">
+            </div>
+          </div>
+
+          <div style="margin-bottom:16px">
+            <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">İndirme Linki <span style="color:var(--accent2)">*</span></div>
+            <input type="text" id="new-app-dlurl" placeholder="https://github.com/..."
+              style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box">
+          </div>
+
+          <div style="margin-bottom:24px">
+            <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Developer Adı (Kart'ta görünür)</div>
+            <input type="text" id="new-dev-name" placeholder="örn. cooldev123"
+              style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box">
+          </div>
+
+          <div style="display:flex;align-items:center;gap:12px">
+            <button id="create-dev-btn"
+              style="background:linear-gradient(135deg,var(--accent),#9b7eff);color:#fff;border:none;border-radius:11px;padding:12px 32px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s">✅ Oluştur & Yetki Ver</button>
+            <button id="close-create-dev-btn" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:11px;padding:12px 20px;font-family:DM Sans,sans-serif;font-size:0.9rem;cursor:pointer">İptal</button>
+            <span id="create-dev-status" style="font-size:0.83rem"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIP EKLEME MODAL -->
+      <div id="add-vip-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1001;align-items:center;justify-content:center;backdrop-filter:blur(8px)">
+        <div style="background:var(--surface);border:1px solid rgba(240,185,11,0.3);border-radius:24px;padding:32px;width:100%;max-width:520px;margin:20px;max-height:90vh;overflow-y:auto">
+          <div style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;margin-bottom:4px">👑 VIP Üye Ekle</div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:24px">Kullanıcıya VIP statüsü ver. VIP'ler özel içeriklere erişebilir.</div>
+
+          <div style="margin-bottom:16px">
+            <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Kullanıcı E-postası</div>
+            <div style="position:relative">
+              <input type="text" id="vip-user-search" placeholder="E-posta ara..." autocomplete="off"
+                style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box">
+              <div id="vip-user-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-top:4px;max-height:180px;overflow-y:auto;z-index:10"></div>
+            </div>
+            <div id="vip-selected-user" style="display:none;margin-top:8px;background:rgba(240,185,11,0.1);border:1px solid rgba(240,185,11,0.3);border-radius:8px;padding:8px 14px;font-size:0.85rem;color:#f0b90b"></div>
+          </div>
+
+          <div style="margin-bottom:20px">
+            <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Sebep <span style="opacity:0.5">(opsiyonel)</span></div>
+            <input type="text" id="vip-reason" placeholder="örn. Sportify uygulamasını yayınladı"
+              style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box">
+          </div>
+
+          <div style="display:flex;align-items:center;gap:12px">
+            <button id="add-vip-btn"
+              style="background:linear-gradient(135deg,#f0b90b,#e69a00);color:#fff;border:none;border-radius:11px;padding:12px 32px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s">👑 VIP Yap</button>
+            <button id="close-add-vip-btn" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:11px;padding:12px 20px;font-family:DM Sans,sans-serif;font-size:0.9rem;cursor:pointer">İptal</button>
+            <span id="add-vip-status" style="font-size:0.83rem"></span>
+          </div>
+        </div>
+      </div>
+
+      <div id="app-edit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(8px)">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:32px;width:100%;max-width:560px;margin:20px;max-height:90vh;overflow-y:auto;position:relative">
+          <div style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;margin-bottom:4px">✏️ Uygulamayı Düzenle</div>
+          <div id="app-edit-id-display" style="font-size:0.78rem;color:var(--muted);margin-bottom:24px;font-family:monospace"></div>
+
+          <!-- TAGS -->
+          <div style="margin-bottom:20px">
+            <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:10px">Etiketler</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <label style="display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:0.85rem;transition:all 0.2s" id="tag-label-game">
+                <input type="checkbox" id="tag-game" style="accent-color:var(--accent)"> 🎮 Oyun
+              </label>
+              <label style="display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:0.85rem;transition:all 0.2s" id="tag-label-app">
+                <input type="checkbox" id="tag-app" style="accent-color:var(--accent)"> 📱 Uygulama
+              </label>
+              <label style="display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:0.85rem;transition:all 0.2s" id="tag-label-windows">
+                <input type="checkbox" id="tag-windows" style="accent-color:#4da6ff"> 🖥️ Sadece Windows
+              </label>
+              <label style="display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:0.85rem;transition:all 0.2s" id="tag-label-force">
+                <input type="checkbox" id="tag-force" style="accent-color:var(--accent2)"> ⚠️ Zorunlu Güncelleme
+              </label>
+              <label style="display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:0.85rem;transition:all 0.2s" id="tag-label-guestsafe">
+                <input type="checkbox" id="tag-guestsafe" style="accent-color:#3ddc97"> 🔓 Oturumsuz
+              </label>
+              <label style="display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid rgba(240,185,11,0.25);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:0.85rem;transition:all 0.2s" id="tag-label-vip">
+                <input type="checkbox" id="tag-vip" style="accent-color:#f0b90b"> 👑 VIP Özel
+              </label>
+            </div>
+          </div>
+
+          <!-- VERSİYON & MIN VERSİYON -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+            <div>
+              <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Versiyon</div>
+              <input type="text" id="edit-version" placeholder="örn. 2.3.0" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+            </div>
+            <div>
+              <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Min. Versiyon</div>
+              <input type="text" id="edit-min-version" placeholder="örn. 2.0.0" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+            </div>
+          </div>
+
+          <!-- GELİŞTİRİCİ -->
+          <div style="margin-bottom:20px">
+            <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Geliştirici</div>
+            <input type="text" id="edit-developer" placeholder="örn. judy658" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+
+          <!-- DOSYA BOYUTU -->
+          <div style="margin-bottom:20px">
+            <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Dosya Boyutu <span style="opacity:0.5;font-weight:400">(boş bırakırsan otomatik tespit eder)</span></div>
+            <input type="text" id="edit-filesize" placeholder="örn. 142 MB" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+
+          <!-- SON GÜNCELLEME NOTU (CHANGELOG) -->
+          <div style="margin-bottom:20px">
+            <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Son Güncelleme Notu (Kart'ta gösterilir)</div>
+            <textarea id="edit-changelog" rows="2" placeholder="Bu sürümde neler değişti?" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;resize:none;box-sizing:border-box;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+          </div>
+
+          <!-- AÇIKLAMA -->
+          <div style="margin-bottom:20px">
+            <div style="font-size:0.78rem;color:var(--muted);font-weight:500;margin-bottom:6px">Uygulama Açıklaması</div>
+            <textarea id="edit-description" rows="5" placeholder="Uygulama hakkında detaylı açıklama..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:0.9rem;outline:none;resize:vertical;box-sizing:border-box;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+          </div>
+
+          <!-- KAYDET -->
+          <div style="display:flex;align-items:center;gap:12px;margin-top:8px">
+            <button id="app-edit-save-btn" style="background:linear-gradient(135deg,var(--accent),#9b7eff);color:#fff;border:none;border-radius:11px;padding:12px 32px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s">💾 Kaydet</button>
+            <button id="app-edit-cancel-btn" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:11px;padding:12px 20px;font-family:DM Sans,sans-serif;font-size:0.9rem;cursor:pointer">İptal</button>
+            <span id="app-edit-status" style="font-size:0.83rem"></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- USER DETAIL MODAL -->
+  <div class="admin-user-modal" id="admin-user-modal">
+    <div class="admin-user-modal-content">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px">
+        <div id="m-user-avatar" class="user-avatar" style="width:60px;height:60px;font-size:1.5rem">?</div>
+        <div>
+          <div id="m-user-email" style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800"></div>
+          <div id="m-user-id" style="font-size:0.75rem;color:var(--muted);font-family:monospace;margin-top:4px"></div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px">
+        <div class="admin-card" style="padding:14px;background:var(--surface2);text-align:center">
+          <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">TAKMA AD</div>
+          <div id="m-user-nickname" style="font-size:0.85rem;font-weight:700;color:var(--accent)"></div>
+        </div>
+        <div class="admin-card" style="padding:14px;background:var(--surface2);text-align:center">
+          <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">DURUM</div>
+          <div id="m-user-status" style="font-size:0.85rem;font-weight:700"></div>
+        </div>
+        <div class="admin-card" style="padding:14px;background:var(--surface2);text-align:center">
+          <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">UYGULAMA</div>
+          <div id="m-user-app" style="font-size:0.85rem;font-weight:700"></div>
+        </div>
+        <div class="admin-card" style="padding:14px;background:var(--surface2);text-align:center;grid-column:span 2">
+          <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">SON GÖRÜLME</div>
+          <div id="m-user-lastseen" style="font-size:0.85rem;font-weight:700"></div>
+        </div>
+        <div class="admin-card" style="padding:14px;background:var(--surface2);text-align:center">
+          <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">İLK CİHAZ</div>
+          <div id="m-user-firstdevice" style="font-size:0.8rem;font-weight:600"></div>
+        </div>
+        <div class="admin-card" style="padding:14px;background:var(--surface2);text-align:center">
+          <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">SON CİHAZ</div>
+          <div id="m-user-lastdevice" style="font-size:0.8rem;font-weight:600"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button id="m-ban-btn"
+          style="flex:1;padding:12px;border:none;border-radius:12px;font-weight:600;cursor:pointer;background:rgba(252,92,125,0.1);color:var(--accent2);border:1px solid rgba(252,92,125,0.2)"></button>
+        <button id="m-dead-btn"
+          style="flex:1;padding:12px;border:none;border-radius:12px;font-weight:600;cursor:pointer;background:rgba(255,209,102,0.1);color:var(--yellow);border:1px solid rgba(255,209,102,0.2)"></button>
+      </div>
+      <button id="admin-user-close-btn"
+        style="width:100%;margin-top:16px;background:none;border:1px solid var(--border);color:var(--muted);padding:10px;border-radius:12px;cursor:pointer">Kapat</button>
+    </div>
+  </div>
+
+  <!-- DETAY SAYFASI -->
+  <div id="detail-page">
+    <div class="detail-nav">
+      <div class="detail-nav-inner">
+        <button class="back-btn">← Geri</button>
+        <span class="detail-nav-title" id="d-nav-title"></span>
+      </div>
+    </div>
+    <div class="detail-wrap">
+      <div class="detail-top">
+        <div class="detail-big-icon" id="d-icon"></div>
+        <div class="detail-info">
+          <div class="detail-name" id="d-name"></div>
+          <div class="detail-developer" id="d-dev"></div>
+          <div class="detail-badges" id="d-badges"></div>
+          <a class="download-main-btn" id="d-dl-btn" href="#" target="_blank" rel="noopener noreferrer">⬇ APK İndir</a>
+        </div>
+      </div>
+      <div class="detail-stats">
+        <div class="detail-stat"><span class="detail-stat-val" id="d-ver">—</span>
+          <div class="detail-stat-label">Versiyon</div>
+        </div>
+        <div class="detail-stat"><span class="detail-stat-val" id="d-minver">—</span>
+          <div class="detail-stat-label">Min. Versiyon</div>
+        </div>
+        <div class="detail-stat"><span class="detail-stat-val" id="d-avg-rating" style="color:var(--yellow)">—</span>
+          <div class="detail-stat-label">Ortalama Puan</div>
+        </div>
+        <div class="detail-stat"><span class="detail-stat-val" id="d-dl-count" style="color:var(--green)">—</span>
+          <div class="detail-stat-label">İndirme</div>
+        </div>
+        <div class="detail-stat"><span class="detail-stat-val" id="d-category">—</span>
+          <div class="detail-stat-label">Kategori</div>
+        </div>
+        <div class="detail-stat"><span class="detail-stat-val" id="d-filesize">—</span>
+          <div class="detail-stat-label">Dosya Boyutu</div>
+        </div>
+      </div>
+      <div class="detail-section">
+        <p class="ss-title">📸 Ekran Görüntüleri</p>
+        <div class="screenshots-row" id="d-screenshots"></div>
+      </div>
+      <div class="detail-section">
+        <h3>📝 Uygulama Hakkında</h3>
+        <div class="desc-text" id="d-desc"></div>
+      </div>
+      <div class="detail-section">
+        <h3>📋 Güncelleme Geçmişi</h3>
+        <div id="d-changelog"></div>
+      </div>
+      <div class="comments-section">
+        <h3>💬 Yorumlar <span id="comment-count" style="color:var(--muted);font-size:0.85rem;font-weight:400"></span>
+        </h3>
+        <div id="comment-login-note" class="comment-login-note" style="display:none">Yorum yapmak için <button
+            class="open-auth-btn">giriş yap</button> veya hesap oluştur.</div>
+        <div id="comment-form" style="display:none; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:24px; margin-bottom:30px; box-shadow:0 8px 32px rgba(0,0,0,0.15); backdrop-filter:blur(8px);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <span style="font-weight:800; font-family:Syne,sans-serif; font-size:1.1rem; color:var(--text);">✍️ Deneyimini Paylaş</span>
+            <div id="stars-row" style="display:flex; gap:6px;">
+              <span class="star-select" data-rating="1" style="font-size:1.6rem; cursor:pointer; color:var(--muted); transition:all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">★</span>
+              <span class="star-select" data-rating="2" style="font-size:1.6rem; cursor:pointer; color:var(--muted); transition:all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">★</span>
+              <span class="star-select" data-rating="3" style="font-size:1.6rem; cursor:pointer; color:var(--muted); transition:all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">★</span>
+              <span class="star-select" data-rating="4" style="font-size:1.6rem; cursor:pointer; color:var(--muted); transition:all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">★</span>
+              <span class="star-select" data-rating="5" style="font-size:1.6rem; cursor:pointer; color:var(--muted); transition:all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">★</span>
+            </div>
+            <input type="hidden" id="comment-rating" value="5">
+          </div>
+          <textarea id="comment-input" placeholder="Bu uygulama hakkında ne düşünüyorsun? Görüşlerin topluluk için çok değerli..." maxlength="500" 
+            style="width:100%; min-height:110px; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.1); border-radius:14px; color:white; padding:18px; font-family:inherit; font-size:0.95rem; outline:none; resize:none; transition:all 0.3s; margin-bottom:15px; box-sizing:border-box;"></textarea>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span id="comment-char" style="font-size:0.75rem; color:var(--muted); font-weight:500;">0 / 500 Karakter</span>
+            <button class="comment-submit" id="comment-submit-btn" 
+              style="background:linear-gradient(135deg, var(--accent), var(--accent2)); color:white; border:none; padding:12px 28px; border-radius:12px; font-weight:700; cursor:pointer; font-family:inherit; font-size:0.9rem; transition:all 0.3s; box-shadow:0 10px 20px rgba(124, 92, 252, 0.3);">🚀 Yorumu Yayınla</button>
+          </div>
+        </div>
+        <div id="already-commented-note" style="display:none; background:rgba(61, 220, 151, 0.05); border:1px solid rgba(61, 220, 151, 0.2); border-radius:20px; padding:24px; text-align:center; margin-bottom:30px; backdrop-filter:blur(8px);">
+          <div style="font-size:2rem; margin-bottom:10px;">❤️</div>
+          <div style="font-weight:800; font-family:Syne,sans-serif; font-size:1.1rem; color:var(--green); margin-bottom:5px;">Görüşlerin İçin Teşekkürler!</div>
+          <div style="font-size:0.9rem; color:var(--muted);">Bu uygulamaya zaten yorum yapmışsın. Topluluğumuza katkıda bulunduğun için mutluyuz!</div>
+        </div>
+        <div class="comment-list" id="comment-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIP INFO MODAL -->
+  <div class="vip-overlay" id="vip-overlay">
+    <div class="vip-box">
+      <button class="vip-close-btn" id="vip-close-btn">&times;</button>
+      <div class="vip-crown">👑</div>
+      <div class="vip-title">VIP Üyelik</div>
+      <div class="vip-subtitle">Özel içeriklere erişim ve erken deneyim fırsatı</div>
+
+      <div class="vip-info-card">
+        <div class="vip-info-icon">💎</div>
+        <div>
+          <div class="vip-info-title">VIP Nasıl Olunur?</div>
+          <p>VIP üyelik <strong>satın alınamaz</strong>. Sadece aşağıdaki durumlarda tarafımızca verilir:</p>
+          <ul class="vip-list">
+            <li>DevStore'da uygulama yayınlayan <strong>developerlar</strong></li>
+            <li>DevStore'a katkıda bulunmuş veya uzun süredir destek veren <strong>kullanıcılar</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="vip-info-card">
+        <div class="vip-info-icon">🚀</div>
+        <div>
+          <div class="vip-info-title">VIP Ayrıcalıkları</div>
+          <ul class="vip-list">
+            <li>👑 <strong>VIP</strong> rozeti profilinizde görünür</li>
+            <li>🔓 VIP özel uygulamalara ve içeriklere erişim</li>
+            <li>🧪 Henüz yayınlanmamış uygulamaları <strong>önceden deneyimleme</strong></li>
+            <li>⭐ Öncelikli destek ve geri bildirim kanalı</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="vip-footer-note">VIP statüsü admin tarafından manuel olarak atanır. Başvuru yapılamaz.</div>
+    </div>
+  </div>
+
+  <!-- AUTH MODAL -->
+  <div class="auth-overlay" id="auth-overlay">
+    <div class="auth-box">
+      <div class="auth-logo">⬡</div>
+      <div class="auth-title">DevStore</div>
+      <div class="auth-sub">Hesabına giriş yap veya yeni hesap oluştur</div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Giriş Yap</button>
+        <button class="auth-tab" data-tab="register">Kayıt Ol</button>
+      </div>
+      <div id="auth-login">
+        <div class="auth-field"><label>E-posta</label><input type="email" id="login-email"
+            placeholder="ornek@email.com" /></div>
+        <div class="auth-field"><label>Şifre</label><input type="password" id="login-pass" placeholder="••••••••" />
+        </div>
+        <button class="auth-submit" id="auth-login-btn">Giriş Yap</button>
+      </div>
+      <div id="auth-register" style="display:none">
+        <div id="reg-step1">
+          <div class="auth-field"><label>E-posta</label><input type="email" id="reg-email"
+              placeholder="ornek@email.com" /></div>
+          <div class="auth-field"><label>Şifre</label><input type="password" id="reg-pass"
+              placeholder="En az 6 karakter" /></div>
+          <div class="auth-field"><label>Şifre Tekrar</label><input type="password" id="reg-pass2"
+              placeholder="••••••••" /></div>
+          <button class="auth-submit" id="auth-register-btn">Kod Gönder 📧</button>
+        </div>
+        <div id="reg-step2" style="display:none">
+          <div style="text-align:center;margin-bottom:20px">
+            <div style="font-size:2rem;margin-bottom:8px">📧</div>
+            <div style="font-size:0.9rem;color:var(--text);font-weight:600">E-postanı kontrol et!</div>
+            <div style="font-size:0.82rem;color:var(--muted);margin-top:6px">6 haneli doğrulama kodu gönderildi</div>
+          </div>
+          <div class="auth-field"><label>Doğrulama Kodu</label><input type="text" id="reg-otp" placeholder="123456"
+              maxlength="8" style="text-align:center;font-size:1.4rem;letter-spacing:0.3em;font-weight:700" /></div>
+          <button class="auth-submit" id="auth-verify-btn">Hesabı Onayla ✓</button>
+          <div style="text-align:center;margin-top:12px"><button id="auth-back-btn"
+              style="background:none;border:none;color:var(--muted);font-size:0.82rem;cursor:pointer;font-family:DM Sans,sans-serif">←
+              Geri dön</button></div>
+        </div>
+      </div>
+      <div class="auth-msg" id="auth-msg"></div>
+    </div>
+  </div>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox">
+    <span class="lightbox-close" id="lightbox-close-btn">✕</span>
+    <img id="lightbox-img" src="" alt="" />
+  </div>
+  <script src="./assets/js/core.js"></script>
+  <script src="./assets/js/auth.js"></script>
+  <script src="./assets/js/admin.js"></script>
+  <script src="./assets/js/developer.js"></script>
+  <script src="./assets/js/apps.js"></script>
+  <script src="./assets/js/comments.js"></script>
+  <script src="./assets/js/detail-jarvis.js"></script>
+
+  <!-- J.A.R.V.I.S UI COMPONENTS -->
+  <div id="jarvis-trigger">
+    <div class="core"></div>
+  </div>
+
+  <div id="jarvis-bubble">
+    Kaptan, yeni bir güncelleme var mı? 🚀
+  </div>
+
+  <div id="jarvis-panel" class="jarvis-sidebar">
+    <div class="jarvis-header">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="jarvis-core-mini"></div>
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:#00d2ff">J.A.R.V.I.S</div>
+          <div style="font-size:0.65rem;color:rgba(0,210,255,0.6);text-transform:uppercase;letter-spacing:1px">Neural Link Active</div>
+        </div>
+      </div>
+      <button id="jarvis-close-btn" style="background:none;border:none;color:#00d2ff;cursor:pointer;font-size:1.4rem">&times;</button>
+    </div>
+    <div class="jarvis-chat" id="jarvis-chat">
+      <div class="jarvis-msg ai">Sisteme hoş geldin Kaptan. Tüm modüller aktif. Size nasıl yardımcı olabilirim?</div>
+    </div>
+    <div id="jarvis-typing" class="jarvis-typing" style="display:none">Düşünüyor...</div>
+    <div class="jarvis-input-area">
+      <button id="jarvis-mic-btn" class="jarvis-mic">🎤</button>
+      <input type="text" id="jarvis-input" class="jarvis-input" placeholder="Komut ver..." />
+      <button class="jarvis-send" id="jarvis-send-btn">⚡</button>
+    </div>
+  </div>
+
+</body>
+</html>
