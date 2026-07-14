@@ -60,6 +60,20 @@
       "history": [
         { "version": "V1.0.0", "note": "Toplu boyutlandırma (px/%), format dönüştürme (PNG/JPG/WebP/BMP), watermark ekleme, drag-drop desteği." }
       ]
+    },
+    "nexsus": {
+      "image": "./assets/media/nexsus_icon.png",
+      "name": "Nexsus",
+      "version": "1.0.0",
+      "min_version": "1.0.0",
+      "force_update": false,
+      "download_url": "https://huggingface.co/Judy658/nexsus/resolve/main/nexsus.zip",
+      "icon": "⬡",
+      "category": "app",
+      "changelog": "İlk sürüm yayınlandı. Nexsus - Gelişmiş görsel üretim aracı. Fooocus 2.5.5 tabanlı, mor/siyah tema, Türkçe dil desteği, Supabase ile kullanıcı girişi ve VIP yönetimi.",
+      "history": [
+        { "version": "V1.0.0", "note": "Fooocus 2.5.5 tabanlı ilk sürüm. Mor/siyah tema, Türkçe dil desteği, kullanıcı sözleşmesi, Supabase kimlik doğrulama, VIP üyelik sistemi, online durum takibi, model yöneticisi." }
+      ]
     }
   }
 }
