@@ -255,6 +255,7 @@
 
       const sportify = all.filter(u => u.current_app === 'sportify').length;
       const devstore = all.filter(u => u.current_app === 'devstore').length;
+      const nexsus = all.filter(u => u.current_app === 'nexsus').length;
       const banned = all.filter(u => u.is_banned).length;
       const dead = all.filter(u => u.is_dead).length;
       const active = all.filter(u => !u.is_banned && !u.is_dead).length;
@@ -271,8 +272,8 @@
         window.chart1 = new Chart(ctx1, {
           type: 'doughnut',
           data: {
-            labels: ['Sportify', 'DevStore'],
-            datasets: [{ data: [sportify, devstore], backgroundColor: ['#7c5cfc', '#fc5c7d'], borderWidth: 0, hoverOffset: 4 }]
+            labels: ['Sportify', 'DevStore', 'Nexsus'],
+            datasets: [{ data: [sportify, devstore, nexsus], backgroundColor: ['#7c5cfc', '#fc5c7d', '#8b3dff'], borderWidth: 0, hoverOffset: 4 }]
           },
           options: chartConfig
         });

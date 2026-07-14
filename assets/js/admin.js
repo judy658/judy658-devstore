@@ -337,7 +337,7 @@
       <div class="user-avatar">${u.email ? u.email[0].toUpperCase() : '?'}</div>
       <div class="user-info">
         <div class="user-email-text">${u.nickname || u.email}${verifiedBadge}${vipBadge}${isMe ? ' 👑' : ''}</div>
-        <div class="user-meta">${u.nickname ? u.email + ' · ' : ''}${isOnline ? '🟢 Şu an aktif' + (u.current_app ? ' · ' + (u.current_app === 'sportify' ? '🎵 Sportify' : '🌐 DevStore') : '') : '⚫ Son görülme: ' + _timeAgo(u.last_seen)}</div>
+        <div class="user-meta">${u.nickname ? u.email + ' · ' : ''}${isOnline ? '🟢 Şu an aktif' + (u.current_app ? ' · ' + (u.current_app === 'sportify' ? '🎵 Sportify' : u.current_app === 'nexsus' ? '⬡ Nexsus' : '🌐 DevStore') : '') : '⚫ Son görülme: ' + _timeAgo(u.last_seen)}</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px">
         <div class="online-dot ${isOnline ? 'active' : ''}"></div>
@@ -366,7 +366,7 @@
 
       const isOnline = (Date.now() - new Date(user.last_seen).getTime()) / 1000 < 60;
       document.getElementById('m-user-status').innerHTML = isOnline ? '<span style="color:var(--green)">Online</span>' : '<span style="color:var(--muted)">Offline</span>';
-      document.getElementById('m-user-app').textContent = user.current_app === 'sportify' ? '🎵 Sportify' : '🌐 DevStore';
+      document.getElementById('m-user-app').textContent = user.current_app === 'sportify' ? '🎵 Sportify' : user.current_app === 'nexsus' ? '⬡ Nexsus' : '🌐 DevStore';
       document.getElementById('m-user-lastseen').textContent = _timeAgo(user.last_seen) + ' (' + new Date(user.last_seen).toLocaleString() + ')';
       document.getElementById('m-user-firstdevice').textContent = user.first_device || 'Bilinmiyor';
       document.getElementById('m-user-lastdevice').textContent = user.last_device || 'Bilinmiyor';
